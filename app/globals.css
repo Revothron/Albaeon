@@ -1,26 +1,184 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════
+   ALBAEON — Color Theme System
+   ═══════════════════════════════════════════════════════════════
+   🎨 Core Philosophy:
+     Purple  = Atmosphere
+     Gold    = Authority
+     Dark    = Structure
+     Neutral = Readability
+   ═══════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ── 1. Primary Foundation (Purple Atmosphere) ── */
+  --albaeon-bg-primary: #241A33;
+  --albaeon-bg-secondary: #1A1426;
+  --albaeon-surface: #2C2040;
+
+  /* ── 2. Accent & Identity (Gold Authority) ── */
+  --albaeon-gold: #E6C979;
+  --albaeon-gold-hover: #D4B25F;
+
+  /* ── 3. Structural Dark ── */
+  --albaeon-nav: #130F18;
+  --albaeon-footer: #0F0C14;
+
+  /* ── 4. Typography Colors ── */
+  --albaeon-text-primary: #E8E2D6;
+  --albaeon-text-muted: #B7AFC3;
+
+  /* ── 5. Button System ── */
+  --albaeon-btn-primary-bg: transparent;
+  --albaeon-btn-primary-border: #E6C979;
+  --albaeon-btn-primary-text: #E6C979;
+  --albaeon-btn-primary-hover-bg: #E6C979;
+  --albaeon-btn-primary-hover-text: #130F18;
+
+  --albaeon-btn-secondary-bg: #2C2040;
+  --albaeon-btn-secondary-text: #E8E2D6;
+  --albaeon-btn-secondary-hover-bg: #3A2952;
+
+  /* ── 6. Subtle Gradient (Hero / Cinematic) ── */
+  --albaeon-gradient-from: #241A33;
+  --albaeon-gradient-to: #1A1426;
+
+  /* ── Semantic Aliases ── */
+  --background: var(--albaeon-bg-primary);
+  --foreground: var(--albaeon-text-primary);
 }
 
+/* ── Tailwind v4 Theme Tokens ──────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Semantic colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  /* Foundation purples */
+  --color-primary: #241A33;
+  --color-primary-deep: #1A1426;
+  --color-surface: #2C2040;
+  --color-surface-hover: #3A2952;
+
+  /* Gold accents */
+  --color-gold: #E6C979;
+  --color-gold-hover: #D4B25F;
+
+  /* Structural darks */
+  --color-nav: #130F18;
+  --color-footer: #0F0C14;
+
+  /* Text */
+  --color-text-primary: #E8E2D6;
+  --color-text-muted: #B7AFC3;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ═══════════════════════════════════════════════════════════════
+   Base Styles
+   ═══════════════════════════════════════════════════════════════ */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+}
+
+/* ── Selection highlight ── */
+::selection {
+  background: var(--albaeon-gold);
+  color: var(--albaeon-nav);
+}
+
+/* ── Scrollbar (Webkit) ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--albaeon-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--albaeon-surface);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--albaeon-gold-hover);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Utility Classes (beyond Tailwind)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Primary button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: var(--albaeon-btn-primary-bg);
+  border: 1.5px solid var(--albaeon-btn-primary-border);
+  color: var(--albaeon-btn-primary-text);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary:hover {
+  background: var(--albaeon-btn-primary-hover-bg);
+  color: var(--albaeon-btn-primary-hover-text);
+}
+
+/* Secondary button */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2rem;
+  background: var(--albaeon-btn-secondary-bg);
+  border: 1.5px solid transparent;
+  color: var(--albaeon-btn-secondary-text);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary:hover {
+  background: var(--albaeon-btn-secondary-hover-bg);
+}
+
+/* Hero gradient background */
+.bg-hero-gradient {
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    var(--albaeon-gradient-from) 0%,
+    var(--albaeon-gradient-to) 100%
+  );
+}
+
+/* Gold text accent */
+.text-accent-gold {
+  color: var(--albaeon-gold);
+}
+
+/* Card / Surface container */
+.card-surface {
+  background: var(--albaeon-surface);
+  border: 1px solid rgba(230, 201, 121, 0.08);
+  transition: border-color 0.3s ease;
+}
+
+.card-surface:hover {
+  border-color: rgba(230, 201, 121, 0.2);
 }
