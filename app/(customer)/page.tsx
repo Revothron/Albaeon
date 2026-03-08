@@ -1,84 +1,273 @@
+import Image from "next/image";
+import Link from "next/link";
+import { Cinzel } from "next/font/google";
+
+const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+
+const newArrivals = [
+    {
+        name: "Obsidian Crest Tee",
+        price: "$96",
+        image: "/home/arrival-obsidian-crest-tee.png",
+    },
+    {
+        name: "Vanguard Glyph Hoodie",
+        price: "$168",
+        image: "/home/arrival-vanguard-glyph-hoodie.png",
+    },
+    {
+        name: "Imperial Cut Shirt",
+        price: "$122",
+        image: "/home/arrival-imperial-cut-shirt.png",
+    },
+    {
+        name: "Nocturne Utility Set",
+        price: "$214",
+        image: "/home/arrival-nocturne-utility-set.png",
+    },
+];
+
+const bestSellers = [
+    {
+        name: "Atlas Prime Hoodie",
+        price: "$172",
+        image: "/home/best-atlas-prime-hoodie.png",
+    },
+    {
+        name: "Mythcore Long Tee",
+        price: "$104",
+        image: "/home/best-mythcore-long-tee.png",
+    },
+    {
+        name: "Aurelian Cargo Jacket",
+        price: "$238",
+        image: "/home/best-aurelian-cargo-jacket.png",
+    },
+    {
+        name: "Rune-Line Essentials",
+        price: "$128",
+        image: "/home/best-rune-line-essentials.png",
+    },
+];
+
+const categories = [
+    {
+        title: "T-Shirts",
+        href: "/shop/t-shirts",
+        image: "/home/category-t-shirts.png",
+    },
+    {
+        title: "Hoodies",
+        href: "/shop/hoodies",
+        image: "/home/category-hoodies.png",
+    },
+    {
+        title: "Future Categories",
+        href: "/shop",
+        image: "/home/category-future-categories.png",
+    },
+];
+
+function ProductCard({
+    name,
+    price,
+    image,
+    href = "/shop",
+}: {
+    name: string;
+    price: string;
+    image: string;
+    href?: string;
+}) {
+    return (
+        <Link
+            href={href}
+            className="group flex flex-col gap-3.5 rounded-[15px] border border-gold bg-surface p-3 sm:p-3.5"
+        >
+            <div className="relative h-[170px] overflow-hidden rounded-[10px] bg-primary-deep sm:h-[250px] lg:h-[320px]">
+                <Image
+                    src={image}
+                    alt={name}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 24vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+            </div>
+
+            <div className="space-y-1">
+                <h3 className={`${cinzel.className} text-[14px] leading-[1.15] text-text-primary sm:text-[18px] lg:text-[24px]`}>
+                    {name}
+                </h3>
+                <p className="font-sans text-[12px] font-semibold text-gold sm:text-[15px] lg:text-[18px]">
+                    {price}
+                </p>
+            </div>
+        </Link>
+    );
+}
+
+function CategoryCard({
+    title,
+    href,
+    image,
+}: {
+    title: string;
+    href: string;
+    image: string;
+}) {
+    return (
+        <Link
+            href={href}
+            className="group flex h-full flex-col gap-3 rounded-[15px] border border-gold bg-surface p-4"
+        >
+            <div className="relative h-[200px] overflow-hidden rounded-[10px] bg-primary-deep sm:h-[220px]">
+                <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 30vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                />
+            </div>
+
+            <h3 className={`${cinzel.className} text-[22px] text-text-primary sm:text-[24px] lg:text-[28px]`}>
+                {title}
+            </h3>
+        </Link>
+    );
+}
+
 export default function HomePage() {
     return (
-        <div className="bg-primary">
-            {/* ── Hero Banner ── */}
-            <section className="bg-hero-gradient py-32 px-6 flex flex-col items-center text-center">
-                <h1 className="text-gold text-5xl md:text-6xl font-bold tracking-[0.15em] uppercase mb-6">
-                    Albaeon
-                </h1>
-                <p className="text-text-muted text-lg max-w-xl leading-relaxed mb-10">
-                    Ancient empire meets architectural fashion. Brutalist form. Mythic
-                    identity. Controlled power.
-                </p>
-                <a href="/shop" className="btn-primary">
-                    Explore Collection
-                </a>
+        <main className="bg-primary">
+            <section className="bg-[radial-gradient(circle_at_30%_20%,#241A33_0%,#1A1426_100%)]">
+                <div className="mx-auto grid max-w-[1440px] gap-10 px-[18px] py-8 sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_540px] lg:items-center lg:gap-14 lg:px-14 lg:py-[72px]">
+                    <div className="space-y-5">
+                        <p className="font-sans text-[13px] font-semibold uppercase tracking-[0.16em] text-gold">
+                            International Myth-Wear
+                        </p>
+
+                        <h1 className={`${cinzel.className} max-w-[620px] text-[38px] leading-[1.02] text-text-primary sm:text-[52px] lg:text-[62px]`}>
+                            Architectural Clothing Forged for Modern Legends
+                        </h1>
+
+                        <p className="max-w-[560px] font-sans text-[15px] leading-[1.45] text-text-muted lg:text-[18px] lg:leading-[1.4]">
+                            Albaeon merges mythic symbolism with brutal tailoring for people who dress with intent across borders, cultures, and seasons.
+                        </p>
+
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                            <Link
+                                href="/shop"
+                                className="inline-flex h-[52px] items-center justify-center border border-gold px-[26px] font-sans text-[14px] font-semibold uppercase tracking-[0.08em] text-gold transition-colors duration-200 hover:bg-gold hover:text-nav"
+                            >
+                                Shop Now
+                            </Link>
+                            <Link
+                                href="/shop"
+                                className="inline-flex h-[52px] items-center justify-center bg-surface px-[26px] font-sans text-[14px] font-semibold uppercase tracking-[0.08em] text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav"
+                            >
+                                Explore Collection
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="relative aspect-[27/28] overflow-hidden border border-gold">
+                        <Image
+                            src="/home/hero.png"
+                            alt="Albaeon hero visual"
+                            fill
+                            priority
+                            sizes="(max-width: 1024px) 100vw, 540px"
+                            className="object-cover"
+                        />
+                    </div>
+                </div>
             </section>
 
-            {/* ── New Arrivals ── */}
-            <section className="bg-primary-deep py-20 px-6">
-                <div className="max-w-7xl mx-auto">
-                    <h2 className="text-gold text-2xl font-semibold tracking-wider uppercase text-center mb-12">
+            <section className="bg-primary">
+                <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-14">
+                    <h2 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[38px] lg:text-[44px]`}>
                         New Arrivals
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="card-surface group cursor-pointer">
-                                <div className="aspect-[3/4] bg-surface" />
-                                <div className="p-4">
-                                    <p className="text-text-primary text-sm font-medium">Product Name</p>
-                                    <p className="text-text-muted text-sm mt-1">₹1,299</p>
-                                </div>
-                            </div>
+
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+                        {newArrivals.map((product) => (
+                            <ProductCard
+                                key={product.name}
+                                name={product.name}
+                                price={product.price}
+                                image={product.image}
+                            />
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* ── Shop by Category ── */}
-            <section className="bg-primary py-20 px-6">
-                <div className="max-w-7xl mx-auto">
-                    <h2 className="text-gold text-2xl font-semibold tracking-wider uppercase text-center mb-12">
+            <section className="bg-primary-deep">
+                <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-14">
+                    <h2 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[38px] lg:text-[44px]`}>
+                        Best Sellers
+                    </h2>
+
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4 lg:grid-cols-4 lg:gap-5">
+                        {bestSellers.map((product) => (
+                            <ProductCard
+                                key={product.name}
+                                name={product.name}
+                                price={product.price}
+                                image={product.image}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="bg-primary">
+                <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-14">
+                    <h2 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[38px] lg:text-[44px]`}>
                         Shop by Category
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {[
-                            { name: "T-Shirts", href: "/shop/t-shirts" },
-                            { name: "Hoodies", href: "/shop/hoodies" },
-                        ].map((cat) => (
-                            <a
-                                key={cat.href}
-                                href={cat.href}
-                                className="card-surface group relative overflow-hidden"
-                            >
-                                <div className="aspect-[16/7] bg-surface flex items-center justify-center">
-                                    <span className="text-gold text-2xl font-bold tracking-wider uppercase group-hover:scale-105 transition-transform duration-300">
-                                        {cat.name}
-                                    </span>
-                                </div>
-                            </a>
+
+                    <div className="grid gap-4 lg:grid-cols-3 lg:gap-5">
+                        {categories.map((category) => (
+                            <CategoryCard
+                                key={category.title}
+                                title={category.title}
+                                href={category.href}
+                                image={category.image}
+                            />
                         ))}
                     </div>
                 </div>
             </section>
 
-            {/* ── Brand Story ── */}
-            <section className="bg-primary-deep py-20 px-6">
-                <div className="max-w-3xl mx-auto text-center">
-                    <h2 className="text-gold text-2xl font-semibold tracking-wider uppercase mb-8">
-                        Our Story
-                    </h2>
-                    <p className="text-text-primary text-lg leading-relaxed mb-4">
-                        Albaeon is born from the intersection of mythology and modern
-                        structure. Every piece carries the weight of ancient empires and the
-                        precision of architectural design.
-                    </p>
-                    <p className="text-text-muted text-base leading-relaxed">
-                        We don&apos;t follow trends. We build identity. Premium materials, brutalist
-                        aesthetics, and mythic inspiration define everything we create.
-                    </p>
+            <section className="bg-primary-deep">
+                <div className="mx-auto grid max-w-[1440px] gap-8 px-[18px] py-10 sm:px-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-center lg:gap-10 lg:px-14 lg:py-[72px]">
+                    <div className="space-y-5">
+                        <h2 className={`${cinzel.className} text-[34px] font-normal text-gold sm:text-[40px] lg:text-[46px]`}>
+                            The Albaeon Story
+                        </h2>
+
+                        <p className="max-w-[620px] font-sans text-[14px] leading-[1.5] text-text-primary sm:text-[16px] lg:text-[18px]">
+                            Born from mythological architecture and contemporary tailoring, Albaeon creates international clothing for people who move with presence. Every collection balances disciplined structure, deep atmosphere, and premium material storytelling.
+                        </p>
+
+                        <p className="max-w-[560px] font-sans text-[13px] leading-[1.45] text-text-muted sm:text-[15px] lg:text-[16px]">
+                            Our language is brutal elegance: precise forms, symbolic detail, and garments built to endure every city and season.
+                        </p>
+                    </div>
+
+                    <div className="relative h-[300px] overflow-hidden border border-gold sm:h-[360px] lg:h-[420px]">
+                        <Image
+                            src="/home/story.png"
+                            alt="The Albaeon story"
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 520px"
+                            className="object-cover"
+                        />
+                    </div>
                 </div>
             </section>
-        </div>
+        </main>
     );
 }

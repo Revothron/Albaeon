@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import type { FocusEvent } from "react";
+import StripedMarker from "@/components/customer/StripedMarker";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import {
-    Search,
     Heart,
-    ShoppingBag,
-    User,
-    ChevronDown,
     Menu,
+    Search,
+    ShoppingCart,
+    User,
     X,
 } from "lucide-react";
 
@@ -17,136 +19,173 @@ const shopCategories = [
     { name: "Hoodies", href: "/shop/hoodies" },
 ];
 
+const iconLinks = [
+    { href: "/search", label: "Search", Icon: Search },
+    { href: "/wishlist", label: "Wishlist", Icon: Heart },
+    { href: "/cart", label: "Cart", Icon: ShoppingCart },
+    { href: "/login", label: "My Account", Icon: User },
+];
+
 export default function Navbar() {
     const [shopOpen, setShopOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
+    const closeMobileMenu = () => setMobileOpen(false);
+
+    const handleShopBlur = (event: FocusEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setShopOpen(false);
+        }
+    };
+
     return (
-        <nav className="bg-nav sticky top-0 z-50 border-b border-white/5">
-            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-                {/* ── Left: Shop + About ── */}
-                <div className="hidden md:flex items-center gap-8">
-                    {/* Shop Dropdown */}
+        <nav className="sticky top-0 z-50 bg-nav/95 text-text-primary backdrop-blur-sm">
+            <div className="mx-auto hidden h-[88px] w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-14 md:grid">
+                <div className="flex items-center gap-7">
                     <div
                         className="relative"
+                        onBlur={handleShopBlur}
+                        onFocus={() => setShopOpen(true)}
                         onMouseEnter={() => setShopOpen(true)}
                         onMouseLeave={() => setShopOpen(false)}
                     >
-                        <button className="flex items-center gap-1 text-text-muted text-sm tracking-wider uppercase hover:text-gold transition-colors duration-300">
+                        <button
+                            type="button"
+                            className="inline-flex items-center gap-2 font-sans text-[16px] font-medium text-text-primary transition-colors duration-200 hover:text-gold"
+                            aria-expanded={shopOpen}
+                            aria-haspopup="menu"
+                            onClick={() => setShopOpen((open) => !open)}
+                        >
                             Shop
-                            <ChevronDown className="w-3.5 h-3.5" />
+                            <StripedMarker />
                         </button>
 
-                        {shopOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-48 bg-surface border border-white/10 py-2 z-50">
-                                {shopCategories.map((cat) => (
+                        <div
+                            className={`absolute left-0 top-full pt-4 transition-all duration-200 ${
+                                shopOpen
+                                    ? "pointer-events-auto translate-y-0 opacity-100"
+                                    : "pointer-events-none -translate-y-2 opacity-0"
+                            }`}
+                        >
+                            <div className="min-w-[220px] border border-gold/15 bg-nav p-2 shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
+                                {shopCategories.map((category) => (
                                     <Link
-                                        key={cat.href}
-                                        href={cat.href}
-                                        className="block px-5 py-2.5 text-sm text-text-primary hover:bg-surface-hover hover:text-gold transition-colors duration-200"
+                                        key={category.href}
+                                        href={category.href}
+                                        className="block px-4 py-3 text-sm text-text-muted transition-colors duration-200 hover:bg-white/5 hover:text-gold"
                                     >
-                                        {cat.name}
+                                        {category.name}
                                     </Link>
                                 ))}
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     <Link
                         href="/about"
-                        className="text-text-muted text-sm tracking-wider uppercase hover:text-gold transition-colors duration-300"
+                        className="text-[16px] font-medium text-text-primary transition-colors duration-200 hover:text-gold"
                     >
                         About
                     </Link>
                 </div>
 
-                {/* ── Center: Logo ── */}
-                <Link
-                    href="/"
-                    className="text-gold text-xl font-bold tracking-[0.2em] uppercase"
-                >
-                    Albaeon
+                <Link href="/" aria-label="Albaeon home" className="justify-self-center">
+                    <Image
+                        src="/g3.png"
+                        alt="Albaeon"
+                        width={153}
+                        height={35}
+                        priority
+                        className="h-auto w-[153px]"
+                    />
                 </Link>
 
-                {/* ── Right: Icons ── */}
-                <div className="hidden md:flex items-center gap-5">
-                    <Link
-                        href="/search"
-                        className="text-text-muted hover:text-gold transition-colors duration-300"
-                        aria-label="Search"
-                    >
-                        <Search className="w-5 h-5" />
-                    </Link>
-                    <Link
-                        href="/wishlist"
-                        className="text-text-muted hover:text-gold transition-colors duration-300"
-                        aria-label="Wishlist"
-                    >
-                        <Heart className="w-5 h-5" />
-                    </Link>
-                    <Link
-                        href="/cart"
-                        className="text-text-muted hover:text-gold transition-colors duration-300 relative"
-                        aria-label="Cart"
-                    >
-                        <ShoppingBag className="w-5 h-5" />
-                    </Link>
-                    <Link
-                        href="/account"
-                        className="text-text-muted hover:text-gold transition-colors duration-300"
-                        aria-label="My Account"
-                    >
-                        <User className="w-5 h-5" />
-                    </Link>
+                <div className="flex items-center justify-end gap-6">
+                    {iconLinks.map(({ href, label, Icon }) => (
+                        <Link
+                            key={href}
+                            href={href}
+                            aria-label={label}
+                            className="text-text-primary transition-colors duration-200 hover:text-gold"
+                        >
+                            <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
+                        </Link>
+                    ))}
                 </div>
+            </div>
 
-                {/* ── Mobile Menu Toggle ── */}
+            <div className="mx-auto flex h-[72px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 md:hidden">
+                <div className="w-10" aria-hidden="true" />
+
+                <Link href="/" aria-label="Albaeon home" onClick={closeMobileMenu}>
+                    <Image
+                        src="/g3.png"
+                        alt="Albaeon"
+                        width={153}
+                        height={35}
+                        priority
+                        className="h-auto w-[128px]"
+                    />
+                </Link>
+
                 <button
-                    className="md:hidden text-text-muted hover:text-gold transition-colors"
-                    onClick={() => setMobileOpen(!mobileOpen)}
+                    type="button"
+                    className="flex h-10 w-10 items-center justify-center text-text-primary transition-colors duration-200 hover:text-gold"
+                    onClick={() => setMobileOpen((open) => !open)}
+                    aria-expanded={mobileOpen}
                     aria-label="Toggle menu"
                 >
-                    {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    {mobileOpen ? <X className="h-5 w-5" strokeWidth={1.8} /> : <Menu className="h-5 w-5" strokeWidth={1.8} />}
                 </button>
             </div>
 
-            {/* ── Mobile Menu ── */}
             {mobileOpen && (
-                <div className="md:hidden bg-nav border-t border-white/5 px-6 py-6 space-y-4">
-                    <Link
-                        href="/shop"
-                        className="block text-text-muted text-sm tracking-wider uppercase hover:text-gold transition-colors"
-                    >
-                        Shop
-                    </Link>
-                    {shopCategories.map((cat) => (
+                <div className="border-t border-white/5 bg-nav md:hidden">
+                    <div className="space-y-5 px-4 pb-6 pt-5 sm:px-6">
+                        <div className="space-y-3">
+                            <Link
+                                href="/shop"
+                                className="block text-[16px] font-medium text-text-primary transition-colors duration-200 hover:text-gold"
+                                onClick={closeMobileMenu}
+                            >
+                                Shop
+                            </Link>
+
+                            <div className="space-y-3 border-l border-white/10 pl-4">
+                                {shopCategories.map((category) => (
+                                    <Link
+                                        key={category.href}
+                                        href={category.href}
+                                        className="block text-sm text-text-muted transition-colors duration-200 hover:text-gold"
+                                        onClick={closeMobileMenu}
+                                    >
+                                        {category.name}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+
                         <Link
-                            key={cat.href}
-                            href={cat.href}
-                            className="block pl-4 text-text-muted text-sm hover:text-gold transition-colors"
+                            href="/about"
+                            className="block text-[16px] font-medium text-text-primary transition-colors duration-200 hover:text-gold"
+                            onClick={closeMobileMenu}
                         >
-                            {cat.name}
+                            About
                         </Link>
-                    ))}
-                    <Link
-                        href="/about"
-                        className="block text-text-muted text-sm tracking-wider uppercase hover:text-gold transition-colors"
-                    >
-                        About
-                    </Link>
-                    <div className="flex items-center gap-5 pt-4 border-t border-white/5">
-                        <Link href="/search" className="text-text-muted hover:text-gold transition-colors" aria-label="Search">
-                            <Search className="w-5 h-5" />
-                        </Link>
-                        <Link href="/wishlist" className="text-text-muted hover:text-gold transition-colors" aria-label="Wishlist">
-                            <Heart className="w-5 h-5" />
-                        </Link>
-                        <Link href="/cart" className="text-text-muted hover:text-gold transition-colors" aria-label="Cart">
-                            <ShoppingBag className="w-5 h-5" />
-                        </Link>
-                        <Link href="/account" className="text-text-muted hover:text-gold transition-colors" aria-label="My Account">
-                            <User className="w-5 h-5" />
-                        </Link>
+
+                        <div className="flex items-center gap-5 border-t border-white/5 pt-5">
+                            {iconLinks.map(({ href, label, Icon }) => (
+                                <Link
+                                    key={href}
+                                    href={href}
+                                    aria-label={label}
+                                    className="text-text-primary transition-colors duration-200 hover:text-gold"
+                                    onClick={closeMobileMenu}
+                                >
+                                    <Icon className="h-5 w-5" strokeWidth={1.8} />
+                                </Link>
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}

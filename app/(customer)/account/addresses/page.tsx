@@ -1,37 +1,100 @@
-import { Plus } from "lucide-react";
+import { Cinzel } from "next/font/google";
+import AccountShell from "@/components/customer/account/AccountShell";
+
+const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+
+function AddressCard({
+    title,
+    badge,
+    badgeMuted = false,
+    body,
+    actions,
+}: {
+    title: string;
+    badge: string;
+    badgeMuted?: boolean;
+    body: string;
+    actions: Array<{ label: string; className: string }>;
+}) {
+    return (
+        <div className="space-y-4 border border-gold bg-surface p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-3">
+                <h2 className={`${cinzel.className} text-[20px] text-gold`}>
+                    {title}
+                </h2>
+                <span className={`border px-2.5 py-1 text-[11px] tracking-[0.08em] ${
+                    badgeMuted ? "border-gold/25 text-text-muted" : "border-gold text-gold"
+                }`}>
+                    {badge}
+                </span>
+            </div>
+
+            <p className="whitespace-pre-line font-sans text-[14px] leading-[2.1] text-text-primary">
+                {body}
+            </p>
+
+            <div className="h-px w-full bg-gold/10" />
+
+            <div className="flex flex-wrap items-center gap-4">
+                {actions.map((action) => (
+                    <button
+                        key={action.label}
+                        type="button"
+                        className={`font-sans text-[13px] ${action.className}`}
+                    >
+                        {action.label}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default function AddressesPage() {
     return (
-        <div>
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="text-text-primary text-xl font-semibold">Addresses</h2>
-                <button className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
-                    <Plus className="w-3.5 h-3.5" />
-                    Add Address
-                </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Billing */}
-                <div className="card-surface p-6">
-                    <h3 className="text-gold text-sm font-medium tracking-wider uppercase mb-4">
-                        Billing Address
-                    </h3>
-                    <p className="text-text-muted text-sm leading-relaxed">
-                        No billing address saved yet.
-                    </p>
+        <AccountShell
+            activeTab="addresses"
+            title="My Address"
+            subtitle="Manage your shipping and billing addresses."
+            actions={[
+                { label: "Manage Preferences", variant: "outline" },
+                { label: "Add New Address", variant: "solid" },
+            ]}
+        >
+            <div className="space-y-4">
+                <div className="grid gap-4 xl:grid-cols-2">
+                    <AddressCard
+                        title="Shipping Address"
+                        badge="PRIMARY"
+                        body={"Alex Morgan\n42, MG Road, Indiranagar\nBengaluru, Karnataka 560038\nIndia · +91 98765 43210"}
+                        actions={[
+                            { label: "Edit", className: "text-gold" },
+                            { label: "Delete", className: "text-[#C0392B]" },
+                            { label: "Set as billing", className: "text-text-muted" },
+                        ]}
+                    />
+                    <AddressCard
+                        title="Billing Address"
+                        badge="SECONDARY"
+                        badgeMuted
+                        body={"Alex Morgan\n12, Brigade Road, Apt 4B\nBengaluru, Karnataka 560025\nIndia · +91 98765 43210"}
+                        actions={[
+                            { label: "Edit", className: "text-gold" },
+                            { label: "Delete", className: "text-[#C0392B]" },
+                            { label: "Set as primary", className: "text-text-muted" },
+                        ]}
+                    />
                 </div>
 
-                {/* Shipping */}
-                <div className="card-surface p-6">
-                    <h3 className="text-gold text-sm font-medium tracking-wider uppercase mb-4">
-                        Shipping Address
-                    </h3>
-                    <p className="text-text-muted text-sm leading-relaxed">
-                        No shipping address saved yet.
+                <div className="space-y-2 border border-gold/15 bg-surface p-5 sm:p-6">
+                    <h2 className={`${cinzel.className} text-[20px] text-text-primary`}>
+                        Address Tips
+                    </h2>
+                    <p className="font-sans text-[13px] leading-[1.8] text-text-muted">
+                        Keep your shipping address up to date to avoid delivery delays. Your primary address is used automatically at checkout.
                     </p>
                 </div>
             </div>
-        </div>
+        </AccountShell>
     );
 }

@@ -1,28 +1,92 @@
+import Image from "next/image";
+import { Cinzel } from "next/font/google";
+
+const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+
+const coreValues = [
+    {
+        title: "Mythic Identity",
+        body: "Symbol-driven design language rooted in timeless stories.",
+    },
+    {
+        title: "Architectural Form",
+        body: "Precise construction and silhouette discipline for every piece.",
+    },
+    {
+        title: "Global Craft",
+        body: "Designed for international wearability across climates and cities.",
+    },
+];
+
+function ValueCard({
+    title,
+    body,
+}: {
+    title: string;
+    body: string;
+}) {
+    return (
+        <div className="flex flex-col gap-2.5 border border-gold bg-surface p-4 sm:p-5">
+            <h2 className={`${cinzel.className} text-[18px] text-gold sm:text-[24px] lg:text-[28px]`}>
+                {title}
+            </h2>
+            <p className="font-sans text-[11px] leading-[1.5] text-text-primary sm:text-[13px] lg:text-[14px]">
+                {body}
+            </p>
+        </div>
+    );
+}
+
 export default function AboutPage() {
     return (
-        <div className="bg-primary min-h-screen">
-            <div className="max-w-3xl mx-auto px-6 py-20">
-                <h1 className="text-gold text-4xl font-bold tracking-wider uppercase mb-8 text-center">
-                    About Albaeon
-                </h1>
-                <div className="space-y-6 text-text-primary text-lg leading-relaxed">
-                    <p>
-                        Albaeon is born from the intersection of mythology and modern structure.
-                        Every piece carries the weight of ancient empires and the precision of
-                        architectural design.
-                    </p>
-                    <p>
-                        We don&apos;t follow trends. We build identity. Premium materials, brutalist
-                        aesthetics, and mythic inspiration define everything we create.
-                    </p>
-                    <p className="text-text-muted">
-                        Our mission is to craft garments that feel like armor — structured,
-                        powerful, and timeless. Each collection draws from the visual language
-                        of forgotten civilizations, reinterpreted through modern construction
-                        and premium fabrication.
+        <section className="min-h-screen bg-primary">
+            <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-7 lg:px-14 lg:py-12">
+                <div className="space-y-2.5">
+                    <h1 className={`${cinzel.className} text-[34px] text-gold sm:text-[46px] lg:text-[56px]`}>
+                        About Albaeon
+                    </h1>
+                    <p className="max-w-[920px] font-sans text-[12px] leading-[1.4] text-text-muted sm:text-[15px] lg:text-[18px] lg:leading-[1.5]">
+                        Albaeon is an international clothing brand built on myth, structure, and premium modern craft.
                     </p>
                 </div>
+
+                <div className="grid gap-4 lg:grid-cols-[560px_minmax(0,1fr)] lg:items-center lg:gap-7">
+                    <div className="relative h-[220px] overflow-hidden border border-gold sm:h-[320px] lg:h-[460px]">
+                        <Image
+                            src="/about-contact/about-image.png"
+                            alt="About Albaeon"
+                            fill
+                            priority
+                            sizes="(max-width: 1024px) 100vw, 560px"
+                            className="object-cover"
+                        />
+                    </div>
+
+                    <div className="space-y-4">
+                        <p className="font-sans text-[12px] leading-[1.5] text-text-primary sm:text-[14px] lg:text-[16px] lg:leading-[1.6]">
+                            Our collections are inspired by ancient forms, imperial silhouettes, and contemporary urban movement. We design for people who cross cultures without losing identity.
+                        </p>
+                        <p className="font-sans text-[12px] leading-[1.5] text-text-primary sm:text-[14px] lg:text-[16px] lg:leading-[1.6]">
+                            From concept to material selection, every garment carries a language of controlled power: dark structure, gold authority, and clean readability.
+                        </p>
+                    </div>
+                </div>
+
+                <div className="space-y-4">
+                    <h2 className={`${cinzel.className} text-[28px] text-gold sm:text-[34px] lg:text-[40px]`}>
+                        Core Values
+                    </h2>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+                        {coreValues.map((value) => (
+                            <ValueCard
+                                key={value.title}
+                                title={value.title}
+                                body={value.body}
+                            />
+                        ))}
+                    </div>
+                </div>
             </div>
-        </div>
+        </section>
     );
 }
