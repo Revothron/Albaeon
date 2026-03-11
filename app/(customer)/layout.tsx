@@ -1,23 +1,17 @@
 import Navbar from "@/components/customer/Navbar";
 import Footer from "@/components/customer/Footer";
 import MaintenanceModeView from "@/components/customer/MaintenanceModeView";
+import { getMaintenanceMode } from "@/lib/maintenance";
+import MaintenanceWatcher from "@/components/customer/MaintenanceWatcher";
 
-function isMaintenanceModeEnabled(value?: string) {
-    if (!value) {
-        return false;
-    }
+export const dynamic = "force-dynamic";
 
-    const normalized = value.trim().toLowerCase();
-
-    return !["false", "0", "off", "no"].includes(normalized);
-}
-
-export default function CustomerLayout({
+export default async function CustomerLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const maintenanceModeEnabled = isMaintenanceModeEnabled(process.env.MAINTENANCE_MODE);
+    const maintenanceModeEnabled = await getMaintenanceMode();
 
     if (maintenanceModeEnabled) {
         return <MaintenanceModeView />;
@@ -25,6 +19,7 @@ export default function CustomerLayout({
 
     return (
         <>
+            <MaintenanceWatcher when="enabled" />
             <Navbar />
             <main className="min-h-screen">{children}</main>
             <Footer />

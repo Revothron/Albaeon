@@ -6,21 +6,25 @@ const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"]
 
 const newArrivals = [
     {
+        slug: "obsidian-crest-tee",
         name: "Obsidian Crest Tee",
         price: "$96",
         image: "/home/arrival-obsidian-crest-tee.png",
     },
     {
+        slug: "vanguard-glyph-hoodie",
         name: "Vanguard Glyph Hoodie",
         price: "$168",
         image: "/home/arrival-vanguard-glyph-hoodie.png",
     },
     {
+        slug: "imperial-cut-shirt",
         name: "Imperial Cut Shirt",
         price: "$122",
         image: "/home/arrival-imperial-cut-shirt.png",
     },
     {
+        slug: "nocturne-utility-set",
         name: "Nocturne Utility Set",
         price: "$214",
         image: "/home/arrival-nocturne-utility-set.png",
@@ -29,21 +33,25 @@ const newArrivals = [
 
 const bestSellers = [
     {
+        slug: "atlas-prime-hoodie",
         name: "Atlas Prime Hoodie",
         price: "$172",
         image: "/home/best-atlas-prime-hoodie.png",
     },
     {
+        slug: "mythcore-long-tee",
         name: "Mythcore Long Tee",
         price: "$104",
         image: "/home/best-mythcore-long-tee.png",
     },
     {
+        slug: "aurelian-cargo-jacket",
         name: "Aurelian Cargo Jacket",
         price: "$238",
         image: "/home/best-aurelian-cargo-jacket.png",
     },
     {
+        slug: "rune-line-essentials",
         name: "Rune-Line Essentials",
         price: "$128",
         image: "/home/best-rune-line-essentials.png",
@@ -73,15 +81,19 @@ function ProductCard({
     price,
     image,
     href = "/shop",
+    slug,
 }: {
     name: string;
     price: string;
     image: string;
     href?: string;
+    slug?: string;
 }) {
+    const resolvedHref = slug ? `/shop/product/${slug}` : href;
+
     return (
         <Link
-            href={href}
+            href={resolvedHref}
             className="group flex flex-col gap-3.5 rounded-[15px] border border-gold bg-surface p-3 sm:p-3.5"
         >
             <div className="relative h-[170px] overflow-hidden rounded-[10px] bg-primary-deep sm:h-[250px] lg:h-[320px]">
@@ -141,7 +153,7 @@ export default function HomePage() {
     return (
         <main className="bg-primary">
             <section className="bg-[radial-gradient(circle_at_30%_20%,#241A33_0%,#1A1426_100%)]">
-                <div className="mx-auto grid max-w-[1440px] gap-10 px-[18px] py-8 sm:px-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_540px] lg:items-center lg:gap-14 lg:px-14 lg:py-[72px]">
+                <div className="desktop-frame grid gap-10 py-8 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:items-center lg:gap-14 lg:py-[72px]">
                     <div className="space-y-5">
                         <p className="font-sans text-[13px] font-semibold uppercase tracking-[0.16em] text-gold">
                             International Myth-Wear
@@ -185,7 +197,7 @@ export default function HomePage() {
             </section>
 
             <section className="bg-primary">
-                <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-14">
+                <div className="desktop-frame flex flex-col gap-6 py-10 sm:py-14 lg:py-14">
                     <h2 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[38px] lg:text-[44px]`}>
                         New Arrivals
                     </h2>
@@ -197,6 +209,7 @@ export default function HomePage() {
                                 name={product.name}
                                 price={product.price}
                                 image={product.image}
+                                slug={product.slug}
                             />
                         ))}
                     </div>
@@ -204,7 +217,7 @@ export default function HomePage() {
             </section>
 
             <section className="bg-primary-deep">
-                <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-14">
+                <div className="desktop-frame flex flex-col gap-6 py-10 sm:py-14 lg:py-14">
                     <h2 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[38px] lg:text-[44px]`}>
                         Best Sellers
                     </h2>
@@ -216,6 +229,7 @@ export default function HomePage() {
                                 name={product.name}
                                 price={product.price}
                                 image={product.image}
+                                slug={product.slug}
                             />
                         ))}
                     </div>
@@ -223,7 +237,7 @@ export default function HomePage() {
             </section>
 
             <section className="bg-primary">
-                <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-10 sm:px-10 sm:py-14 lg:px-14 lg:py-14">
+                <div className="desktop-frame flex flex-col gap-6 py-10 sm:py-14 lg:py-14">
                     <h2 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[38px] lg:text-[44px]`}>
                         Shop by Category
                     </h2>
@@ -242,7 +256,7 @@ export default function HomePage() {
             </section>
 
             <section className="bg-primary-deep">
-                <div className="mx-auto grid max-w-[1440px] gap-8 px-[18px] py-10 sm:px-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_520px] lg:items-center lg:gap-10 lg:px-14 lg:py-[72px]">
+                <div className="desktop-frame grid gap-8 py-10 sm:py-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)] lg:items-center lg:gap-10 lg:py-[72px]">
                     <div className="space-y-5">
                         <h2 className={`${cinzel.className} text-[34px] font-normal text-gold sm:text-[40px] lg:text-[46px]`}>
                             The Albaeon Story

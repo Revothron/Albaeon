@@ -93,7 +93,7 @@ export default function OrdersPage() {
             subtitle="View and track all your Albaeon orders from one place."
         >
             <div className="space-y-4">
-                <div className="grid gap-3.5 xl:grid-cols-3">
+                <div className="grid gap-3.5 lg:grid-cols-2 2xl:grid-cols-3">
                     {metrics.map((metric) => (
                         <MetricCard
                             key={metric.label}

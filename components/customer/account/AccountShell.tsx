@@ -101,7 +101,7 @@ export default function AccountShell({
 }) {
     return (
         <section className="min-h-screen bg-primary">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-6 lg:px-14 lg:py-10">
+            <div className="desktop-frame flex flex-col gap-6 py-5 sm:py-8 lg:gap-6 lg:py-10">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="space-y-2">
                         <h1 className={`${cinzel.className} text-[36px] text-gold sm:text-[44px] lg:text-[54px]`}>

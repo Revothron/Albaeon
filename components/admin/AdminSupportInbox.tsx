@@ -207,7 +207,7 @@ export default function AdminSupportInbox() {
             </div>
 
             <section className="border border-gold/10 bg-[#1E1A2E] px-5 py-4 md:px-6">
-                <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_150px_150px]">
+                <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_150px_150px]">
                     <div>
                         <AdminFieldLabel>SEARCH TICKETS</AdminFieldLabel>
                         <AdminTextInput placeholder="Search by customer name, email, subject..." />
@@ -223,7 +223,7 @@ export default function AdminSupportInbox() {
                 </div>
             </section>
 
-            <section className="overflow-hidden border border-gold/10 bg-[#1E1A2E] lg:grid lg:grid-cols-[360px_minmax(0,1fr)]">
+            <section className="overflow-hidden border border-gold/10 bg-[#1E1A2E] lg:grid lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]">
                 <aside className="border-b border-gold/10 bg-nav lg:border-b-0 lg:border-r lg:border-r-gold/10">
                     {tickets.map((ticket) => {
                         const active = ticket.id === selectedTicket.id;

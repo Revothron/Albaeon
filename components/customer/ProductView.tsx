@@ -76,7 +76,7 @@ export default function ProductView({ product }: { product: Product }) {
 
     return (
         <section className="min-h-screen bg-primary">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-8 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-8 lg:px-14 lg:py-12">
+            <div className="desktop-frame flex flex-col gap-8 py-5 sm:py-8 lg:gap-8 lg:py-12">
                 <div className="flex flex-col gap-8 lg:flex-row lg:gap-10">
                     <div className="w-full lg:max-w-[700px]">
                         <h1 className={`${cinzel.className} mb-3 text-[30px] leading-[1.05] text-gold sm:text-[38px] lg:hidden`}>

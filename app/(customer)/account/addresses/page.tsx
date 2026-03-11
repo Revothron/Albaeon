@@ -62,7 +62,7 @@ export default function AddressesPage() {
             ]}
         >
             <div className="space-y-4">
-                <div className="grid gap-4 xl:grid-cols-2">
+                <div className="grid gap-4 2xl:grid-cols-2">
                     <AddressCard
                         title="Shipping Address"
                         badge="PRIMARY"

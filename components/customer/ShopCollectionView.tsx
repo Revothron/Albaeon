@@ -113,7 +113,7 @@ export default function ShopCollectionView({
 }: ShopCollectionViewProps) {
     return (
         <section className="min-h-screen bg-primary">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-7 lg:px-14 lg:py-12">
+            <div className="desktop-frame flex flex-col gap-3 py-5 sm:py-8 lg:gap-7 lg:py-12">
                 <div className="space-y-2 lg:space-y-3">
                     <h1 className={`${cinzel.className} text-[38px] font-normal text-gold sm:text-[44px] lg:text-[52px]`}>
                         {heading}

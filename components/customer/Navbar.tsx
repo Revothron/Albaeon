@@ -70,7 +70,7 @@ export default function Navbar() {
 
     return (
         <nav ref={shopMenuRef} className="sticky top-0 z-50 bg-nav/95 text-text-primary backdrop-blur-sm">
-            <div className="mx-auto hidden h-[50px] w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center px-14 md:grid">
+            <div className="desktop-frame hidden h-[50px] w-full grid-cols-[1fr_auto_1fr] items-center md:grid">
                 <div className="flex items-center gap-7">
                     <div className="relative">
                         <button
@@ -148,7 +148,7 @@ export default function Navbar() {
                 }`}
             >
                 <div className="border-y border-[#E6C97914] bg-[#130F18] shadow-[0_24px_48px_rgba(0,0,0,0.35)]">
-                    <div className="mx-auto grid max-w-[1440px] grid-cols-[260px_260px_minmax(320px,1fr)] gap-14 px-14 py-6">
+                    <div className="desktop-frame grid grid-cols-[260px_260px_minmax(320px,1fr)] gap-14 py-6">
                         <div className="space-y-2.5">
                             <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.3em] text-gold`}>
                                 CATEGORIES

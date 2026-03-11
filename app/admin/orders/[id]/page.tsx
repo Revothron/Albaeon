@@ -1,13 +1,9 @@
-export default function AdminOrderDetailPage({
-    params,
-}: {
-    params: Promise<{ id: string }>;
-}) {
+export default function AdminOrderDetailPage() {
     return (
         <div>
             <h1 className="text-text-primary text-2xl font-bold mb-8">Order Detail</h1>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
                 {/* ── Customer & Shipping ── */}
                 <div className="card-surface p-6">
                     <h3 className="text-gold text-sm font-medium tracking-wider uppercase mb-4">

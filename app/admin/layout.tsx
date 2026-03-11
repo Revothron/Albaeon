@@ -19,8 +19,10 @@ export default function AdminLayout({
         <div className="min-h-screen bg-footer text-text-primary md:flex">
             <AdminSidebar />
             <div className="min-w-0 flex-1">
-                <AdminHeader />
-                <main className="p-4 md:p-8">{children}</main>
+                <div className="w-full max-w-[1220px]">
+                    <AdminHeader />
+                    <main className="p-4 md:p-8">{children}</main>
+                </div>
             </div>
         </div>
     );

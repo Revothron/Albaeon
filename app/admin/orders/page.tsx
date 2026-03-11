@@ -114,7 +114,7 @@ export default function AdminOrdersPage() {
             />
 
             <section className="border border-gold/10 bg-[#1E1A2E] px-5 py-4 md:px-6">
-                <div className="grid gap-3 xl:grid-cols-[260px_150px_170px_120px_minmax(0,1fr)_110px]">
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[260px_150px_170px_120px_minmax(0,1fr)_110px]">
                     <div>
                         <AdminFieldLabel>DATE RANGE</AdminFieldLabel>
                         <AdminDateRangeBox fromLabel="From date" toLabel="To date" />
@@ -147,7 +147,7 @@ export default function AdminOrdersPage() {
             </section>
 
             <section className="overflow-x-auto border border-gold/10 bg-[#1E1A2E]">
-                <table className="w-full min-w-[1180px] border-collapse">
+                <table className="w-full min-w-[760px] border-collapse lg:min-w-[900px] xl:min-w-[1040px] 2xl:min-w-[1180px]">
                     <thead className="bg-nav">
                         <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
                             {headerColumns.map((column, index) => (

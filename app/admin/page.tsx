@@ -117,7 +117,7 @@ function StatCard({
     progressWidth,
 }: (typeof statCards)[number]) {
     return (
-        <div className="border border-gold/10 bg-[#1E1A2E] p-5 md:p-6">
+        <div className="border border-gold/10 bg-[#1E1A2E] p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
                 <p className={`${adminCinzel.className} text-[9px] tracking-[0.28em] text-text-muted`}>
                     {label}
@@ -125,7 +125,7 @@ function StatCard({
                 <Icon className="h-4 w-4 text-text-muted" strokeWidth={1.8} />
             </div>
 
-            <p className={`${adminCormorant.className} mt-4 text-[36px] font-light leading-none md:text-[40px] ${accentClassName}`}>
+            <p className={`${adminCormorant.className} mt-4 text-[36px] font-light leading-none sm:text-[40px] ${accentClassName}`}>
                 {value}
             </p>
 
@@ -145,13 +145,13 @@ function StatCard({
 
 export default function AdminDashboard() {
     return (
-        <div className="space-y-6 md:space-y-8">
+        <div className="space-y-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <p className={`${adminCinzel.className} text-[9px] tracking-[0.38em] text-text-muted`}>
                         OVERVIEW
                     </p>
-                    <h1 className={`${adminCormorant.className} mt-1 text-[40px] font-light leading-none text-text-primary md:text-[48px]`}>
+                    <h1 className={`${adminCormorant.className} mt-1 text-[30px] font-light leading-none text-text-primary sm:text-[32px]`}>
                         Dashboard
                     </h1>
                     <p className={`${adminRaleway.className} mt-2 text-[13px] font-light text-text-muted`}>
@@ -161,19 +161,19 @@ export default function AdminDashboard() {
 
                 <button
                     type="button"
-                    className={`${adminCinzel.className} inline-flex h-10 items-center justify-center bg-gold px-5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover`}
+                    className={`${adminCinzel.className} inline-flex items-center justify-center bg-gold px-5 py-2.5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover`}
                 >
                     + New Order
                 </button>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {statCards.map((card) => (
                     <StatCard key={card.label} {...card} />
                 ))}
             </div>
 
-            <section className="border border-gold/10 bg-[#1E1A2E] p-5 md:p-7">
+            <section className="border border-gold/10 bg-[#1E1A2E] p-6 md:p-7">
                 <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div>
                         <p className={`${adminCinzel.className} text-[10px] tracking-[0.3em] text-gold`}>
@@ -200,15 +200,15 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="mt-6 border border-gold/10 p-4 md:p-5">
+                <div className="mt-6 border border-gold/10 px-4 pb-2.5 pt-4">
                     <div className="grid grid-cols-[44px_minmax(0,1fr)_36px] gap-2 md:grid-cols-[56px_minmax(0,1fr)_56px] md:gap-3">
-                        <div className={`flex h-[220px] flex-col justify-between text-[10px] text-text-muted md:text-[11px] ${adminRaleway.className}`}>
+                        <div className={`flex h-[210px] flex-col justify-between text-[10px] text-text-muted md:text-[11px] ${adminRaleway.className}`}>
                             {["Rs 100k", "Rs 80k", "Rs 60k", "Rs 40k", "Rs 20k"].map((label) => (
                                 <span key={label}>{label}</span>
                             ))}
                         </div>
 
-                        <div className="relative h-[220px]">
+                        <div className="relative h-[210px]">
                             <div className="pointer-events-none absolute inset-0">
                                 {Array.from({ length: 5 }).map((_, index) => (
                                     <div
@@ -285,7 +285,7 @@ export default function AdminDashboard() {
                             </div>
                         </div>
 
-                        <div className={`flex h-[220px] flex-col items-end justify-between text-[10px] text-[#4A90C4] md:text-[11px] ${adminRaleway.className}`}>
+                        <div className={`flex h-[210px] flex-col items-end justify-between text-[10px] text-[#4A90C4] md:text-[11px] ${adminRaleway.className}`}>
                             {["24", "18", "12", "6", "0"].map((label) => (
                                 <span key={label}>{label}</span>
                             ))}
@@ -299,7 +299,7 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className={`mt-5 flex flex-wrap items-center gap-5 text-[12px] text-text-muted ${adminRaleway.className}`}>
+                <div className={`mt-5 flex flex-wrap items-center gap-6 text-[12px] text-text-muted ${adminRaleway.className}`}>
                     <span className="inline-flex items-center gap-2">
                         <span className="h-2 w-2 bg-gold" aria-hidden="true" />
                         Revenue
@@ -311,7 +311,7 @@ export default function AdminDashboard() {
                 </div>
             </section>
 
-            <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_300px]">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
                 <section className="border border-gold/10 bg-[#1E1A2E] p-5 md:p-7">
                     <div className="flex items-center justify-between gap-4">
                         <p className={`${adminCinzel.className} text-[10px] tracking-[0.3em] text-gold`}>
@@ -327,7 +327,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="mt-5 overflow-x-auto border border-gold/10">
-                        <table className="w-full min-w-[760px] border-collapse">
+                        <table className="w-full min-w-[640px] border-collapse lg:min-w-[760px]">
                             <thead className="bg-nav">
                                 <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
                                     <th className="px-4 py-3 text-center font-semibold">ORDER ID</th>

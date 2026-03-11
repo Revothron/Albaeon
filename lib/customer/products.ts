@@ -213,7 +213,251 @@ const products: Product[] = [
     },
 ];
 
+const homeProducts: Product[] = [
+    {
+        slug: "obsidian-crest-tee",
+        category: "t-shirts",
+        name: "Obsidian Crest Tee",
+        price: "$96",
+        image: "/home/arrival-obsidian-crest-tee.png",
+        gallery: [
+            "/home/arrival-obsidian-crest-tee.png",
+            "/home/arrival-obsidian-crest-tee.png",
+            "/home/arrival-obsidian-crest-tee.png",
+            "/home/arrival-obsidian-crest-tee.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Signature crest tee with deep tonal artwork, built on a structured cotton base for a bold daily uniform.",
+        sizeChart: "S (Chest 36) / M (Chest 38) / L (Chest 40) / XL (Chest 42) / 2XL (Chest 44)",
+        washCare:
+            "Machine wash cold, turn inside out, and hang dry to preserve the print depth and fabric structure.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Oversized Fit" },
+            { label: "Neck", value: "Round Neck" },
+            { label: "Pattern", value: "Crest Print" },
+            { label: "Fabric", value: "240 GSM Cotton" },
+            { label: "Sleeve", value: "Regular Sleeve" },
+            { label: "Length", value: "Regular" },
+        ],
+    },
+    {
+        slug: "vanguard-glyph-hoodie",
+        category: "hoodies",
+        name: "Vanguard Glyph Hoodie",
+        price: "$168",
+        image: "/home/arrival-vanguard-glyph-hoodie.png",
+        gallery: [
+            "/home/arrival-vanguard-glyph-hoodie.png",
+            "/home/arrival-vanguard-glyph-hoodie.png",
+            "/home/arrival-vanguard-glyph-hoodie.png",
+            "/home/arrival-vanguard-glyph-hoodie.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Glyph-stitched hoodie with a dense fleece core, designed for colder nights and heavy layering.",
+        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
+        washCare:
+            "Machine wash cold on gentle cycle. Wash with similar colors and dry flat or tumble dry low.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Relaxed Fit" },
+            { label: "Hood", value: "Drawcord Hood" },
+            { label: "Pattern", value: "Glyph Embroidery" },
+            { label: "Fabric", value: "420 GSM Fleece" },
+            { label: "Sleeve", value: "Drop Shoulder" },
+            { label: "Length", value: "Regular" },
+        ],
+    },
+    {
+        slug: "imperial-cut-shirt",
+        category: "shirts",
+        name: "Imperial Cut Shirt",
+        price: "$122",
+        image: "/home/arrival-imperial-cut-shirt.png",
+        gallery: [
+            "/home/arrival-imperial-cut-shirt.png",
+            "/home/arrival-imperial-cut-shirt.png",
+            "/home/arrival-imperial-cut-shirt.png",
+            "/home/arrival-imperial-cut-shirt.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Tailored cut shirt with clean architectural lines and a soft structured hand for daily uniform dressing.",
+        sizeChart: "S (Chest 37) / M (Chest 39) / L (Chest 41) / XL (Chest 43) / 2XL (Chest 45)",
+        washCare:
+            "Machine wash cold with mild detergent. Reshape while damp and iron on low heat if needed.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Tailored Fit" },
+            { label: "Collar", value: "Spread Collar" },
+            { label: "Pattern", value: "Clean Solid" },
+            { label: "Fabric", value: "Cotton Blend" },
+            { label: "Sleeve", value: "Full Sleeve" },
+            { label: "Length", value: "Curved Hem" },
+        ],
+    },
+    {
+        slug: "nocturne-utility-set",
+        category: "sets",
+        name: "Nocturne Utility Set",
+        price: "$214",
+        image: "/home/arrival-nocturne-utility-set.png",
+        gallery: [
+            "/home/arrival-nocturne-utility-set.png",
+            "/home/arrival-nocturne-utility-set.png",
+            "/home/arrival-nocturne-utility-set.png",
+            "/home/arrival-nocturne-utility-set.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Coordinated utility set with layered paneling, built for movement and grounded in structured fabric weight.",
+        sizeChart: "S (Chest 38 / Waist 30) / M (Chest 40 / Waist 32) / L (Chest 42 / Waist 34) / XL (Chest 44 / Waist 36)",
+        washCare:
+            "Machine wash cold, wash inside out, and hang dry to maintain panel definition and color depth.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Comfort Fit" },
+            { label: "Neck", value: "Crew Neck" },
+            { label: "Pattern", value: "Utility Panels" },
+            { label: "Fabric", value: "Structured Twill" },
+            { label: "Sleeve", value: "Full Sleeve" },
+            { label: "Length", value: "Regular" },
+        ],
+    },
+    {
+        slug: "atlas-prime-hoodie",
+        category: "hoodies",
+        name: "Atlas Prime Hoodie",
+        price: "$172",
+        image: "/home/best-atlas-prime-hoodie.png",
+        gallery: [
+            "/home/best-atlas-prime-hoodie.png",
+            "/home/best-atlas-prime-hoodie.png",
+            "/home/best-atlas-prime-hoodie.png",
+            "/home/best-atlas-prime-hoodie.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Heavy fleece hoodie with a sculpted hood and clean branding details, designed for everyday armor.",
+        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
+        washCare:
+            "Machine wash cold on gentle cycle. Wash with similar colors and dry flat or tumble dry low.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Relaxed Fit" },
+            { label: "Hood", value: "Structured Hood" },
+            { label: "Pattern", value: "Minimal Embroidery" },
+            { label: "Fabric", value: "420 GSM Fleece" },
+            { label: "Sleeve", value: "Drop Shoulder" },
+            { label: "Length", value: "Regular" },
+        ],
+    },
+    {
+        slug: "mythcore-long-tee",
+        category: "t-shirts",
+        name: "Mythcore Long Tee",
+        price: "$104",
+        image: "/home/best-mythcore-long-tee.png",
+        gallery: [
+            "/home/best-mythcore-long-tee.png",
+            "/home/best-mythcore-long-tee.png",
+            "/home/best-mythcore-long-tee.png",
+            "/home/best-mythcore-long-tee.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Extended-length tee with mythcore insignia and a balanced weight for layered styling.",
+        sizeChart: "S (Chest 36) / M (Chest 38) / L (Chest 40) / XL (Chest 42) / 2XL (Chest 44)",
+        washCare:
+            "Machine wash cold, turn inside out, and hang dry to preserve the print depth and fabric structure.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Longline Fit" },
+            { label: "Neck", value: "Round Neck" },
+            { label: "Pattern", value: "Mythcore Print" },
+            { label: "Fabric", value: "220 GSM Cotton" },
+            { label: "Sleeve", value: "Regular Sleeve" },
+            { label: "Length", value: "Longline" },
+        ],
+    },
+    {
+        slug: "aurelian-cargo-jacket",
+        category: "jackets",
+        name: "Aurelian Cargo Jacket",
+        price: "$238",
+        image: "/home/best-aurelian-cargo-jacket.png",
+        gallery: [
+            "/home/best-aurelian-cargo-jacket.png",
+            "/home/best-aurelian-cargo-jacket.png",
+            "/home/best-aurelian-cargo-jacket.png",
+            "/home/best-aurelian-cargo-jacket.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Cargo jacket with engineered storage and a rigid silhouette, cut for layered city wear.",
+        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
+        washCare:
+            "Dry clean recommended. For spot care, use a cool damp cloth and avoid harsh agitation on layered panels.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Relaxed Fit" },
+            { label: "Neck", value: "Stand Collar" },
+            { label: "Pattern", value: "Utility Panels" },
+            { label: "Fabric", value: "Tech Twill Blend" },
+            { label: "Sleeve", value: "Full Sleeve" },
+            { label: "Length", value: "Regular" },
+        ],
+    },
+    {
+        slug: "rune-line-essentials",
+        category: "sets",
+        name: "Rune-Line Essentials",
+        price: "$128",
+        image: "/home/best-rune-line-essentials.png",
+        gallery: [
+            "/home/best-rune-line-essentials.png",
+            "/home/best-rune-line-essentials.png",
+            "/home/best-rune-line-essentials.png",
+            "/home/best-rune-line-essentials.png",
+        ],
+        sizes: ["S", "M", "L", "XL", "2XL"],
+        defaultSize: "M",
+        description:
+            "Essential set with rune detailing and a soft structured feel, designed for comfortable daily rotation.",
+        sizeChart: "S (Chest 38 / Waist 30) / M (Chest 40 / Waist 32) / L (Chest 42 / Waist 34) / XL (Chest 44 / Waist 36)",
+        washCare:
+            "Hand wash cold or use a delicate wool cycle. Dry flat away from direct heat to keep the knit shape intact.",
+        returnPolicy:
+            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
+        highlights: [
+            { label: "Fit", value: "Comfort Fit" },
+            { label: "Neck", value: "Crew Neck" },
+            { label: "Pattern", value: "Rune Detailing" },
+            { label: "Fabric", value: "Premium Knit Blend" },
+            { label: "Sleeve", value: "Full Sleeve" },
+            { label: "Length", value: "Regular" },
+        ],
+    },
+];
+
 export const collectionProducts = products;
+const allProducts = [...products, ...homeProducts];
 
 export function getCategoryBySlug(slug: string) {
     return productCategories.find((category) => category.slug === slug);
@@ -224,5 +468,5 @@ export function getProductsByCategory(category: ProductCategorySlug) {
 }
 
 export function getProductBySlug(slug: string) {
-    return products.find((product) => product.slug === slug);
+    return allProducts.find((product) => product.slug === slug);
 }

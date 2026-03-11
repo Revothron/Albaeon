@@ -231,7 +231,7 @@ export default function OrderDetailsView({
                     </div>
                 </div>
 
-                <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px]">
+                <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,360px)]">
                     <div className="space-y-6">
                         <DetailCard>
                             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -315,7 +315,7 @@ export default function OrderDetailsView({
                         </DetailCard>
 
                         <DetailCard>
-                            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+                            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)]">
                                 <div className="space-y-4">
                                     <DetailLabel>SHIPPING ADDRESS</DetailLabel>
                                     <div className="space-y-1.5">
@@ -356,7 +356,7 @@ export default function OrderDetailsView({
 
                         <DetailCard>
                             <DetailLabel>PAYMENT INFORMATION</DetailLabel>
-                            <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_280px]">
+                            <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,280px)]">
                                 <div className="space-y-5">
                                     <div className="space-y-2">
                                         <p className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] text-text-muted`}>

@@ -32,7 +32,7 @@ function ContactField({
 export default function ContactPage() {
     return (
         <section className="min-h-screen bg-primary">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-6 lg:px-14 lg:py-12">
+            <div className="desktop-frame flex flex-col gap-6 py-5 sm:py-8 lg:gap-6 lg:py-12">
                 <div className="space-y-2.5">
                     <h1 className={`${cinzel.className} text-[34px] text-gold sm:text-[46px] lg:text-[56px]`}>
                         Contact Us
@@ -42,7 +42,7 @@ export default function ContactPage() {
                     </p>
                 </div>
 
-                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-5">
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-5">
                     <div className="space-y-3.5 rounded-[10px] border border-gold bg-surface p-3 sm:p-5">
                         <ContactField placeholder="Full Name" />
                         <ContactField placeholder="Email Address" />

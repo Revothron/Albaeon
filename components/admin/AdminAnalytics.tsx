@@ -40,18 +40,23 @@ export type AdminAnalyticsScreen = {
     series: AnalyticsSeries[];
     table: {
         title: string;
-        minWidthClassName: string;
+        minWidthClassName?: string;
+        gridTemplateColumns?: string;
         columns: AnalyticsTableColumn[];
         rows: AnalyticsTableRow[];
         searchPlaceholder?: string;
         searchWidthClassName?: string;
+        searchInputClassName?: string;
         reportOptions?: string[];
+        topBarPaddingClassName?: string;
+        headerPaddingClassName?: string;
+        rowPaddingClassName?: string;
     };
 };
 
 function formatAnalyticsValue(value: number, format: AnalyticsValueFormat) {
     if (format === "currency") {
-        return `₹${new Intl.NumberFormat("en-IN").format(Math.round(value))}`;
+        return `\u20B9${new Intl.NumberFormat("en-IN").format(Math.round(value))}`;
     }
 
     if (format === "decimal") {
@@ -108,7 +113,7 @@ function AnalyticsMetricChips({ series }: { series: AnalyticsSeries[] }) {
                 return (
                     <span
                         key={item.label}
-                        className={`${adminCinzel.className} inline-flex border px-3.5 py-2 text-[10px] font-semibold tracking-[0.16em] ${
+                        className={`${adminCinzel.className} inline-flex border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] ${
                             item.active ? "" : "border-gold/12 text-text-muted"
                         }`}
                         style={chipStyle}
@@ -125,7 +130,7 @@ function AnalyticsReportMenu({ options }: { options: string[] }) {
     return (
         <details className="group relative">
             <summary
-                className={`${adminCinzel.className} flex h-10 list-none items-center justify-between gap-2 border border-gold/20 px-4 text-[10px] font-semibold tracking-[0.18em] text-text-primary marker:hidden transition-colors duration-200 hover:border-gold/40 [&::-webkit-details-marker]:hidden`}
+                className={`${adminCinzel.className} flex h-9 list-none items-center justify-between gap-2 border border-gold/20 px-4 text-[10px] font-semibold tracking-[0.18em] text-text-primary marker:hidden transition-colors duration-200 hover:border-gold/40 [&::-webkit-details-marker]:hidden`}
             >
                 <span>DOWNLOAD REPORT</span>
                 <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-open:rotate-180" strokeWidth={1.8} />
@@ -150,11 +155,11 @@ function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
     const visibleSeries = screen.series.filter((item) => item.active);
     const maxValue = Math.max(...visibleSeries.flatMap((item) => item.values), 1);
     const chartWidth = 920;
-    const chartHeight = 170;
+    const chartHeight = 160;
     const tooltipIndex = screen.chartLabels.length - 1;
 
     return (
-        <section className="border border-gold/10 bg-[#1E1A2E] p-5 md:p-6">
+        <section className="border border-gold/10 bg-[#1E1A2E] p-7">
             <div className="space-y-3">
                 <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
                     {screen.chartTitle}
@@ -162,8 +167,8 @@ function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
                 <AnalyticsMetricChips series={screen.series} />
             </div>
 
-            <div className="mt-5 border border-gold/10 bg-footer p-4 md:p-5">
-                <div className="relative h-[210px]">
+            <div className="mt-4 border border-gold/10 bg-footer px-4 py-3.5">
+                <div className="relative h-[220px]">
                     <div className="pointer-events-none absolute inset-0">
                         {Array.from({ length: 5 }).map((_, index) => (
                             <div
@@ -176,7 +181,7 @@ function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
 
                     <svg
                         viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                        className="absolute inset-x-0 top-3 h-[170px] w-full"
+                        className="absolute inset-x-0 top-4 h-[160px] w-full"
                         preserveAspectRatio="none"
                         aria-label={`${screen.title} analytics chart`}
                     >
@@ -239,9 +244,13 @@ function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
 }
 
 function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
+    const topBarPaddingClassName = screen.table.topBarPaddingClassName ?? "px-6 py-4";
+    const headerPaddingClassName = screen.table.headerPaddingClassName ?? "px-6 py-3";
+    const rowPaddingClassName = screen.table.rowPaddingClassName ?? "px-6 py-3";
+
     return (
         <section className="border border-gold/10 bg-[#1E1A2E]">
-            <div className="flex flex-col gap-3 border-b border-gold/10 px-5 py-4 md:px-6 xl:flex-row xl:items-center xl:justify-between">
+            <div className={`flex flex-col gap-3 border-b border-gold/10 ${topBarPaddingClassName} xl:flex-row xl:items-center xl:justify-between`}>
                 <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
                     {screen.table.title}
                 </p>
@@ -249,7 +258,10 @@ function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     {screen.table.searchPlaceholder ? (
                         <div className={screen.table.searchWidthClassName}>
-                            <AdminTextInput placeholder={screen.table.searchPlaceholder} />
+                            <AdminTextInput
+                                placeholder={screen.table.searchPlaceholder}
+                                className={screen.table.searchInputClassName}
+                            />
                         </div>
                     ) : null}
 
@@ -259,67 +271,118 @@ function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
                 </div>
             </div>
 
-            <div className="overflow-x-auto">
-                <table className={`w-full border-collapse ${screen.table.minWidthClassName}`}>
-                    <thead className="bg-nav">
-                        <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
-                            {screen.table.columns.map((column) => (
-                                <th
-                                    key={`${screen.title}-${column.key}`}
-                                    className={`px-4 py-4 font-semibold md:px-6 ${getAlignClassName(column.align)} ${column.className ?? ""}`}
-                                >
-                                    {column.label}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {screen.table.rows.map((row) => (
-                            <tr
-                                key={row.id}
-                                className={row.isTotal ? "bg-nav" : "border-t border-gold/6"}
+            {screen.table.gridTemplateColumns ? (
+                <div>
+                    <div
+                        className={`grid bg-nav text-[10px] tracking-[0.18em] text-text-muted ${adminCinzel.className} ${headerPaddingClassName}`}
+                        style={{ gridTemplateColumns: screen.table.gridTemplateColumns }}
+                    >
+                        {screen.table.columns.map((column) => (
+                            <div
+                                key={`${screen.title}-${column.key}`}
+                                className={`min-w-0 truncate font-semibold ${getAlignClassName(column.align)} ${column.className ?? ""}`}
                             >
-                                {screen.table.columns.map((column) => {
-                                    const value = row.cells[column.key] ?? "";
-                                    const totalToneClassName = row.isTotal
-                                        ? value === "—" || value === ""
-                                            ? "text-text-muted"
-                                            : "text-gold"
-                                        : getToneClassName(column.tone);
-                                    const fontClassName = row.isTotal
-                                        ? adminCinzel.className
-                                        : getFontClassName(column.font);
-                                    const weightClassName = row.isTotal
-                                        ? ""
-                                        : column.weightClassName ?? (column.font === "raleway" ? "font-light" : "");
-
-                                    return (
-                                        <td
-                                            key={`${row.id}-${column.key}`}
-                                            className={`px-4 py-3.5 md:px-6 ${getAlignClassName(column.align)} ${column.className ?? ""}`}
-                                        >
-                                            <span className={`${fontClassName} text-[13px] ${weightClassName} ${totalToneClassName}`}>
-                                                {value}
-                                            </span>
-                                        </td>
-                                    );
-                                })}
-                            </tr>
+                                {column.label}
+                            </div>
                         ))}
-                    </tbody>
-                </table>
-            </div>
+                    </div>
+
+                    {screen.table.rows.map((row) => (
+                        <div
+                            key={row.id}
+                            className={`grid ${rowPaddingClassName} ${row.isTotal ? "bg-nav" : "border-t border-gold/6"}`}
+                            style={{ gridTemplateColumns: screen.table.gridTemplateColumns }}
+                        >
+                            {screen.table.columns.map((column) => {
+                                const value = row.cells[column.key] ?? "";
+                                const totalToneClassName = row.isTotal
+                                    ? value === "-" || value === "\u2014" || value === ""
+                                        ? "text-text-muted"
+                                        : "text-gold"
+                                    : getToneClassName(column.tone);
+                                const fontClassName = row.isTotal
+                                    ? adminCinzel.className
+                                    : getFontClassName(column.font);
+                                const weightClassName = row.isTotal
+                                    ? ""
+                                    : column.weightClassName ?? (column.font === "raleway" ? "font-light" : "");
+
+                                return (
+                                    <div
+                                        key={`${row.id}-${column.key}`}
+                                        className={`min-w-0 ${getAlignClassName(column.align)} ${column.className ?? ""}`}
+                                    >
+                                        <span className={`${fontClassName} block truncate text-[13px] ${weightClassName} ${totalToneClassName}`}>
+                                            {value}
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className={`w-full border-collapse ${screen.table.minWidthClassName ?? ""}`}>
+                        <thead className="bg-nav">
+                            <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
+                                {screen.table.columns.map((column) => (
+                                    <th
+                                        key={`${screen.title}-${column.key}`}
+                                        className={`px-4 py-4 font-semibold md:px-6 ${getAlignClassName(column.align)} ${column.className ?? ""}`}
+                                    >
+                                        {column.label}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {screen.table.rows.map((row) => (
+                                <tr
+                                    key={row.id}
+                                    className={row.isTotal ? "bg-nav" : "border-t border-gold/6"}
+                                >
+                                    {screen.table.columns.map((column) => {
+                                        const value = row.cells[column.key] ?? "";
+                                        const totalToneClassName = row.isTotal
+                                            ? value === "-" || value === "\u2014" || value === ""
+                                                ? "text-text-muted"
+                                                : "text-gold"
+                                            : getToneClassName(column.tone);
+                                        const fontClassName = row.isTotal
+                                            ? adminCinzel.className
+                                            : getFontClassName(column.font);
+                                        const weightClassName = row.isTotal
+                                            ? ""
+                                            : column.weightClassName ?? (column.font === "raleway" ? "font-light" : "");
+
+                                        return (
+                                            <td
+                                                key={`${row.id}-${column.key}`}
+                                                className={`px-4 py-3.5 md:px-6 ${getAlignClassName(column.align)} ${column.className ?? ""}`}
+                                            >
+                                                <span className={`${fontClassName} text-[13px] ${weightClassName} ${totalToneClassName}`}>
+                                                    {value}
+                                                </span>
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </section>
     );
 }
 
 export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen }) {
     return (
-        <div className="space-y-5 md:space-y-6">
+        <div className="space-y-6">
             <AdminPageHeading
                 eyebrow={screen.eyebrow}
                 title={screen.title}
-                subtitle={screen.subtitle}
             />
 
             <AdminPillGroup items={screen.ranges} activeItem={screen.activeRange} />

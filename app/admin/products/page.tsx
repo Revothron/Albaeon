@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import {
-    AdminFieldLabel,
     AdminPagination,
     AdminPageHeading,
     AdminSelectBox,
@@ -90,37 +89,26 @@ export default function AdminProductsPage() {
                 action={
                     <Link
                         href="/admin/products/new"
-                        className={`${adminCinzel.className} inline-flex h-10 items-center justify-center gap-2 bg-gold px-5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover`}
+                        className={`${adminCinzel.className} inline-flex items-center justify-center bg-gold px-5 py-2.5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover`}
                     >
-                        <Plus className="h-3.5 w-3.5" strokeWidth={1.8} />
-                        ADD PRODUCT
+                        + ADD PRODUCT
                     </Link>
                 }
             />
 
-            <section className="border border-gold/10 bg-[#1E1A2E] px-5 py-4 md:px-6">
-                <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_160px_140px_160px]">
-                    <div>
-                        <AdminFieldLabel>SEARCH PRODUCTS</AdminFieldLabel>
-                        <AdminTextInput placeholder="Search products by name, SKU..." />
+            <section className="border border-gold/10 bg-[#1E1A2E] px-6 py-[18px]">
+                <div className="flex flex-col gap-3 lg:flex-row lg:flex-nowrap lg:items-center">
+                    <div className="flex-1">
+                        <AdminTextInput placeholder="Search products by name, SKU..." className="w-full" />
                     </div>
-                    <div>
-                        <AdminFieldLabel>CATEGORY</AdminFieldLabel>
-                        <AdminSelectBox value="All Categories" />
-                    </div>
-                    <div>
-                        <AdminFieldLabel>STATUS</AdminFieldLabel>
-                        <AdminSelectBox value="All Status" />
-                    </div>
-                    <div>
-                        <AdminFieldLabel>SORT</AdminFieldLabel>
-                        <AdminSelectBox value="Newest First" />
-                    </div>
+                    <AdminSelectBox value="All Categories" className="w-full sm:w-[160px]" />
+                    <AdminSelectBox value="All Status" className="w-full sm:w-[140px]" />
+                    <AdminSelectBox value="Newest First" className="w-full sm:w-[160px]" />
                 </div>
             </section>
 
             <section className="overflow-hidden border border-gold/10 bg-[#1E1A2E]">
-                <div className="flex flex-wrap items-center gap-4 bg-nav px-5 py-3 md:px-6">
+                <div className="flex flex-wrap items-center gap-4 border-b border-gold/15 bg-nav px-6 py-3">
                     <p className={`${adminRaleway.className} text-[13px] text-text-primary`}>
                         2 products selected
                     </p>
@@ -139,26 +127,26 @@ export default function AdminProductsPage() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full min-w-[1120px] border-collapse">
+                    <table className="w-full min-w-[1094px] table-fixed border-collapse">
                         <thead className="bg-nav">
                             <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
-                                <th className="px-3 py-4 text-center font-semibold md:px-6"><CheckCell /></th>
-                                <th className="px-3 py-4 text-left font-semibold md:px-6">IMAGE</th>
-                                <th className="px-3 py-4 text-left font-semibold md:px-6">NAME</th>
-                                <th className="px-3 py-4 text-center font-semibold md:px-6">CATEGORY</th>
-                                <th className="px-3 py-4 text-center font-semibold md:px-6">PRICE</th>
-                                <th className="px-3 py-4 text-center font-semibold md:px-6">STATUS</th>
-                                <th className="px-3 py-4 text-center font-semibold md:px-6">DATE</th>
-                                <th className="px-3 py-4 text-center font-semibold md:px-6">EDIT</th>
+                                <th className="w-[40px] px-6 py-3.5 text-center font-semibold"><CheckCell /></th>
+                                <th className="w-[76px] px-6 py-3.5 text-left font-semibold">IMAGE</th>
+                                <th className="w-[342px] px-6 py-3.5 text-left font-semibold">NAME</th>
+                                <th className="w-[137px] px-6 py-3.5 text-center font-semibold">CATEGORY</th>
+                                <th className="w-[107px] px-6 py-3.5 text-center font-semibold">PRICE</th>
+                                <th className="w-[139px] px-6 py-3.5 text-center font-semibold">STATUS</th>
+                                <th className="w-[129px] px-6 py-3.5 text-center font-semibold">DATE</th>
+                                <th className="w-[124px] px-6 py-3.5 text-center font-semibold">EDIT</th>
                             </tr>
                         </thead>
                         <tbody>
                             {products.map((product) => (
                                 <tr key={product.id} className="border-t border-gold/6">
-                                    <td className="px-3 py-4 text-center md:px-6">
+                                    <td className="px-6 py-3.5 text-center">
                                         <CheckCell />
                                     </td>
-                                    <td className="px-3 py-4 md:px-6">
+                                    <td className="px-6 py-3.5">
                                         <div className="relative h-12 w-12 overflow-hidden border border-gold/10 bg-nav">
                                             <Image
                                                 src={product.image}
@@ -169,7 +157,7 @@ export default function AdminProductsPage() {
                                             />
                                         </div>
                                     </td>
-                                    <td className="px-3 py-4 md:px-6">
+                                    <td className="px-6 py-3.5">
                                         <div className="space-y-1">
                                             <p className={`${adminRaleway.className} text-[13px] font-medium text-text-primary`}>
                                                 {product.name}
@@ -179,19 +167,19 @@ export default function AdminProductsPage() {
                                             </p>
                                         </div>
                                     </td>
-                                    <td className={`${adminRaleway.className} px-3 py-4 text-center text-[13px] font-light text-text-muted md:px-6`}>
+                                    <td className={`${adminRaleway.className} px-6 py-3.5 text-center text-[13px] font-light text-text-muted`}>
                                         {product.category}
                                     </td>
-                                    <td className={`${adminCinzel.className} px-3 py-4 text-center text-[13px] text-text-primary md:px-6`}>
+                                    <td className={`${adminCinzel.className} px-6 py-3.5 text-center text-[13px] text-text-primary`}>
                                         {product.price}
                                     </td>
-                                    <td className="px-3 py-4 text-center md:px-6">
+                                    <td className="px-6 py-3.5 text-center">
                                         <AdminStatusBadge label={product.status.label} tone={product.status.tone} />
                                     </td>
-                                    <td className={`${adminRaleway.className} px-3 py-4 text-center text-[12px] font-light text-text-muted md:px-6`}>
+                                    <td className={`${adminRaleway.className} px-6 py-3.5 text-center text-[12px] font-light text-text-muted`}>
                                         {product.date}
                                     </td>
-                                    <td className="px-3 py-4 text-center md:px-6">
+                                    <td className="px-6 py-3.5 text-center">
                                         <Link
                                             href={`/admin/products/${product.id}`}
                                             className="inline-flex text-gold transition-colors duration-200 hover:text-gold-hover"

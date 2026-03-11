@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Download, Eye } from "lucide-react";
 import {
-    AdminFieldLabel,
     AdminOutlineButton,
     AdminPagination,
     AdminPageHeading,
@@ -13,7 +12,7 @@ import { adminCustomers } from "@/lib/admin/customers";
 
 export default function AdminCustomersPage() {
     return (
-        <div className="space-y-5 md:space-y-6">
+        <div className="space-y-5">
             <AdminPageHeading
                 eyebrow="CUSTOMERS"
                 title="Customers"
@@ -21,86 +20,81 @@ export default function AdminCustomersPage() {
                 action={<AdminOutlineButton label="EXPORT CSV" icon={<Download className="h-3.5 w-3.5" strokeWidth={1.8} />} />}
             />
 
-            <section className="border border-gold/10 bg-[#1E1A2E] px-5 py-4 md:px-6">
-                <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_160px_180px]">
-                    <div>
-                        <AdminFieldLabel>SEARCH CUSTOMERS</AdminFieldLabel>
-                        <AdminTextInput placeholder="Search by name, email, username..." />
+            <section className="border border-gold/10 bg-[#1E1A2E] px-6 py-[18px]">
+                <div className="flex flex-col gap-3 lg:flex-row lg:flex-nowrap lg:items-center">
+                    <div className="flex-1">
+                        <AdminTextInput placeholder="Search by name, email, username..." className="w-full" />
                     </div>
-                    <div>
-                        <AdminFieldLabel>COUNTRY</AdminFieldLabel>
-                        <AdminSelectBox value="All Countries" />
-                    </div>
-                    <div>
-                        <AdminFieldLabel>SORT</AdminFieldLabel>
-                        <AdminSelectBox value="Recent Registered" />
-                    </div>
+                    <AdminSelectBox value="All Countries" className="w-full sm:w-[160px]" />
+                    <AdminSelectBox value="Recent Registered" className="w-full sm:w-[180px]" />
                 </div>
             </section>
 
-            <section className="overflow-x-auto border border-gold/10 bg-[#1E1A2E]">
-                <table className="w-full min-w-[1560px] border-collapse">
-                    <thead className="bg-nav">
-                        <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
-                            {["NAME", "USERNAME", "REGISTERED", "EMAIL", "ORDERS", "SPENT", "LAST ORDER", "AOV", "COUNTRY", "CITY", "REGION", "POSTAL", "VIEW"].map((column) => (
-                                <th key={column} className="px-3 py-3 text-center font-semibold md:px-6">
-                                    {column}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {adminCustomers.map((customer) => (
-                            <tr key={customer.id} className="border-t border-gold/6">
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[13px] font-medium text-text-primary md:px-6`}>
-                                    {customer.name}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.username}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.registered}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.email}
-                                </td>
-                                <td className={`${adminCinzel.className} px-3 py-3 text-center text-[13px] text-text-primary md:px-6`}>
-                                    {customer.orders}
-                                </td>
-                                <td className={`${adminCinzel.className} px-3 py-3 text-center text-[13px] text-gold md:px-6`}>
-                                    {customer.spent}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.lastOrder}
-                                </td>
-                                <td className={`${adminCinzel.className} px-3 py-3 text-center text-[13px] text-text-primary md:px-6`}>
-                                    {customer.aov}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.countryCode}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.city}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.region}
-                                </td>
-                                <td className={`${adminRaleway.className} px-3 py-3 text-center text-[12px] font-light text-text-muted md:px-6`}>
-                                    {customer.postal}
-                                </td>
-                                <td className="px-3 py-3 text-center md:px-6">
-                                    <Link
-                                        href={`/admin/customers/${customer.id}`}
-                                        className="inline-flex text-gold transition-colors duration-200 hover:text-gold-hover"
-                                        aria-label={`View ${customer.name}`}
-                                    >
-                                        <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
-                                    </Link>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <section className="overflow-hidden border border-gold/10 bg-[#1E1A2E]">
+                <div
+                    className={`grid min-w-0 grid-cols-[repeat(11,minmax(0,1fr))_79px_42px] bg-nav px-6 py-3 text-center ${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}
+                >
+                    {["NAME", "USERNAME", "REGISTERED", "EMAIL", "ORDERS", "SPENT", "LAST ORDER", "AOV", "COUNTRY", "CITY", "REGION", "POSTAL", "VIEW"].map((column) => (
+                        <div key={column} className="min-w-0 truncate font-semibold">
+                            {column}
+                        </div>
+                    ))}
+                </div>
+
+                {adminCustomers.map((customer, index) => (
+                    <div
+                        key={customer.id}
+                        className={`grid min-w-0 grid-cols-[repeat(11,minmax(0,1fr))_79px_42px] px-6 py-3 text-center ${
+                            index < adminCustomers.length - 1 ? "border-b border-gold/6" : ""
+                        }`}
+                    >
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[13px] font-medium text-text-primary`}>
+                            {customer.name}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.username}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.registered}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.email}
+                        </div>
+                        <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-text-primary`}>
+                            {customer.orders}
+                        </div>
+                        <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-gold`}>
+                            {customer.spent}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.lastOrder}
+                        </div>
+                        <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-text-primary`}>
+                            {customer.aov}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.countryCode}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.city}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.region}
+                        </div>
+                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                            {customer.postal}
+                        </div>
+                        <div className="flex items-center justify-center">
+                            <Link
+                                href={`/admin/customers/${customer.id}`}
+                                className="inline-flex text-gold transition-colors duration-200 hover:text-gold-hover"
+                                aria-label={`View ${customer.name}`}
+                            >
+                                <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
+                            </Link>
+                        </div>
+                    </div>
+                ))}
 
                 <AdminPagination
                     summary={`Showing 1-${adminCustomers.length} of 3,284 customers`}

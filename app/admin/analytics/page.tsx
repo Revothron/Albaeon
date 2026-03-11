@@ -1,33 +1,22 @@
-import {
-    AdminPageHeading,
-    AdminPillGroup,
-} from "@/components/admin/AdminUi";
+import { AdminPageHeading } from "@/components/admin/AdminUi";
 import { adminCinzel, adminCormorant, adminRaleway } from "@/components/admin/adminFonts";
+import { analyticsRanges } from "@/lib/admin/analytics";
 
-const ranges = [
-    "TODAY",
-    "YESTERDAY",
-    "LAST WEEK",
-    "LAST MONTH",
-    "LAST QUARTER",
-    "LAST YEAR",
-    "CUSTOM RANGE",
-    "COMPARE",
-];
+const ranges = analyticsRanges;
 
 const metricCards = [
-    { label: "TOTAL SALES", value: "Rs 18,42,300", trend: "↑ 8.4%", trendClassName: "text-[#4CAF7D]" },
-    { label: "NET SALES", value: "Rs 16,94,820", trend: "↑ 7.1%", trendClassName: "text-[#4CAF7D]" },
-    { label: "ORDERS", value: "1,284", trend: "↑ 12%", trendClassName: "text-[#4CAF7D]" },
-    { label: "PRODUCTS SOLD", value: "2,108 items", trend: "↑ 14.3%", trendClassName: "text-[#4CAF7D]" },
-    { label: "VARIATIONS SOLD", value: "2,108", trend: "↓ 2.1%", trendClassName: "text-[#C0392B]" },
+    { label: "TOTAL SALES", value: "\u20B918,42,300", trend: "\u2191 12% vs last period", trendClassName: "text-[#4CAF7D]", valueClassName: "text-gold" },
+    { label: "NET SALES", value: "\u20B916,94,820", trend: "\u2191 9.8%", trendClassName: "text-[#4CAF7D]", valueClassName: "text-text-primary" },
+    { label: "ORDERS", value: "1,284", trend: "\u2191 7.2%", trendClassName: "text-[#4CAF7D]", valueClassName: "text-text-primary" },
+    { label: "PRODUCTS SOLD", value: "2,108 items", trend: "\u2191 14.3%", trendClassName: "text-[#4CAF7D]", valueClassName: "text-text-primary" },
+    { label: "VARIATIONS SOLD", value: "2,108", trend: "\u2193 2.1%", trendClassName: "text-[#C0392B]", valueClassName: "text-text-primary" },
 ];
 
 const chartDates = ["28 Feb", "1 Mar", "2 Mar", "3 Mar", "4 Mar", "5 Mar"];
 const netSalesValues = [74200, 76800, 78100, 84200, 85900, 87300];
 const orderValues = [14, 15, 16, 18, 18, 19];
 const chartWidth = 920;
-const chartHeight = 130;
+const chartHeight = 170;
 const maxSales = Math.max(...netSalesValues);
 const maxOrders = Math.max(...orderValues);
 const chartStep = chartWidth / (chartDates.length - 1);
@@ -50,8 +39,8 @@ const topCategories = [
     { rank: "01", name: "T-Shirts", items: "1,204 items", share: 57 },
     { rank: "02", name: "Hoodies", items: "904 items", share: 43 },
     { rank: "03", name: "Accessories", items: "0 items", share: 0 },
-    { rank: "04", name: "—", items: "0 items", share: 0 },
-    { rank: "05", name: "—", items: "0 items", share: 0 },
+    { rank: "04", name: "\u2014", items: "0 items", share: 0 },
+    { rank: "05", name: "\u2014", items: "0 items", share: 0 },
 ];
 
 const topProducts = [
@@ -67,16 +56,17 @@ function MetricCard({
     value,
     trend,
     trendClassName,
-}: (typeof metricCards)[number]) {
+    valueClassName = "text-text-primary",
+}: (typeof metricCards)[number] & { valueClassName?: string }) {
     return (
         <article className="border border-gold/10 bg-[#1E1A2E] p-5">
-            <p className={`${adminCinzel.className} text-[9px] tracking-[0.24em] text-text-muted`}>
+            <p className={`${adminCinzel.className} text-[9px] tracking-[0.28em] text-text-muted`}>
                 {label}
             </p>
-            <p className={`${adminCormorant.className} mt-3 text-[34px] font-light leading-none text-text-primary`}>
+            <p className={`${adminCormorant.className} mt-2.5 text-[36px] font-light leading-none ${valueClassName}`}>
                 {value}
             </p>
-            <p className={`${adminRaleway.className} mt-3 text-[12px] font-light ${trendClassName}`}>
+            <p className={`${adminRaleway.className} mt-2.5 text-[12px] font-light ${trendClassName}`}>
                 {trend}
             </p>
         </article>
@@ -93,13 +83,13 @@ function LeaderboardCard({
     nameLabel: string;
 }) {
     return (
-        <article className="border border-gold/10 bg-[#1E1A2E] p-5 md:p-6">
+        <article className="border border-gold/10 bg-[#1E1A2E] p-6">
             <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
                 {title}
             </p>
 
             <div className="mt-4 overflow-hidden border border-gold/10">
-                <div className={`grid grid-cols-[70px_minmax(0,1fr)_120px_140px] bg-nav px-4 py-3 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}>
+                <div className={`grid grid-cols-[70px_minmax(0,1fr)_120px_140px] bg-nav px-4 py-2.5 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}>
                     <span>RANK</span>
                     <span>{nameLabel}</span>
                     <span>ITEMS SOLD</span>
@@ -125,7 +115,7 @@ function LeaderboardCard({
                                 <div className="h-full bg-gold" style={{ width: `${Math.min(row.share, 100)}%` }} />
                             </div>
                             <p className={`${adminRaleway.className} text-[11px] font-light text-text-muted`}>
-                                {row.share > 0 ? `${row.share}%` : "—"}
+                                {row.share > 0 ? `${row.share}%` : "-"}
                             </p>
                         </div>
                     </div>
@@ -137,22 +127,57 @@ function LeaderboardCard({
 
 export default function AnalyticsOverviewPage() {
     return (
-        <div className="space-y-5 md:space-y-6">
-            <AdminPageHeading
-                eyebrow="OVERVIEW"
-                title="Overview"
-                subtitle="Performance snapshot across sales, orders, and product movement."
-            />
+        <div className="space-y-6">
+            <div className="space-y-5">
+                <AdminPageHeading
+                    eyebrow="ANALYTICS"
+                    title="Overview"
+                />
 
-            <AdminPillGroup items={ranges} activeItem="TODAY" />
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-wrap items-center gap-2">
+                        {ranges.map((range) => {
+                            const active = range === "TODAY";
 
-            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+                            return (
+                                <button
+                                    key={range}
+                                    type="button"
+                                    className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
+                                        active
+                                            ? "border-gold bg-gold/12 text-gold"
+                                            : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
+                                    }`}
+                                >
+                                    {range}
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                        <button
+                            type="button"
+                            className={`${adminRaleway.className} h-9 w-[130px] border border-gold/12 bg-footer px-3 text-left text-[12px] font-light text-text-muted`}
+                        >
+                            1 Mar 2026
+                        </button>
+                        <button
+                            type="button"
+                            className={`${adminRaleway.className} h-9 w-[130px] border border-gold/12 bg-footer px-3 text-left text-[12px] font-light text-text-muted`}
+                        >
+                            4 Mar 2026
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
                 {metricCards.map((card) => (
                     <MetricCard key={card.label} {...card} />
                 ))}
             </div>
 
-            <section className="border border-gold/10 bg-[#1E1A2E] p-5 md:p-6">
+            <section className="border border-gold/10 bg-[#1E1A2E] p-7">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
                         NET SALES & ORDERS
@@ -185,8 +210,8 @@ export default function AnalyticsOverviewPage() {
                     </span>
                 </div>
 
-                <div className="mt-4 border border-gold/10 bg-footer p-4 md:p-5">
-                    <div className="relative h-[180px]">
+                <div className="mt-4 w-full border border-gold/10 bg-footer px-4 py-3.5">
+                    <div className="relative h-[240px]">
                         <div className="pointer-events-none absolute inset-0">
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <div
@@ -199,7 +224,7 @@ export default function AnalyticsOverviewPage() {
 
                         <svg
                             viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                            className="absolute inset-x-0 top-6 h-[130px] w-full"
+                            className="absolute inset-x-0 top-4 h-[170px] w-full"
                             preserveAspectRatio="none"
                             aria-label="Analytics overview chart"
                         >
@@ -221,12 +246,12 @@ export default function AnalyticsOverviewPage() {
                             })}
                         </svg>
 
-                        <div className="absolute right-4 top-12 w-[190px] border border-gold/20 bg-nav px-3 py-2">
+                        <div className="absolute right-4 top-4 w-[190px] border border-gold/20 bg-nav px-3 py-2">
                             <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
                                 3 Mar 2026
                             </p>
                             <p className={`${adminCinzel.className} mt-1 text-[12px] text-gold`}>
-                                Net Sales: Rs 84,200
+                                Net Sales: \u20B984,200
                             </p>
                             <p className={`${adminCinzel.className} mt-1 text-[12px] text-[#4A90C4]`}>
                                 Orders: 18
@@ -242,9 +267,9 @@ export default function AnalyticsOverviewPage() {
                 </div>
             </section>
 
-            <div className="grid gap-5 xl:grid-cols-2">
-                <LeaderboardCard title="TOP CATEGORIES — ITEMS SOLD" rows={topCategories} nameLabel="CATEGORY" />
-                <LeaderboardCard title="TOP PRODUCTS — ITEMS SOLD" rows={topProducts} nameLabel="PRODUCT" />
+            <div className="grid gap-5 lg:grid-cols-2">
+                <LeaderboardCard title="TOP CATEGORIES \u2014 ITEMS SOLD" rows={topCategories} nameLabel="CATEGORY" />
+                <LeaderboardCard title="TOP PRODUCTS \u2014 ITEMS SOLD" rows={topProducts} nameLabel="PRODUCT" />
             </div>
         </div>
     );

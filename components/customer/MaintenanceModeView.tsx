@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Cinzel, Cormorant_Garamond, Raleway } from "next/font/google";
 import { Instagram, MapPin, MessageCircle } from "lucide-react";
+import MaintenanceWatcher from "@/components/customer/MaintenanceWatcher";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
@@ -152,6 +153,7 @@ function MobileStatusGrid() {
 export default function MaintenanceModeView() {
     return (
         <div className="relative overflow-x-hidden bg-[#0F0C14] text-text-primary">
+            <MaintenanceWatcher when="disabled" />
             <div className="absolute inset-0 hidden md:block">
                 <Image
                     src="/maintenance/maintenance-desktop.png"
@@ -165,7 +167,7 @@ export default function MaintenanceModeView() {
 
             <div className="absolute inset-0 md:hidden">
                 <Image
-                    src="/maintenance/maintenance-mobile.png"
+                    src="/maintenance/maintenance-desktop.png"
                     alt=""
                     fill
                     priority

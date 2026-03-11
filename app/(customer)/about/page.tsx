@@ -40,7 +40,7 @@ function ValueCard({
 export default function AboutPage() {
     return (
         <section className="min-h-screen bg-primary">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-7 lg:px-14 lg:py-12">
+            <div className="desktop-frame flex flex-col gap-6 py-5 sm:py-8 lg:gap-7 lg:py-12">
                 <div className="space-y-2.5">
                     <h1 className={`${cinzel.className} text-[34px] text-gold sm:text-[46px] lg:text-[56px]`}>
                         About Albaeon
@@ -50,7 +50,7 @@ export default function AboutPage() {
                     </p>
                 </div>
 
-                <div className="grid gap-4 lg:grid-cols-[560px_minmax(0,1fr)] lg:items-center lg:gap-7">
+                <div className="grid gap-4 lg:grid-cols-[minmax(0,560px)_minmax(0,1fr)] lg:items-center lg:gap-7">
                     <div className="relative h-[220px] overflow-hidden border border-gold sm:h-[320px] lg:h-[460px]">
                         <Image
                             src="/about-contact/about-image.png"

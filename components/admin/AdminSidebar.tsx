@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
     Activity,
     ChevronDown,
@@ -11,6 +11,8 @@ import {
     Headset,
     LayoutDashboard,
     LogOut,
+    PanelRightClose,
+    PanelRightOpen,
     Package,
     Users,
 } from "lucide-react";
@@ -48,9 +50,58 @@ function itemIsActive(pathname: string, href: string) {
 
 export default function AdminSidebar() {
     const pathname = usePathname();
-    const [analyticsOpen, setAnalyticsOpen] = useState(true);
+    const router = useRouter();
+    const [analyticsOpen, setAnalyticsOpen] = useState(false);
     const [maintenanceMode, setMaintenanceMode] = useState(false);
-    const analyticsVisible = analyticsOpen || pathname.startsWith("/admin/analytics");
+    const [maintenanceLoading, setMaintenanceLoading] = useState(false);
+    const [collapsed, setCollapsed] = useState(false);
+    const analyticsVisible = !collapsed && analyticsOpen;
+
+    useEffect(() => {
+        let mounted = true;
+
+        fetch("/api/admin/maintenance")
+            .then((response) => response.json())
+            .then((data) => {
+                if (mounted && typeof data?.enabled === "boolean") {
+                    setMaintenanceMode(data.enabled);
+                }
+            })
+            .catch(() => null);
+
+        return () => {
+            mounted = false;
+        };
+    }, []);
+
+    const handleMaintenanceToggle = async () => {
+        if (maintenanceLoading) {
+            return;
+        }
+
+        const nextValue = !maintenanceMode;
+        const previousValue = maintenanceMode;
+
+        setMaintenanceMode(nextValue);
+        setMaintenanceLoading(true);
+
+        try {
+            const response = await fetch("/api/admin/maintenance", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ enabled: nextValue }),
+            });
+            const data = await response.json().catch(() => null);
+
+            if (typeof data?.enabled === "boolean") {
+                setMaintenanceMode(data.enabled);
+            }
+        } catch {
+            setMaintenanceMode(previousValue);
+        } finally {
+            setMaintenanceLoading(false);
+        }
+    };
 
     return (
         <>
@@ -114,23 +165,43 @@ export default function AdminSidebar() {
                 )}
             </div>
 
-            <aside className="hidden h-screen w-[220px] shrink-0 flex-col justify-between border-r border-[#E6C97914] bg-[#130F18] md:sticky md:top-0 md:flex">
+            <aside
+                className={`hidden h-screen shrink-0 flex-col justify-between border-r border-[#E6C97914] bg-[#130F18] transition-[width] duration-200 md:sticky md:top-0 md:flex ${
+                    collapsed ? "w-[72px]" : "w-[220px]"
+                }`}
+            >
                 <div>
-                    <div className="flex h-16 flex-col justify-center border-b border-[#E6C97914] px-6">
-                        <Link href="/admin" className="block">
-                            <Image
-                                src="/g3.png"
-                                alt="Albaeon"
-                                width={74}
-                                height={17}
-                                priority
-                                unoptimized
-                                className="h-[17px] w-[74px]"
-                            />
-                            <p className={`${adminRaleway.className} mt-1 text-[10px] font-light tracking-[0.2em] text-text-muted`}>
-                                ADMIN PANEL
-                            </p>
-                        </Link>
+                    <div className={`relative flex h-16 items-center border-b border-[#E6C97914] ${collapsed ? "justify-center px-2" : "px-6"}`}>
+                        {!collapsed ? (
+                            <Link href="/admin" className="block">
+                                <Image
+                                    src="/g3.png"
+                                    alt="Albaeon"
+                                    width={74}
+                                    height={17}
+                                    priority
+                                    unoptimized
+                                    className="h-[17px] w-[74px]"
+                                />
+                                <p className={`${adminRaleway.className} mt-1 text-[10px] font-light tracking-[0.2em] text-text-muted`}>
+                                    ADMIN PANEL
+                                </p>
+                            </Link>
+                        ) : null}
+                        <button
+                            type="button"
+                            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+                            onClick={() => setCollapsed((current) => !current)}
+                            className={`absolute right-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E6C9791F] text-text-muted transition-colors duration-200 hover:border-[#E6C97940] hover:text-gold ${
+                                collapsed ? "right-2" : ""
+                            }`}
+                        >
+                            {collapsed ? (
+                                <PanelRightOpen className="h-4 w-4" strokeWidth={1.8} />
+                            ) : (
+                                <PanelRightClose className="h-4 w-4" strokeWidth={1.8} />
+                            )}
+                        </button>
                     </div>
 
                     <nav className="px-0 py-4">
@@ -139,11 +210,34 @@ export default function AdminSidebar() {
                             const active = itemIsActive(pathname, item.href);
 
                             if (item.subMenu) {
+                                if (collapsed) {
+                                    return (
+                                        <Link
+                                            key={item.name}
+                                            href={item.href}
+                                            className={`flex w-full items-center justify-center px-2.5 py-3 transition-colors duration-200 ${
+                                                active
+                                                    ? "border-l-2 border-gold bg-[#E6C97914] text-gold"
+                                                    : "text-text-muted hover:bg-gold/5 hover:text-text-primary"
+                                            }`}
+                                            title={item.name}
+                                            onClick={() => setAnalyticsOpen(true)}
+                                        >
+                                            <Icon className="h-4 w-4" strokeWidth={1.8} />
+                                        </Link>
+                                    );
+                                }
+
                                 return (
                                     <div key={item.name}>
                                         <button
                                             type="button"
-                                            onClick={() => setAnalyticsOpen((open) => !open)}
+                                            onClick={() => {
+                                                if (!analyticsOpen) {
+                                                    router.push("/admin/analytics");
+                                                }
+                                                setAnalyticsOpen((open) => !open);
+                                            }}
                                             className={`flex w-full items-center justify-between px-5 py-2.5 transition-colors duration-200 ${
                                                 active
                                                     ? "text-gold"
@@ -191,18 +285,32 @@ export default function AdminSidebar() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={`flex items-center justify-between px-5 py-2.5 transition-colors duration-200 ${
+                                    className={`flex items-center transition-colors duration-200 ${
+                                        collapsed
+                                            ? "justify-center px-2.5 py-3"
+                                            : "justify-between px-5 py-2.5"
+                                    } ${
                                         active
-                                            ? "border-l-2 border-gold bg-[#E6C97914] pl-[18px] text-gold"
+                                            ? "border-l-2 border-gold bg-[#E6C97914] text-gold"
                                             : "text-text-muted hover:bg-gold/5 hover:text-text-primary"
-                                    }`}
+                                    } ${collapsed ? "" : "pl-[18px]"}`}
+                                    title={collapsed ? item.name : undefined}
                                 >
-                                    <span className={`flex items-center gap-2.5 ${adminRaleway.className} text-[13px]`}>
-                                        <Icon className="h-4 w-4" strokeWidth={1.8} />
-                                        {item.name}
-                                    </span>
+                                    {collapsed ? (
+                                        <span className="relative flex h-8 w-8 items-center justify-center">
+                                            <Icon className="h-4 w-4" strokeWidth={1.8} />
+                                            {item.badge ? (
+                                                <span className="absolute -right-1 -top-1 inline-flex h-3 w-3 rounded-full bg-[#C0392B]" />
+                                            ) : null}
+                                        </span>
+                                    ) : (
+                                        <span className={`flex items-center gap-2.5 ${adminRaleway.className} text-[13px]`}>
+                                            <Icon className="h-4 w-4" strokeWidth={1.8} />
+                                            {item.name}
+                                        </span>
+                                    )}
 
-                                    {item.badge ? (
+                                    {!collapsed && item.badge ? (
                                         <span className="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C0392B] px-1 text-[9px] font-semibold text-white">
                                             {item.badge}
                                         </span>
@@ -213,30 +321,35 @@ export default function AdminSidebar() {
                     </nav>
                 </div>
 
-                <div className="space-y-3 border-t border-[#E6C97914] px-5 py-4">
-                    <button
-                        type="button"
-                        onClick={() => setMaintenanceMode((current) => !current)}
-                        className={`flex h-11 w-full items-center justify-between rounded-full border border-[#E6C9791F] bg-[#1A1426] px-3 text-[13px] text-text-primary transition-colors duration-200 hover:border-[#E6C97940] ${adminRaleway.className}`}
-                        aria-pressed={maintenanceMode}
-                    >
-                        <span>Maintenance Mode</span>
-                        <span
-                            className={`relative flex h-[17px] w-9 items-center rounded-full border border-[#E6C97926] bg-[#0F0C14] px-[1px] transition-colors duration-200 ${
-                                maintenanceMode ? "justify-end" : "justify-start"
-                            }`}
-                            aria-hidden="true"
+                <div className={`space-y-3 border-t border-[#E6C97914] ${collapsed ? "px-2 py-4" : "px-5 py-4"}`}>
+                    {!collapsed ? (
+                        <button
+                            type="button"
+                            onClick={handleMaintenanceToggle}
+                            disabled={maintenanceLoading}
+                            className={`flex h-11 w-full items-center justify-between rounded-full border border-[#E6C9791F] bg-[#1A1426] px-3 text-[13px] text-text-primary transition-colors duration-200 hover:border-[#E6C97940] disabled:cursor-not-allowed disabled:opacity-60 ${adminRaleway.className}`}
+                            aria-pressed={maintenanceMode}
+                            aria-busy={maintenanceLoading}
                         >
-                            <span className="h-[13px] w-[13px] rounded-full bg-[#B7AFC3]" />
-                        </span>
-                    </button>
+                            <span>Maintenance Mode</span>
+                            <span
+                                className={`relative flex h-[17px] w-9 items-center rounded-full border border-[#E6C97926] bg-[#0F0C14] px-[1px] transition-colors duration-200 ${
+                                    maintenanceMode ? "justify-end" : "justify-start"
+                                }`}
+                                aria-hidden="true"
+                            >
+                                <span className="h-[13px] w-[13px] rounded-full bg-[#B7AFC3]" />
+                            </span>
+                        </button>
+                    ) : null}
 
                     <button
                         type="button"
                         className={`flex h-10 w-full items-center justify-center gap-2 rounded-full border border-[#FF0000] text-[13px] text-[#FF0000] transition-colors duration-200 hover:bg-[#FF0000]/10 ${adminRaleway.className}`}
+                        aria-label="Logout"
                     >
                         <LogOut className="h-4 w-4" strokeWidth={1.8} />
-                        Logout
+                        {!collapsed ? "Logout" : null}
                     </button>
                 </div>
             </aside>

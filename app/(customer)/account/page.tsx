@@ -62,7 +62,7 @@ function MobileInfoCard({
 export default function ProfilePage() {
     return (
         <section className="min-h-screen bg-primary">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-[18px] py-5 sm:px-10 sm:py-8 lg:gap-[26px] lg:px-14 lg:py-11">
+            <div className="desktop-frame flex flex-col gap-6 py-5 sm:py-8 lg:gap-[26px] lg:py-11">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                     <div className="space-y-2">
                         <h1 className={`${cinzel.className} text-[36px] text-gold sm:text-[44px] lg:text-[54px]`}>
@@ -128,7 +128,7 @@ export default function ProfilePage() {
                     </aside>
 
                     <div className="flex-1 space-y-[18px]">
-                        <div className="grid gap-[14px] xl:grid-cols-3">
+                        <div className="grid gap-[14px] lg:grid-cols-2 2xl:grid-cols-3">
                             {metrics.map((metric) => (
                                 <DesktopStatCard
                                     key={metric.label}
@@ -168,7 +168,7 @@ export default function ProfilePage() {
                             </div>
                         </div>
 
-                        <div className="grid gap-[14px] xl:grid-cols-2">
+                        <div className="grid gap-[14px] lg:grid-cols-2">
                             <div className="space-y-2.5 border border-gold bg-surface p-[18px]">
                                 <h2 className={`${cinzel.className} text-[24px] text-gold xl:text-[28px]`}>
                                     Addresses

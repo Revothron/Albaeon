@@ -304,7 +304,7 @@ export default async function TrackOrderPage({
     return (
         <section className="min-h-screen bg-primary">
             <div className="border-b border-gold/10 bg-primary-deep">
-                <div className="mx-auto flex max-w-[1440px] flex-col items-center px-6 py-14 text-center sm:px-10 lg:px-14">
+                <div className="desktop-frame flex flex-col items-center py-14 text-center">
                     <p className={`${cinzel.className} text-[9px] font-bold tracking-[0.48em] text-gold`}>
                         ORDER TRACKING
                     </p>

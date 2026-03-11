@@ -2,15 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import {
-    Check,
-    CircleAlert,
-    Clock3,
-    Eye,
-    EyeOff,
-    Lock,
-    Shield,
-} from "lucide-react";
+import { Check, CircleAlert, Eye, EyeOff, Lock, Shield } from "lucide-react";
 import { adminCinzel, adminCormorant, adminRaleway } from "@/components/admin/adminFonts";
 
 const securityNotes = [
@@ -22,10 +14,6 @@ const securityNotes = [
         copy: "All login attempts are logged and monitored.",
         Icon: EyeOff,
     },
-    {
-        copy: "Sessions expire after 7 days of inactivity.",
-        Icon: Clock3,
-    },
 ];
 
 export default function AdminLoginView() {
@@ -33,8 +21,8 @@ export default function AdminLoginView() {
 
     return (
         <div className="min-h-screen bg-[#0F0C14] text-text-primary">
-            <div className="grid min-h-screen lg:grid-cols-[749px_minmax(0,1fr)]">
-                <section className="relative overflow-hidden bg-[#0A0810] min-h-[380px] lg:min-h-screen">
+            <div className="mx-auto w-full max-w-[1440px] grid min-h-screen lg:h-screen lg:overflow-hidden lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,749px)_minmax(0,691px)]">
+                <section className="relative overflow-hidden bg-[#0A0810] min-h-[320px] sm:min-h-[380px] lg:h-full lg:min-h-0">
                     <Image
                         src="/admin/admin-login-artwork.png"
                         alt=""
@@ -72,12 +60,12 @@ export default function AdminLoginView() {
                     </div>
                 </section>
 
-                <section className="relative bg-nav px-6 py-8 sm:px-10 lg:px-0">
+                <section className="relative bg-nav px-6 py-8 sm:px-10 lg:h-full lg:overflow-hidden lg:px-0">
                     <p className={`${adminRaleway.className} text-right text-[11px] font-light text-text-muted lg:absolute lg:right-8 lg:top-8`}>
                         &copy; 2026 Albaeon
                     </p>
 
-                    <div className="mx-auto mt-10 w-full max-w-[380px] lg:mt-[140px]">
+                    <div className="mx-auto mt-8 w-full max-w-[380px] sm:mt-10 lg:mt-0 lg:flex lg:h-full lg:flex-col lg:justify-center lg:py-8">
                         <div className="space-y-[18px]">
                             <div className="space-y-3.5">
                                 <div className={`flex items-center gap-2.5 ${adminCinzel.className}`}>

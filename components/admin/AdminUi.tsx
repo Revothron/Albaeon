@@ -3,20 +3,22 @@ import { ChevronDown, Search } from "lucide-react";
 import { adminCinzel, adminCormorant, adminRaleway } from "@/components/admin/adminFonts";
 
 type AdminPageHeadingProps = {
-    eyebrow: string;
+    eyebrow?: string;
     title: string;
-    subtitle: string;
+    subtitle?: string;
     action?: ReactNode;
 };
 
 type AdminOutlineButtonProps = {
     label: string;
     icon?: ReactNode;
+    className?: string;
 };
 
 type AdminPrimaryButtonProps = {
     label: string;
     icon?: ReactNode;
+    className?: string;
 };
 
 type AdminPillGroupProps = {
@@ -44,15 +46,19 @@ export function AdminPageHeading({
     return (
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-                <p className={`${adminCinzel.className} text-[9px] tracking-[0.38em] text-text-muted`}>
-                    {eyebrow}
-                </p>
-                <h1 className={`${adminCormorant.className} mt-1 text-[40px] font-light leading-none text-text-primary md:text-[48px]`}>
+                {eyebrow ? (
+                    <p className={`${adminCinzel.className} text-[9px] tracking-[0.38em] text-text-muted`}>
+                        {eyebrow}
+                    </p>
+                ) : null}
+                <h1 className={`${adminCormorant.className} ${eyebrow ? "mt-1" : ""} text-[30px] font-light leading-none text-text-primary sm:text-[32px]`}>
                     {title}
                 </h1>
-                <p className={`${adminRaleway.className} mt-2 text-[13px] font-light text-text-muted`}>
-                    {subtitle}
-                </p>
+                {subtitle ? (
+                    <p className={`${adminRaleway.className} mt-2 text-[13px] font-light text-text-muted`}>
+                        {subtitle}
+                    </p>
+                ) : null}
             </div>
 
             {action}
@@ -60,11 +66,11 @@ export function AdminPageHeading({
     );
 }
 
-export function AdminOutlineButton({ label, icon }: AdminOutlineButtonProps) {
+export function AdminOutlineButton({ label, icon, className = "" }: AdminOutlineButtonProps) {
     return (
         <button
             type="button"
-            className={`${adminCinzel.className} inline-flex h-10 items-center justify-center gap-2 border border-gold/20 px-5 text-[10px] font-semibold tracking-[0.18em] text-text-muted transition-colors duration-200 hover:border-gold/40 hover:text-gold`}
+            className={`${adminCinzel.className} inline-flex items-center justify-center gap-2 border border-gold/20 px-5 py-2.5 text-[10px] font-semibold tracking-[0.18em] text-text-muted transition-colors duration-200 hover:border-gold/40 hover:text-gold ${className}`}
         >
             {icon}
             {label}
@@ -72,11 +78,11 @@ export function AdminOutlineButton({ label, icon }: AdminOutlineButtonProps) {
     );
 }
 
-export function AdminPrimaryButton({ label, icon }: AdminPrimaryButtonProps) {
+export function AdminPrimaryButton({ label, icon, className = "" }: AdminPrimaryButtonProps) {
     return (
         <button
             type="button"
-            className={`${adminCinzel.className} inline-flex h-10 items-center justify-center gap-2 bg-gold px-5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover`}
+            className={`${adminCinzel.className} inline-flex items-center justify-center gap-2 bg-gold px-5 py-2.5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover ${className}`}
         >
             {icon}
             {label}
@@ -167,7 +173,7 @@ export function AdminPillGroup({ items, activeItem }: AdminPillGroupProps) {
                     <button
                         key={item}
                         type="button"
-                        className={`${adminCinzel.className} border px-3.5 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
+                        className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
                             active
                                 ? "border-gold bg-gold/12 text-gold"
                                 : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
@@ -205,7 +211,7 @@ export function AdminPagination({
     currentPage,
 }: AdminPaginationProps) {
     return (
-        <div className="flex flex-col gap-3 border-t border-gold/10 px-5 py-4 md:flex-row md:items-center md:justify-between md:px-6">
+        <div className="flex flex-col gap-3 border-t border-gold/10 px-6 py-4 md:flex-row md:items-center md:justify-between">
             <p className={`${adminRaleway.className} text-[12px] font-light text-text-muted`}>
                 {summary}
             </p>

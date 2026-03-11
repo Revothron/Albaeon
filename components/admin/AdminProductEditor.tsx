@@ -17,13 +17,17 @@ function Card({
     title,
     children,
     subtitle,
+    className = "",
+    contentClassName = "space-y-4",
 }: {
     title: string;
     children: React.ReactNode;
     subtitle?: string;
+    className?: string;
+    contentClassName?: string;
 }) {
     return (
-        <section className="border border-gold/10 bg-[#1E1A2E] p-6 md:p-7">
+        <section className={`border border-gold/10 bg-[#1E1A2E] p-6 md:p-7 ${className}`}>
             <p className={`${adminCinzel.className} text-[10px] tracking-[0.3em] text-gold`}>
                 {title}
             </p>
@@ -34,7 +38,7 @@ function Card({
                 </p>
             ) : null}
 
-            <div className="mt-4 space-y-4">{children}</div>
+            <div className={`mt-4 ${contentClassName}`}>{children}</div>
         </section>
     );
 }
@@ -99,30 +103,32 @@ export default function AdminProductEditor({
     const metaCount = `${product.seoDescription.length}/160`;
 
     return (
-        <div className="space-y-6 md:space-y-7">
+        <div className="space-y-7">
             <p className={`${adminRaleway.className} text-[12px] font-light text-text-muted`}>
                 {breadcrumb}
             </p>
 
             <AdminPageHeading
-                eyebrow="PRODUCTS"
                 title={pageTitle}
                 subtitle={pageSubtitle}
                 action={
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap items-center gap-2.5">
                         <button
                             type="button"
-                            className={`${adminCinzel.className} inline-flex h-10 items-center justify-center border border-gold/20 px-5 text-[10px] font-semibold tracking-[0.18em] text-text-muted transition-colors duration-200 hover:border-gold/40 hover:text-gold`}
+                            className={`${adminCinzel.className} inline-flex items-center justify-center border border-gold/20 px-5 py-2.5 text-[10px] font-semibold tracking-[0.18em] text-text-muted transition-colors duration-200 hover:border-gold/40 hover:text-gold`}
                         >
                             SAVE AS DRAFT
                         </button>
-                        <AdminPrimaryButton label={isCreateMode ? "SAVE & PUBLISH" : "SAVE CHANGES"} />
+                        <AdminPrimaryButton
+                            label={isCreateMode ? "SAVE & PUBLISH" : "SAVE CHANGES"}
+                            className="px-6"
+                        />
                     </div>
                 }
             />
 
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
-                <div className="space-y-5">
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px]">
+                <div className="space-y-4">
                     <Card title="BASIC INFORMATION">
                         <div className="space-y-2">
                             <FieldLabel>PRODUCT NAME</FieldLabel>
@@ -180,6 +186,7 @@ export default function AdminProductEditor({
                     <Card
                         title="VARIANTS"
                         subtitle="Define all available colour and size combinations"
+                        contentClassName="space-y-3"
                     >
                         <div className="space-y-2">
                             <FieldLabel>COLOURS</FieldLabel>
@@ -286,6 +293,7 @@ export default function AdminProductEditor({
                     <Card
                         title="KEY HIGHLIGHTS"
                         subtitle="Add short product specs shown on product page"
+                        contentClassName="space-y-3"
                     >
                         <div className="space-y-3">
                             {product.highlights.map((highlight) => (
@@ -330,8 +338,8 @@ export default function AdminProductEditor({
                     </Card>
                 </div>
 
-                <div className="space-y-5">
-                    <Card title="PRODUCT STATUS">
+                <div className="space-y-4">
+                    <Card title="PRODUCT STATUS" className="p-6 md:p-6" contentClassName="space-y-3">
                         <div className="space-y-3">
                             <div className={`border px-4 py-3 ${product.status === "published" ? "border-[#4CAF7D] bg-[#4CAF7D]/8" : "border-gold/12 bg-footer"}`}>
                                 <div className="flex items-center gap-2">
@@ -390,7 +398,7 @@ export default function AdminProductEditor({
                         ))}
                     </Card>
 
-                    <Card title="PRODUCT IMAGES">
+                    <Card title="PRODUCT IMAGES" className="p-6 md:p-6" contentClassName="space-y-3">
                         <div className="space-y-2">
                             <FieldLabel>PRIMARY IMAGE</FieldLabel>
                             <button
@@ -455,7 +463,7 @@ export default function AdminProductEditor({
                         </div>
                     </Card>
 
-                    <Card title="SEO">
+                    <Card title="SEO" className="p-6 md:p-6" contentClassName="space-y-3">
                         <div className="space-y-2">
                             <FieldLabel>META TITLE</FieldLabel>
                             <TextInput defaultValue={product.seoTitle} />
@@ -470,7 +478,7 @@ export default function AdminProductEditor({
                         </div>
                     </Card>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                         <button
                             type="button"
                             className={`${adminCinzel.className} flex h-11 w-full items-center justify-center bg-gold text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover`}

@@ -182,3 +182,14 @@ body {
 .card-surface:hover {
   border-color: rgba(230, 201, 121, 0.2);
 }
+
+@layer utilities {
+  .desktop-frame {
+    width: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(16px, 4vw, 56px);
+    padding-right: clamp(16px, 4vw, 56px);
+  }
+}

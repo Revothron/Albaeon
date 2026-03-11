@@ -92,7 +92,7 @@ const footerColumns = [
 export default function Footer() {
     return (
         <footer className="bg-[#0F0C14]">
-            <div className="mx-auto flex max-w-[1440px] flex-col gap-9 px-5 py-10 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+            <div className="desktop-frame flex flex-col gap-9 py-10 sm:py-12 lg:py-14">
                 <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
                     <div className="flex max-w-[283px] flex-col items-start gap-[14px] text-left">
                         <Link href="/" aria-label="Albaeon home">

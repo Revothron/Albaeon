@@ -28,12 +28,14 @@ function getStatusTone(status: AdminCustomerOrderStatus) {
 function DetailCard({
     title,
     children,
+    className = "",
 }: {
     title: string;
     children: React.ReactNode;
+    className?: string;
 }) {
     return (
-        <section className="border border-gold/10 bg-[#1E1A2E] p-6">
+        <section className={`border border-gold/10 bg-[#1E1A2E] p-6 ${className}`}>
             <p className={`${adminCinzel.className} text-[10px] font-semibold tracking-[0.3em] text-gold`}>
                 {title}
             </p>
@@ -78,19 +80,19 @@ export default async function CustomerDetailPage({
     }
 
     return (
-        <div className="space-y-5 md:space-y-6">
+        <div className="space-y-5">
             <div>
                 <div className={`flex items-center gap-1.5 ${adminRaleway.className} text-[12px] font-light`}>
                     <span className="text-text-muted">Customers /</span>
                     <span className="text-gold">{customer.name}</span>
                 </div>
-                <h1 className={`${adminCormorant.className} mt-2 text-[32px] font-light text-text-primary md:text-[36px]`}>
+                <h1 className={`${adminCormorant.className} mt-2 text-[32px] font-light text-text-primary`}>
                     {customer.name}
                 </h1>
             </div>
 
-            <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_280px]">
-                <div className="space-y-5">
+            <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px]">
+                <div className="space-y-4">
                     <DetailCard title="CUSTOMER PROFILE">
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -152,8 +154,8 @@ export default async function CustomerDetailPage({
 
                     <DetailCard title="ORDER HISTORY">
                         <div className="overflow-x-auto">
-                            <div className="min-w-[700px]">
-                                <div className="flex items-center bg-nav px-3 py-3">
+                            <div className="min-w-[520px] sm:min-w-[620px] lg:min-w-[700px]">
+                                <div className="flex items-center bg-nav px-6 py-3">
                                     {["ORDER ID", "DATE", "AMOUNT", "STATUS", "ACTION"].map((heading, index) => (
                                         <div
                                             key={heading}
@@ -169,7 +171,7 @@ export default async function CustomerDetailPage({
                                 {customer.orderHistory.map((order, index) => (
                                     <div
                                         key={order.id}
-                                        className={`flex items-center px-3 py-3 ${index < customer.orderHistory.length - 1 ? "border-b border-gold/6" : ""}`}
+                                        className={`flex items-center px-6 py-3 ${index < customer.orderHistory.length - 1 ? "border-b border-gold/6" : ""}`}
                                     >
                                         <div className={`${adminCinzel.className} w-[140px] text-[13px] text-gold`}>
                                             {order.id}
@@ -221,7 +223,7 @@ export default async function CustomerDetailPage({
                     </DetailCard>
                 </div>
 
-                <div className="space-y-5">
+                <div className="space-y-4">
                     <DetailCard title="CUSTOMER STATS">
                         <div>
                             <StatRow label="Total Orders" value={String(customer.orders)} />
