@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Camera, Plus } from "lucide-react";
+import { useState } from "react";
 import {
     AdminPageHeading,
     AdminPrimaryButton,
@@ -101,6 +104,8 @@ export default function AdminProductEditor({
         : "Update product details and save changes when ready";
     const breadcrumb = `Products / ${pageTitle}`;
     const metaCount = `${product.seoDescription.length}/160`;
+    const [status, setStatus] = useState<"published" | "draft">(product.status);
+    const [bestSeller, setBestSeller] = useState(product.bestSeller);
 
     return (
         <div className="space-y-7">
@@ -341,41 +346,67 @@ export default function AdminProductEditor({
                 <div className="space-y-4">
                     <Card title="PRODUCT STATUS" className="p-6 md:p-6" contentClassName="space-y-3">
                         <div className="space-y-3">
-                            <div className={`border px-4 py-3 ${product.status === "published" ? "border-[#4CAF7D] bg-[#4CAF7D]/8" : "border-gold/12 bg-footer"}`}>
-                                <div className="flex items-center gap-2">
-                                    <span className={`h-2.5 w-2.5 rounded-full ${product.status === "published" ? "bg-[#4CAF7D]" : "border border-text-muted/60"}`} aria-hidden="true" />
-                                    <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
-                                        Published (Active)
+                            <button
+                                type="button"
+                                onClick={() => setStatus("published")}
+                                className={`w-full border px-4 py-3 text-left transition-colors duration-200 ${status === "published" ? "border-[#4CAF7D] bg-[#4CAF7D]/8" : "border-gold/12 bg-footer"}`}
+                                role="radio"
+                                aria-checked={status === "published"}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <span
+                                        className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border ${
+                                            status === "published" ? "border-[#4CAF7D]" : "border-text-muted/40"
+                                        }`}
+                                        aria-hidden="true"
+                                    >
+                                        <span className={`h-2 w-2 rounded-full ${status === "published" ? "bg-[#4CAF7D]" : ""}`} />
                                     </span>
+                                    <div>
+                                        <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
+                                            Published (Active)
+                                        </span>
+                                        <p className={`${adminRaleway.className} mt-1 text-[11px] font-light text-text-muted`}>
+                                            Visible on storefront
+                                        </p>
+                                    </div>
                                 </div>
-                                <p className={`${adminRaleway.className} mt-1 text-[11px] font-light text-text-muted`}>
-                                    Visible on storefront
-                                </p>
-                            </div>
+                            </button>
 
-                            <div className={`border px-4 py-3 ${product.status === "draft" ? "border-gold/20 bg-footer" : "border-gold/12 bg-footer"}`}>
-                                <div className="flex items-center gap-2">
-                                    <span className={`h-2.5 w-2.5 rounded-full ${product.status === "draft" ? "border border-text-muted/60" : "border border-text-muted/30"}`} aria-hidden="true" />
-                                    <span className={`${adminRaleway.className} text-[13px] ${product.status === "draft" ? "text-text-primary" : "text-text-muted"}`}>
-                                        Draft
+                            <button
+                                type="button"
+                                onClick={() => setStatus("draft")}
+                                className={`w-full border px-4 py-3 text-left transition-colors duration-200 ${status === "draft" ? "border-gold/20 bg-footer" : "border-gold/12 bg-footer"}`}
+                                role="radio"
+                                aria-checked={status === "draft"}
+                            >
+                                <div className="flex items-start gap-3">
+                                    <span
+                                        className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border ${
+                                            status === "draft" ? "border-text-muted/60" : "border-text-muted/30"
+                                        }`}
+                                        aria-hidden="true"
+                                    >
+                                        <span className={`h-2 w-2 rounded-full ${status === "draft" ? "bg-text-muted" : ""}`} />
                                     </span>
+                                    <div>
+                                        <span className={`${adminRaleway.className} text-[13px] ${status === "draft" ? "text-text-primary" : "text-text-muted"}`}>
+                                            Draft
+                                        </span>
+                                        <p className={`${adminRaleway.className} mt-1 text-[11px] font-light text-text-muted`}>
+                                            Hidden from storefront
+                                        </p>
+                                    </div>
                                 </div>
-                                <p className={`${adminRaleway.className} mt-1 text-[11px] font-light text-text-muted`}>
-                                    Hidden from storefront
-                                </p>
-                            </div>
+                            </button>
                         </div>
 
                         {[
                             {
-                                label: "New Arrival",
-                                sublabel: "Manual promo flag",
-                                active: product.newArrival,
-                            },
-                            {
                                 label: "Best Seller",
                                 sublabel: "Auto-calculated or manual override",
-                                active: product.bestSeller,
+                                active: bestSeller,
+                                onToggle: () => setBestSeller((current) => !current),
                             },
                         ].map((flag) => (
                             <div
@@ -391,9 +422,21 @@ export default function AdminProductEditor({
                                     </p>
                                 </div>
 
-                                <span className={`flex h-[22px] w-10 items-center border px-0.5 ${flag.active ? "justify-end border-gold bg-gold/20" : "justify-start border-gold/20 bg-footer"}`}>
-                                    <span className={`h-4 w-4 ${flag.active ? "bg-gold" : "bg-text-muted"}`} />
-                                </span>
+                                <button
+                                    type="button"
+                                    onClick={flag.onToggle}
+                                    className={`relative h-5 w-10 rounded-full border transition-colors duration-200 ${
+                                        flag.active ? "border-gold bg-gold/30" : "border-gold/25 bg-footer"
+                                    }`}
+                                    role="switch"
+                                    aria-checked={flag.active}
+                                >
+                                    <span
+                                        className={`absolute left-0.5 top-0.5 h-4 w-4 rounded-full transition-transform duration-200 ${
+                                            flag.active ? "translate-x-5 bg-gold" : "translate-x-0 bg-text-muted"
+                                        }`}
+                                    />
+                                </button>
                             </div>
                         ))}
                     </Card>

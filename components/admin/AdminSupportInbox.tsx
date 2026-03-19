@@ -1,8 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     ArrowUpRight,
+    ChevronDown,
+    X,
     Paperclip,
     Save,
     Send,
@@ -12,7 +14,6 @@ import {
     AdminFieldLabel,
     AdminPageHeading,
     AdminPrimaryButton,
-    AdminSelectBox,
     AdminStatusBadge,
     AdminTextInput,
 } from "@/components/admin/AdminUi";
@@ -168,14 +169,91 @@ const tickets: Ticket[] = [
     },
 ];
 
+function FilterDropdown({
+    id,
+    value,
+    options,
+    openId,
+    onToggle,
+    className = "",
+}: {
+    id: string;
+    value: string;
+    options: string[];
+    openId: string | null;
+    onToggle: (id: string) => void;
+    className?: string;
+}) {
+    const isOpen = openId === id;
+
+    return (
+        <div className={`group relative w-full ${className}`} data-filter-dropdown>
+            <button
+                type="button"
+                className={`flex h-[38px] w-full items-center justify-between border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-primary transition-colors duration-200 hover:border-gold/30`}
+                aria-expanded={isOpen}
+                onClick={() => onToggle(id)}
+            >
+                <span>{value}</span>
+                <ChevronDown
+                    className={`h-3.5 w-3.5 text-text-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    strokeWidth={1.8}
+                />
+            </button>
+            {isOpen ? (
+                <div className="absolute left-0 top-[calc(100%+6px)] z-20 w-full min-w-[160px] border border-gold/12 bg-nav p-2 shadow-[0_16px_36px_rgba(0,0,0,0.45)]">
+                    {options.map((option) => (
+                        <button
+                            key={option}
+                            type="button"
+                            className={`${adminRaleway.className} flex w-full items-center px-3 py-2 text-left text-[12px] font-light text-text-primary transition-colors duration-200 hover:bg-gold/8 hover:text-gold`}
+                            onClick={() => onToggle(id)}
+                        >
+                            {option}
+                        </button>
+                    ))}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
 export default function AdminSupportInbox() {
     const [activeRange, setActiveRange] = useState("TODAY");
     const [selectedTicketId, setSelectedTicketId] = useState(tickets[0].id);
+    const [chatOpen, setChatOpen] = useState(true);
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [unreadStatus, setUnreadStatus] = useState("UNREAD");
+    const [statusOverride, setStatusOverride] = useState<string | null>(null);
+    const statusOptions = ["All Status", "Open", "In Review", "Resolved"];
+    const priorityOptions = ["All Priority", "High Priority", "Medium Priority", "Low Priority"];
 
     const selectedTicket = useMemo(
         () => tickets.find((ticket) => ticket.id === selectedTicketId) ?? tickets[0],
         [selectedTicketId]
     );
+
+    const statusLabel = unreadStatus === "UNREAD" ? "Unread" : statusOverride ?? selectedTicket.status;
+
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+            if (!event.target.closest("[data-filter-dropdown]")) {
+                setOpenDropdown(null);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClick);
+        return () => {
+            document.removeEventListener("mousedown", handleClick);
+        };
+    }, []);
+
+    const handleToggle = (id: string) => {
+        setOpenDropdown((current) => (current === id ? null : id));
+    };
 
     return (
         <div className="space-y-4 md:space-y-6">
@@ -207,18 +285,30 @@ export default function AdminSupportInbox() {
             </div>
 
             <section className="border border-gold/10 bg-[#1E1A2E] px-5 py-4 md:px-6">
-                <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_150px_150px]">
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_150px] lg:items-end">
                     <div>
                         <AdminFieldLabel>SEARCH TICKETS</AdminFieldLabel>
                         <AdminTextInput placeholder="Search by customer name, email, subject..." />
                     </div>
                     <div>
                         <AdminFieldLabel>STATUS</AdminFieldLabel>
-                        <AdminSelectBox value="All Status" />
+                        <FilterDropdown
+                            id="status"
+                            value="All Status"
+                            options={statusOptions}
+                            openId={openDropdown}
+                            onToggle={handleToggle}
+                        />
                     </div>
                     <div>
                         <AdminFieldLabel>PRIORITY</AdminFieldLabel>
-                        <AdminSelectBox value="All Priority" />
+                        <FilterDropdown
+                            id="priority"
+                            value="All Priority"
+                            options={priorityOptions}
+                            openId={openDropdown}
+                            onToggle={handleToggle}
+                        />
                     </div>
                 </div>
             </section>
@@ -226,13 +316,18 @@ export default function AdminSupportInbox() {
             <section className="overflow-hidden border border-gold/10 bg-[#1E1A2E] lg:grid lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]">
                 <aside className="border-b border-gold/10 bg-nav lg:border-b-0 lg:border-r lg:border-r-gold/10">
                     {tickets.map((ticket) => {
-                        const active = ticket.id === selectedTicket.id;
+                        const active = ticket.id === selectedTicket?.id;
 
                         return (
                             <button
                                 key={ticket.id}
                                 type="button"
-                                onClick={() => setSelectedTicketId(ticket.id)}
+                                onClick={() => {
+                                    setSelectedTicketId(ticket.id);
+                                    setChatOpen(true);
+                                    setUnreadStatus("UNREAD");
+                                    setStatusOverride(null);
+                                }}
                                 className={`block w-full border-b border-gold/8 px-5 py-4 text-left transition-colors duration-200 ${
                                     active ? "border-l-4 border-l-gold bg-gold/6 pl-4" : "hover:bg-gold/4"
                                 }`}
@@ -269,7 +364,9 @@ export default function AdminSupportInbox() {
                 </aside>
 
                 <div className="flex min-h-[760px] flex-col">
-                    <header className="border-b border-gold/10 bg-nav px-5 py-4 md:px-7">
+                    {chatOpen ? (
+                        <>
+                            <header className="border-b border-gold/10 bg-nav px-5 py-4 md:px-7">
                         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                             <div className="min-w-0">
                                 <p className={`${adminCinzel.className} text-[12px] tracking-[0.08em] text-text-primary`}>
@@ -280,16 +377,67 @@ export default function AdminSupportInbox() {
                                 </p>
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-2">
-                                <AdminStatusBadge label={selectedTicket.status} tone={selectedTicket.statusTone} />
-                                <AdminStatusBadge label={selectedTicket.priority} tone={selectedTicket.priorityTone} />
+                            <div className="flex flex-col items-start gap-3 lg:items-end">
                                 <button
                                     type="button"
-                                    className={`${adminCinzel.className} inline-flex h-8 items-center gap-1 border border-gold/20 px-3 text-[10px] font-semibold tracking-[0.14em] text-gold`}
+                                    onClick={() => setChatOpen(false)}
+                                    className="inline-flex h-8 w-8 items-center justify-center border border-gold/20 text-text-muted transition-colors duration-200 hover:border-gold/40 hover:text-gold"
+                                    aria-label="Close chat"
                                 >
-                                    View Order
-                                    <ArrowUpRight className="h-3 w-3" strokeWidth={1.8} />
+                                    <X className="h-3.5 w-3.5" strokeWidth={1.8} />
                                 </button>
+                                <div className="flex flex-wrap items-center gap-2">
+                                            <button
+                                                type="button"
+                                                className={`${adminRaleway.className} inline-flex h-8 items-center border border-[#4A90C4]/40 bg-[#4A90C4]/10 px-3 text-[12px] font-medium text-[#4A90C4]`}
+                                            >
+                                                {statusLabel}
+                                            </button>
+                                    <button
+                                        type="button"
+                                        className={`${adminRaleway.className} inline-flex h-8 items-center border border-gold/30 bg-gold/10 px-3 text-[12px] font-medium text-gold`}
+                                    >
+                                        {selectedTicket.priority}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`${adminCinzel.className} inline-flex h-8 items-center gap-1 border border-gold/20 px-3 text-[10px] font-semibold tracking-[0.14em] text-gold`}
+                                    >
+                                        View Order
+                                        <ArrowUpRight className="h-3 w-3" strokeWidth={1.8} />
+                                    </button>
+                                    <details className="group relative">
+                                        <summary
+                                            className={`${adminCinzel.className} flex h-8 list-none items-center justify-between gap-2 border border-gold/20 px-3 text-[10px] font-semibold tracking-[0.14em] text-text-primary marker:hidden transition-colors duration-200 hover:border-gold/40 [&::-webkit-details-marker]:hidden`}
+                                        >
+                                            <span>{unreadStatus}</span>
+                                            <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200 group-open:rotate-180" strokeWidth={1.8} />
+                                        </summary>
+                                        <div className="absolute right-0 top-full z-20 mt-2 w-[160px] border border-gold/12 bg-nav p-2 shadow-[0_14px_40px_rgba(0,0,0,0.35)]">
+                                            {["UNREAD", "OPEN", "MARK AS IN REVIEW", "MARK AS RESOLVED"].map((option) => (
+                                                <button
+                                                    key={option}
+                                                    type="button"
+                                                    className={`${adminRaleway.className} flex w-full items-center px-3 py-2 text-left text-[12px] font-light text-text-primary transition-colors duration-200 hover:bg-gold/8 hover:text-gold`}
+                                                    onClick={() => {
+                                                        setUnreadStatus(option);
+                                                        if (option === "OPEN") {
+                                                            setStatusOverride("Open");
+                                                        } else if (option === "MARK AS IN REVIEW") {
+                                                            setStatusOverride("In Review");
+                                                        } else if (option === "MARK AS RESOLVED") {
+                                                            setStatusOverride("Resolved");
+                                                        } else {
+                                                            setStatusOverride(null);
+                                                        }
+                                                    }}
+                                                >
+                                                    {option}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </details>
+                                </div>
                             </div>
                         </div>
                     </header>
@@ -381,6 +529,14 @@ export default function AdminSupportInbox() {
                             </div>
                         </div>
                     </footer>
+                        </>
+                    ) : (
+                        <div className="flex flex-1 items-center justify-center bg-[#1E1A2E] px-6">
+                            <p className={`${adminRaleway.className} text-[13px] font-light text-text-muted`}>
+                                Select a ticket to view the conversation.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </section>
         </div>

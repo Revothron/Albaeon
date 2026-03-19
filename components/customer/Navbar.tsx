@@ -3,6 +3,7 @@
 import StripedMarker from "@/components/customer/StripedMarker";
 import { Cinzel } from "next/font/google";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -40,11 +41,18 @@ const iconLinks = [
 ];
 
 export default function Navbar() {
+    const pathname = usePathname();
+
+    if (pathname.startsWith("/checkout")) {
+        return null;
+    }
     const [shopOpen, setShopOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const shopMenuRef = useRef<HTMLElement>(null);
 
     const closeMobileMenu = () => setMobileOpen(false);
+    const openShopMenu = () => setShopOpen(true);
+    const closeShopMenu = () => setShopOpen(false);
 
     useEffect(() => {
         function handlePointerDown(event: MouseEvent) {
@@ -72,17 +80,21 @@ export default function Navbar() {
         <nav ref={shopMenuRef} className="sticky top-0 z-50 bg-nav/95 text-text-primary backdrop-blur-sm">
             <div className="desktop-frame hidden h-[50px] w-full grid-cols-[1fr_auto_1fr] items-center md:grid">
                 <div className="flex items-center gap-7">
-                    <div className="relative">
-                        <button
-                            type="button"
+                    <div
+                        className="relative"
+                        onMouseEnter={openShopMenu}
+                        onMouseLeave={closeShopMenu}
+                    >
+                        <Link
+                            href="/shop"
                             className="inline-flex items-center gap-2 font-sans text-[16px] font-medium text-text-primary transition-colors duration-200 hover:text-gold"
                             aria-expanded={shopOpen}
                             aria-haspopup="menu"
-                            onClick={() => setShopOpen((open) => !open)}
+                            onClick={() => setShopOpen(false)}
                         >
                             Shop
                             <StripedMarker />
-                        </button>
+                        </Link>
 
                         <div
                             className={`absolute left-0 top-full pt-4 transition-all duration-200 ${
@@ -146,6 +158,8 @@ export default function Navbar() {
                         ? "pointer-events-auto translate-y-0 opacity-100"
                         : "pointer-events-none -translate-y-2 opacity-0"
                 }`}
+                onMouseEnter={openShopMenu}
+                onMouseLeave={closeShopMenu}
             >
                 <div className="border-y border-[#E6C97914] bg-[#130F18] shadow-[0_24px_48px_rgba(0,0,0,0.35)]">
                     <div className="desktop-frame grid grid-cols-[260px_260px_minmax(320px,1fr)] gap-14 py-6">

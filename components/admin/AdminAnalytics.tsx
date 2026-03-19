@@ -1,5 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { AdminPageHeading, AdminPillGroup, AdminTextInput } from "@/components/admin/AdminUi";
+import { AdminPageHeading, AdminTextInput } from "@/components/admin/AdminUi";
 import { adminCinzel, adminRaleway } from "@/components/admin/adminFonts";
 
 export type AnalyticsValueFormat = "number" | "currency" | "decimal";
@@ -98,7 +101,13 @@ function getToneClassName(tone: AnalyticsTableColumn["tone"]) {
     return tone === "primary" ? "text-text-primary" : "text-text-muted";
 }
 
-function AnalyticsMetricChips({ series }: { series: AnalyticsSeries[] }) {
+function AnalyticsMetricChips({
+    series,
+    onToggle,
+}: {
+    series: AnalyticsSeries[];
+    onToggle: (label: string) => void;
+}) {
     return (
         <div className="flex flex-wrap gap-2">
             {series.map((item) => {
@@ -111,15 +120,19 @@ function AnalyticsMetricChips({ series }: { series: AnalyticsSeries[] }) {
                     : undefined;
 
                 return (
-                    <span
+                    <button
                         key={item.label}
-                        className={`${adminCinzel.className} inline-flex border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] ${
-                            item.active ? "" : "border-gold/12 text-text-muted"
+                        type="button"
+                        onClick={() => onToggle(item.label)}
+                        className={`${adminCinzel.className} inline-flex border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
+                            item.active
+                                ? ""
+                                : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
                         }`}
                         style={chipStyle}
                     >
                         {item.label}
-                    </span>
+                    </button>
                 );
             })}
         </div>
@@ -151,8 +164,16 @@ function AnalyticsReportMenu({ options }: { options: string[] }) {
     );
 }
 
-function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
-    const visibleSeries = screen.series.filter((item) => item.active);
+function AnalyticsChartCard({
+    screen,
+    series,
+    onToggleSeries,
+}: {
+    screen: AdminAnalyticsScreen;
+    series: AnalyticsSeries[];
+    onToggleSeries: (label: string) => void;
+}) {
+    const visibleSeries = series.filter((item) => item.active);
     const maxValue = Math.max(...visibleSeries.flatMap((item) => item.values), 1);
     const chartWidth = 920;
     const chartHeight = 160;
@@ -164,11 +185,12 @@ function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
                 <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
                     {screen.chartTitle}
                 </p>
-                <AnalyticsMetricChips series={screen.series} />
+                <AnalyticsMetricChips series={series} onToggle={onToggleSeries} />
             </div>
 
             <div className="mt-4 border border-gold/10 bg-footer px-4 py-3.5">
-                <div className="relative h-[220px]">
+                <div className="mx-auto w-full max-w-[760px]">
+                    <div className="relative h-[220px]">
                     <div className="pointer-events-none absolute inset-0">
                         {Array.from({ length: 5 }).map((_, index) => (
                             <div
@@ -228,15 +250,16 @@ function AnalyticsChartCard({ screen }: { screen: AdminAnalyticsScreen }) {
                             </p>
                         ))}
                     </div>
-                </div>
+                    </div>
 
-                <div
-                    className={`mt-3 grid gap-2 text-center text-[11px] text-text-muted ${adminRaleway.className}`}
-                    style={{ gridTemplateColumns: `repeat(${screen.chartLabels.length}, minmax(0, 1fr))` }}
-                >
-                    {screen.chartLabels.map((label) => (
-                        <span key={`${screen.title}-${label}`}>{label}</span>
-                    ))}
+                    <div
+                        className={`mt-3 grid gap-1 text-center text-[11px] text-text-muted ${adminRaleway.className}`}
+                        style={{ gridTemplateColumns: `repeat(${screen.chartLabels.length}, minmax(0, 1fr))` }}
+                    >
+                        {screen.chartLabels.map((label) => (
+                            <span key={`${screen.title}-${label}`}>{label}</span>
+                        ))}
+                    </div>
                 </div>
             </div>
         </section>
@@ -250,25 +273,27 @@ function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
 
     return (
         <section className="border border-gold/10 bg-[#1E1A2E]">
-            <div className={`flex flex-col gap-3 border-b border-gold/10 ${topBarPaddingClassName} xl:flex-row xl:items-center xl:justify-between`}>
+            <div className={`flex flex-wrap items-center gap-3 border-b border-gold/10 ${topBarPaddingClassName}`}>
                 <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
                     {screen.table.title}
                 </p>
 
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    {screen.table.searchPlaceholder ? (
-                        <div className={screen.table.searchWidthClassName}>
-                            <AdminTextInput
-                                placeholder={screen.table.searchPlaceholder}
-                                className={screen.table.searchInputClassName}
-                            />
-                        </div>
-                    ) : null}
+                {screen.table.searchPlaceholder || screen.table.reportOptions ? (
+                    <div className="ml-auto flex flex-wrap items-center justify-end gap-3">
+                        {screen.table.searchPlaceholder ? (
+                            <div className={screen.table.searchWidthClassName}>
+                                <AdminTextInput
+                                    placeholder={screen.table.searchPlaceholder}
+                                    className={screen.table.searchInputClassName}
+                                />
+                            </div>
+                        ) : null}
 
-                    {screen.table.reportOptions ? (
-                        <AnalyticsReportMenu options={screen.table.reportOptions} />
-                    ) : null}
-                </div>
+                        {screen.table.reportOptions ? (
+                            <AnalyticsReportMenu options={screen.table.reportOptions} />
+                        ) : null}
+                    </div>
+                ) : null}
             </div>
 
             {screen.table.gridTemplateColumns ? (
@@ -378,6 +403,29 @@ function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
 }
 
 export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen }) {
+    const [activeRange, setActiveRange] = useState(screen.activeRange);
+    const [activeSeries, setActiveSeries] = useState(() => {
+        const initial = screen.series.filter((item) => item.active).map((item) => item.label);
+        return initial.length > 0 ? initial : [screen.series[0]?.label ?? ""];
+    });
+
+    const handleToggleSeries = (label: string) => {
+        setActiveSeries((current) => {
+            if (current.includes(label)) {
+                if (current.length === 1) {
+                    return current;
+                }
+                return current.filter((item) => item !== label);
+            }
+            return [...current, label];
+        });
+    };
+
+    const seriesWithState = screen.series.map((item) => ({
+        ...item,
+        active: activeSeries.includes(item.label),
+    }));
+
     return (
         <div className="space-y-6">
             <AdminPageHeading
@@ -385,9 +433,28 @@ export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen })
                 title={screen.title}
             />
 
-            <AdminPillGroup items={screen.ranges} activeItem={screen.activeRange} />
+            <div className="flex flex-wrap gap-2">
+                {screen.ranges.map((range) => {
+                    const active = range === activeRange;
 
-            <AnalyticsChartCard screen={screen} />
+                    return (
+                        <button
+                            key={range}
+                            type="button"
+                            onClick={() => setActiveRange(range)}
+                            className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
+                                active
+                                    ? "border-gold bg-gold/12 text-gold"
+                                    : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
+                            }`}
+                        >
+                            {range}
+                        </button>
+                    );
+                })}
+            </div>
+
+            <AnalyticsChartCard screen={screen} series={seriesWithState} onToggleSeries={handleToggleSeries} />
             <AnalyticsTableCard screen={screen} />
         </div>
     );

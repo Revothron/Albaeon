@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { Cinzel } from "next/font/google";
+import { usePathname } from "next/navigation";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
@@ -90,6 +93,11 @@ const footerColumns = [
 ];
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    if (pathname.startsWith("/checkout")) {
+        return null;
+    }
     return (
         <footer className="bg-[#0F0C14]">
             <div className="desktop-frame flex flex-col gap-9 py-10 sm:py-12 lg:py-14">

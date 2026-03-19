@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { adminCinzel, adminCormorant, adminRaleway } from "@/components/admin/adminFonts";
 import { AdminStatusBadge } from "@/components/admin/AdminUi";
 import { getAdminCustomerById, type AdminCustomerOrderStatus } from "@/lib/admin/customers";
+import { adminOrders } from "@/adminOrders";
 
 function getInitials(name: string) {
     return name
@@ -74,8 +76,70 @@ export default async function CustomerDetailPage({
 }) {
     const { id } = await params;
     const customer = getAdminCustomerById(id);
+    const fallbackOrders = adminOrders.filter((order) => order.customerId === id);
 
-    if (!customer) {
+    if (!customer && fallbackOrders.length === 0) {
+        notFound();
+    }
+
+    const orderToCustomerStatus = (label: string): AdminCustomerOrderStatus => {
+        if (label === "Delivered" || label === "Fulfilled") {
+            return "Delivered";
+        }
+        if (label === "Shipped") {
+            return "Shipped";
+        }
+        if (label === "Processing") {
+            return "Processing";
+        }
+        return "Pending";
+    };
+
+    const fallbackCustomer = fallbackOrders.length > 0
+        ? {
+            id,
+            name: fallbackOrders[0].customer,
+            username: id,
+            registered: fallbackOrders[0].date,
+            email: fallbackOrders[0].email,
+            phone: fallbackOrders[0].phone,
+            orders: fallbackOrders.length,
+            spent: fallbackOrders[0].amount,
+            lastOrder: fallbackOrders[0].date,
+            aov: fallbackOrders[0].amount,
+            countryCode: fallbackOrders[0].shippingAddress.country === "India" ? "IN" : "US",
+            country: fallbackOrders[0].shippingAddress.country,
+            city: fallbackOrders[0].shippingAddress.city,
+            region: fallbackOrders[0].shippingAddress.state,
+            postal: fallbackOrders[0].shippingAddress.postal,
+            memberSince: fallbackOrders[0].date,
+            segment: "New Customer",
+            shippingAddress: [
+                fallbackOrders[0].customer,
+                fallbackOrders[0].shippingAddress.line1,
+                `${fallbackOrders[0].shippingAddress.city}, ${fallbackOrders[0].shippingAddress.state} ${fallbackOrders[0].shippingAddress.postal}`,
+                `${fallbackOrders[0].shippingAddress.country} / ${fallbackOrders[0].phone}`,
+            ],
+            billingAddress: [
+                fallbackOrders[0].customer,
+                fallbackOrders[0].shippingAddress.line1,
+                `${fallbackOrders[0].shippingAddress.city}, ${fallbackOrders[0].shippingAddress.state} ${fallbackOrders[0].shippingAddress.postal}`,
+                `${fallbackOrders[0].shippingAddress.country} / ${fallbackOrders[0].phone}`,
+            ],
+            orderHistory: fallbackOrders.map((order) => ({
+                id: order.id,
+                date: order.date,
+                amount: order.amount,
+                status: orderToCustomerStatus(order.fulfillment.label),
+            })),
+        }
+        : null;
+
+    const resolvedCustomer = customer ?? fallbackCustomer;
+
+    const customerData = resolvedCustomer;
+
+    if (!customerData) {
         notFound();
     }
 
@@ -84,10 +148,10 @@ export default async function CustomerDetailPage({
             <div>
                 <div className={`flex items-center gap-1.5 ${adminRaleway.className} text-[12px] font-light`}>
                     <span className="text-text-muted">Customers /</span>
-                    <span className="text-gold">{customer.name}</span>
+                    <span className="text-gold">{customerData.name}</span>
                 </div>
                 <h1 className={`${adminCormorant.className} mt-2 text-[32px] font-light text-text-primary`}>
-                    {customer.name}
+                    {customerData.name}
                 </h1>
             </div>
 
@@ -97,20 +161,20 @@ export default async function CustomerDetailPage({
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                                 <div className="flex h-14 w-14 items-center justify-center rounded-full border border-gold text-[14px] text-gold">
-                                    {getInitials(customer.name)}
+                                    {getInitials(customerData.name)}
                                 </div>
                                 <div className="min-w-0 flex-1 space-y-1">
                                     <p className={`${adminRaleway.className} text-[15px] font-medium text-text-primary`}>
-                                        {customer.name}
+                                        {customerData.name}
                                     </p>
                                     <p className={`${adminRaleway.className} text-[13px] font-light text-text-muted`}>
-                                        {`${customer.username} / ${customer.email} / ${customer.phone}`}
+                                        {`${customerData.username} / ${customerData.email} / ${customerData.phone}`}
                                     </p>
                                     <p className={`${adminRaleway.className} text-[12px] font-light text-text-muted`}>
-                                        {`Member since ${customer.memberSince}`}
+                                        {`Member since ${customerData.memberSince}`}
                                     </p>
                                     <p className={`${adminRaleway.className} text-[12px] font-light text-text-muted`}>
-                                        {`${customer.country} / ${customer.city}, ${customer.region} ${customer.postal}`}
+                                        {`${customerData.country} / ${customerData.city}, ${customerData.region} ${customerData.postal}`}
                                     </p>
                                 </div>
                             </div>
@@ -121,7 +185,7 @@ export default async function CustomerDetailPage({
                                         Total Orders
                                     </p>
                                     <p className={`${adminCinzel.className} text-[16px] text-text-primary`}>
-                                        {customer.orders}
+                                        {customerData.orders}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
@@ -129,7 +193,7 @@ export default async function CustomerDetailPage({
                                         Total Spent
                                     </p>
                                     <p className={`${adminCinzel.className} text-[16px] text-gold`}>
-                                        {customer.spent}
+                                        {customerData.spent}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
@@ -137,7 +201,7 @@ export default async function CustomerDetailPage({
                                         AOV
                                     </p>
                                     <p className={`${adminCinzel.className} text-[16px] text-text-primary`}>
-                                        {customer.aov}
+                                        {customerData.aov}
                                     </p>
                                 </div>
                                 <div className="space-y-1">
@@ -145,7 +209,7 @@ export default async function CustomerDetailPage({
                                         Last Order
                                     </p>
                                     <p className={`${adminCinzel.className} text-[16px] text-text-primary`}>
-                                        {customer.lastOrder}
+                                        {customerData.lastOrder}
                                     </p>
                                 </div>
                             </div>
@@ -168,10 +232,10 @@ export default async function CustomerDetailPage({
                                     ))}
                                 </div>
 
-                                {customer.orderHistory.map((order, index) => (
+                                {customerData.orderHistory.map((order, index) => (
                                     <div
                                         key={order.id}
-                                        className={`flex items-center px-6 py-3 ${index < customer.orderHistory.length - 1 ? "border-b border-gold/6" : ""}`}
+                                        className={`flex items-center px-6 py-3 ${index < customerData.orderHistory.length - 1 ? "border-b border-gold/6" : ""}`}
                                     >
                                         <div className={`${adminCinzel.className} w-[140px] text-[13px] text-gold`}>
                                             {order.id}
@@ -188,8 +252,13 @@ export default async function CustomerDetailPage({
                                                 tone={getStatusTone(order.status)}
                                             />
                                         </div>
-                                        <div className={`${adminCinzel.className} w-[80px] text-[9px] font-semibold tracking-[0.12em] text-gold`}>
-                                            View -&gt;
+                                        <div className="w-[80px]">
+                                            <Link
+                                                href={`/admin/orders/${order.id.toLowerCase()}`}
+                                                className={`${adminCinzel.className} text-[9px] font-semibold tracking-[0.12em] text-gold transition-colors duration-200 hover:text-gold-hover`}
+                                            >
+                                                View -&gt;
+                                            </Link>
                                         </div>
                                     </div>
                                 ))}
@@ -204,7 +273,7 @@ export default async function CustomerDetailPage({
                                     SHIPPING ADDRESS
                                 </p>
                                 <div className={`${adminRaleway.className} space-y-1 text-[13px] font-light leading-7 text-text-primary`}>
-                                    {customer.shippingAddress.map((line) => (
+                                    {customerData.shippingAddress.map((line) => (
                                         <p key={line}>{line}</p>
                                     ))}
                                 </div>
@@ -214,7 +283,7 @@ export default async function CustomerDetailPage({
                                     BILLING ADDRESS
                                 </p>
                                 <div className={`${adminRaleway.className} space-y-1 text-[13px] font-light leading-7 text-text-primary`}>
-                                    {customer.billingAddress.map((line) => (
+                                    {customerData.billingAddress.map((line) => (
                                         <p key={line}>{line}</p>
                                     ))}
                                 </div>
@@ -226,12 +295,12 @@ export default async function CustomerDetailPage({
                 <div className="space-y-4">
                     <DetailCard title="CUSTOMER STATS">
                         <div>
-                            <StatRow label="Total Orders" value={String(customer.orders)} />
-                            <StatRow label="Total Spent" value={customer.spent} valueClassName="text-gold" />
-                            <StatRow label="AOV" value={customer.aov} />
-                            <StatRow label="Last Order" value={customer.lastOrder} />
-                            <StatRow label="Country" value={customer.country} />
-                            <StatRow label="Segment" value={customer.segment} withBorder={false} />
+                            <StatRow label="Total Orders" value={String(customerData.orders)} />
+                            <StatRow label="Total Spent" value={customerData.spent} valueClassName="text-gold" />
+                            <StatRow label="AOV" value={customerData.aov} />
+                            <StatRow label="Last Order" value={customerData.lastOrder} />
+                            <StatRow label="Country" value={customerData.country} />
+                            <StatRow label="Segment" value={customerData.segment} withBorder={false} />
                         </div>
                     </DetailCard>
 

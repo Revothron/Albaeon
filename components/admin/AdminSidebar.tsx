@@ -197,9 +197,9 @@ export default function AdminSidebar() {
                             }`}
                         >
                             {collapsed ? (
-                                <PanelRightOpen className="h-4 w-4" strokeWidth={1.8} />
-                            ) : (
                                 <PanelRightClose className="h-4 w-4" strokeWidth={1.8} />
+                            ) : (
+                                <PanelRightOpen className="h-4 w-4" strokeWidth={1.8} />
                             )}
                         </button>
                     </div>
@@ -326,19 +326,23 @@ export default function AdminSidebar() {
                         <button
                             type="button"
                             onClick={handleMaintenanceToggle}
-                            disabled={maintenanceLoading}
-                            className={`flex h-11 w-full items-center justify-between rounded-full border border-[#E6C9791F] bg-[#1A1426] px-3 text-[13px] text-text-primary transition-colors duration-200 hover:border-[#E6C97940] disabled:cursor-not-allowed disabled:opacity-60 ${adminRaleway.className}`}
-                            aria-pressed={maintenanceMode}
+                            className={`flex h-11 w-full items-center justify-between gap-1 rounded-full border border-[#E6C9791F] bg-[#1A1426] px-4 text-[13px] text-text-primary transition-colors duration-200 hover:border-[#E6C97940] ${adminRaleway.className} ${maintenanceLoading ? "opacity-80" : ""}`}
+                            role="switch"
+                            aria-checked={maintenanceMode}
                             aria-busy={maintenanceLoading}
                         >
-                            <span>Maintenance Mode</span>
+                            <span className="whitespace-nowrap">Maintenance Mode</span>
                             <span
-                                className={`relative flex h-[17px] w-9 items-center rounded-full border border-[#E6C97926] bg-[#0F0C14] px-[1px] transition-colors duration-200 ${
-                                    maintenanceMode ? "justify-end" : "justify-start"
+                                className={`relative h-[18px] w-9 shrink-0 overflow-hidden rounded-full border border-[#E6C97926] bg-[#0F0C14] transition-colors duration-300 ${
+                                    maintenanceMode ? "bg-gold/40 border-gold/40" : ""
                                 }`}
                                 aria-hidden="true"
                             >
-                                <span className="h-[13px] w-[13px] rounded-full bg-[#B7AFC3]" />
+                                <span
+                                    className={`absolute left-0.5 top-0.5 h-[14px] w-[14px] rounded-full bg-[#B7AFC3] shadow-[0_0_8px_rgba(0,0,0,0.35)] transition-transform duration-300 ${
+                                        maintenanceMode ? "translate-x-[14px]" : "translate-x-0"
+                                    }`}
+                                />
                             </span>
                         </button>
                     ) : null}

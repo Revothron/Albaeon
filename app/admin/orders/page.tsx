@@ -1,89 +1,19 @@
+"use client";
+
 import Link from "next/link";
-import { Download, Eye } from "lucide-react";
+import { ChevronDown, Download, Eye } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
     AdminDateRangeBox,
     AdminFieldLabel,
     AdminOutlineButton,
     AdminPagination,
     AdminPageHeading,
-    AdminSelectBox,
     AdminStatusBadge,
     AdminTextInput,
 } from "@/components/admin/AdminUi";
 import { adminCinzel, adminRaleway } from "@/components/admin/adminFonts";
-
-const orders = [
-    {
-        id: "ALB-00142",
-        customer: "Arjun Sharma",
-        email: "arjun@gmail.com",
-        date: "28 Feb 2026",
-        amount: "Rs 1,299",
-        payment: { label: "Paid", tone: "success" as const },
-        fulfillment: { label: "Shipped", tone: "info" as const },
-        provider: "Banian",
-    },
-    {
-        id: "ALB-00141",
-        customer: "Priya Nair",
-        email: "priya@gmail.com",
-        date: "27 Feb 2026",
-        amount: "Rs 2,199",
-        payment: { label: "Paid", tone: "success" as const },
-        fulfillment: { label: "Fulfilled", tone: "success" as const },
-        provider: "Gelato",
-    },
-    {
-        id: "ALB-00140",
-        customer: "Rahul Verma",
-        email: "rahul@gmail.com",
-        date: "26 Feb 2026",
-        amount: "Rs 1,799",
-        payment: { label: "Paid", tone: "success" as const },
-        fulfillment: { label: "Processing", tone: "warning" as const },
-        provider: "Banian",
-    },
-    {
-        id: "ALB-00139",
-        customer: "Sneha Patel",
-        email: "sneha@gmail.com",
-        date: "25 Feb 2026",
-        amount: "Rs 3,598",
-        payment: { label: "Paid", tone: "success" as const },
-        fulfillment: { label: "Pending", tone: "muted" as const },
-        provider: "Banian",
-    },
-    {
-        id: "ALB-00138",
-        customer: "Kiran Mehta",
-        email: "kiran@gmail.com",
-        date: "24 Feb 2026",
-        amount: "Rs 1,299",
-        payment: { label: "Paid", tone: "success" as const },
-        fulfillment: { label: "Fulfilled", tone: "success" as const },
-        provider: "Gelato",
-    },
-    {
-        id: "ALB-00137",
-        customer: "Maya Kapoor",
-        email: "maya@gmail.com",
-        date: "24 Feb 2026",
-        amount: "Rs 2,499",
-        payment: { label: "Pending", tone: "warning" as const },
-        fulfillment: { label: "Processing", tone: "warning" as const },
-        provider: "Banian",
-    },
-    {
-        id: "ALB-00136",
-        customer: "Ethan Cole",
-        email: "ethan@g.com",
-        date: "23 Feb 2026",
-        amount: "$210",
-        payment: { label: "Paid", tone: "success" as const },
-        fulfillment: { label: "Delivered", tone: "success" as const },
-        provider: "Gelato",
-    },
-];
+import { adminOrders } from "@/adminOrders";
 
 const headerColumns = [
     "",
@@ -97,13 +27,86 @@ const headerColumns = [
     "ACTION",
 ];
 
+const paymentOptions = ["All","Paid", "Pending", "Failed"];
+const fulfillmentOptions = ["All","Shipping", "Delivered", "Processing", "Pending", "Cancelled"];
+const providerOptions = ["All","Banian City", "Gelato"];
+
 function CheckCell() {
     return (
         <span className="inline-flex h-3 w-3 border border-text-muted/60" aria-hidden="true" />
     );
 }
 
+function FilterDropdown({
+    id,
+    value,
+    options,
+    openId,
+    onToggle,
+}: {
+    id: string;
+    value: string;
+    options: string[];
+    openId: string | null;
+    onToggle: (id: string) => void;
+}) {
+    const isOpen = openId === id;
+
+    return (
+        <div className="group relative w-full" data-filter-dropdown>
+            <button
+                type="button"
+                className={`flex h-[38px] w-full items-center justify-between border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-primary transition-colors duration-200 hover:border-gold/30`}
+                aria-expanded={isOpen}
+                onClick={() => onToggle(id)}
+            >
+                <span>{value}</span>
+                <ChevronDown
+                    className={`h-3.5 w-3.5 text-text-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    strokeWidth={1.8}
+                />
+            </button>
+            {isOpen ? (
+                <div className="absolute left-0 top-[calc(100%+6px)] z-20 w-full min-w-[160px] border border-gold/12 bg-nav p-2 shadow-[0_16px_36px_rgba(0,0,0,0.45)]">
+                    {options.map((option) => (
+                        <button
+                            key={option}
+                            type="button"
+                            className={`${adminRaleway.className} flex w-full items-center px-3 py-2 text-left text-[12px] font-light text-text-primary transition-colors duration-200 hover:bg-gold/8 hover:text-gold`}
+                            onClick={() => onToggle(id)}
+                        >
+                            {option}
+                        </button>
+                    ))}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
 export default function AdminOrdersPage() {
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+            if (!event.target.closest("[data-filter-dropdown]")) {
+                setOpenDropdown(null);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClick);
+        return () => {
+            document.removeEventListener("mousedown", handleClick);
+        };
+    }, []);
+
+    const handleToggle = (id: string) => {
+        setOpenDropdown((current) => (current === id ? null : id));
+    };
+
     return (
         <div className="space-y-5 md:space-y-6">
             <AdminPageHeading
@@ -114,28 +117,28 @@ export default function AdminOrdersPage() {
             />
 
             <section className="border border-gold/10 bg-[#1E1A2E] px-5 py-4 md:px-6">
-                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[260px_150px_170px_120px_minmax(0,1fr)_110px]">
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-[220px_140px_160px_120px_minmax(200px,1fr)_90px] lg:items-end xl:grid-cols-[240px_150px_170px_130px_minmax(220px,1fr)_100px]">
                     <div>
                         <AdminFieldLabel>DATE RANGE</AdminFieldLabel>
                         <AdminDateRangeBox fromLabel="From date" toLabel="To date" />
                     </div>
                     <div>
                         <AdminFieldLabel>PAYMENT STATUS</AdminFieldLabel>
-                        <AdminSelectBox value="All" />
+                        <FilterDropdown id="payment" value="All" options={paymentOptions} openId={openDropdown} onToggle={handleToggle} />
                     </div>
                     <div>
                         <AdminFieldLabel>FULFILLMENT STATUS</AdminFieldLabel>
-                        <AdminSelectBox value="All" />
+                        <FilterDropdown id="fulfillment" value="All" options={fulfillmentOptions} openId={openDropdown} onToggle={handleToggle} />
                     </div>
                     <div>
                         <AdminFieldLabel>PROVIDER</AdminFieldLabel>
-                        <AdminSelectBox value="All" />
+                        <FilterDropdown id="provider" value="All" options={providerOptions} openId={openDropdown} onToggle={handleToggle} />
                     </div>
                     <div>
                         <AdminFieldLabel>SEARCH ORDER</AdminFieldLabel>
-                        <AdminTextInput placeholder="Order ID, customer name..." />
+                        <AdminTextInput placeholder="Order ID, customer name..." className="min-w-0" />
                     </div>
-                    <div className="self-end">
+                    <div className="self-end justify-self-start lg:justify-self-end">
                         <button
                             type="button"
                             className={`${adminRaleway.className} inline-flex h-[38px] items-center border border-gold/20 px-4 text-[12px] text-text-muted transition-colors duration-200 hover:text-text-primary`}
@@ -158,7 +161,7 @@ export default function AdminOrdersPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {orders.map((order) => (
+                        {adminOrders.map((order) => (
                             <tr key={order.id} className="border-t border-gold/6">
                                 <td className="px-3 py-4 text-center md:px-6">
                                     <CheckCell />

@@ -1,10 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil } from "lucide-react";
+import { ChevronDown, Pencil } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
     AdminPagination,
     AdminPageHeading,
-    AdminSelectBox,
     AdminStatusBadge,
     AdminTextInput,
 } from "@/components/admin/AdminUi";
@@ -79,7 +81,81 @@ function CheckCell() {
     );
 }
 
+function FilterDropdown({
+    id,
+    value,
+    options,
+    openId,
+    onToggle,
+    className = "",
+}: {
+    id: string;
+    value: string;
+    options: string[];
+    openId: string | null;
+    onToggle: (id: string) => void;
+    className?: string;
+}) {
+    const isOpen = openId === id;
+
+    return (
+        <div className={`group relative w-full ${className}`} data-filter-dropdown>
+            <button
+                type="button"
+                className={`flex h-[38px] w-full items-center justify-between border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-primary transition-colors duration-200 hover:border-gold/30`}
+                aria-expanded={isOpen}
+                onClick={() => onToggle(id)}
+            >
+                <span>{value}</span>
+                <ChevronDown
+                    className={`h-3.5 w-3.5 text-text-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    strokeWidth={1.8}
+                />
+            </button>
+            {isOpen ? (
+                <div className="absolute left-0 top-[calc(100%+6px)] z-20 w-full min-w-[160px] border border-gold/12 bg-nav p-2 shadow-[0_16px_36px_rgba(0,0,0,0.45)]">
+                    {options.map((option) => (
+                        <button
+                            key={option}
+                            type="button"
+                            className={`${adminRaleway.className} flex w-full items-center px-3 py-2 text-left text-[12px] font-light text-text-primary transition-colors duration-200 hover:bg-gold/8 hover:text-gold`}
+                            onClick={() => onToggle(id)}
+                        >
+                            {option}
+                        </button>
+                    ))}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
 export default function AdminProductsPage() {
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const categoryOptions = ["All Categories", "T-shirt", "Hoodie"];
+    const statusOptions = ["All Status", "Active", "Draft"];
+    const sortOptions = ["Newest First", "A-z", "z-A", "price low to high", "price high to low"];
+
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+            if (!event.target.closest("[data-filter-dropdown]")) {
+                setOpenDropdown(null);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClick);
+        return () => {
+            document.removeEventListener("mousedown", handleClick);
+        };
+    }, []);
+
+    const handleToggle = (id: string) => {
+        setOpenDropdown((current) => (current === id ? null : id));
+    };
+
     return (
         <div className="space-y-5 md:space-y-6">
             <AdminPageHeading
@@ -101,9 +177,30 @@ export default function AdminProductsPage() {
                     <div className="flex-1">
                         <AdminTextInput placeholder="Search products by name, SKU..." className="w-full" />
                     </div>
-                    <AdminSelectBox value="All Categories" className="w-full sm:w-[160px]" />
-                    <AdminSelectBox value="All Status" className="w-full sm:w-[140px]" />
-                    <AdminSelectBox value="Newest First" className="w-full sm:w-[160px]" />
+                    <FilterDropdown
+                        id="categories"
+                        value="All Categories"
+                        options={categoryOptions}
+                        openId={openDropdown}
+                        onToggle={handleToggle}
+                        className="w-full sm:w-[160px]"
+                    />
+                    <FilterDropdown
+                        id="status"
+                        value="All Status"
+                        options={statusOptions}
+                        openId={openDropdown}
+                        onToggle={handleToggle}
+                        className="w-full sm:w-[140px]"
+                    />
+                    <FilterDropdown
+                        id="sort"
+                        value="Newest First"
+                        options={sortOptions}
+                        openId={openDropdown}
+                        onToggle={handleToggle}
+                        className="w-full sm:w-[160px]"
+                    />
                 </div>
             </section>
 

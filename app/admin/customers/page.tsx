@@ -1,16 +1,91 @@
+"use client";
+
 import Link from "next/link";
-import { Download, Eye } from "lucide-react";
+import { ChevronDown, Download, Eye } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
     AdminOutlineButton,
     AdminPagination,
     AdminPageHeading,
-    AdminSelectBox,
     AdminTextInput,
 } from "@/components/admin/AdminUi";
 import { adminCinzel, adminRaleway } from "@/components/admin/adminFonts";
 import { adminCustomers } from "@/lib/admin/customers";
 
+function FilterDropdown({
+    id,
+    value,
+    options,
+    openId,
+    onToggle,
+    className = "",
+}: {
+    id: string;
+    value: string;
+    options: string[];
+    openId: string | null;
+    onToggle: (id: string) => void;
+    className?: string;
+}) {
+    const isOpen = openId === id;
+
+    return (
+        <div className={`group relative w-full ${className}`} data-filter-dropdown>
+            <button
+                type="button"
+                className={`flex h-[38px] w-full items-center justify-between border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-primary transition-colors duration-200 hover:border-gold/30`}
+                aria-expanded={isOpen}
+                onClick={() => onToggle(id)}
+            >
+                <span>{value}</span>
+                <ChevronDown
+                    className={`h-3.5 w-3.5 text-text-muted transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    strokeWidth={1.8}
+                />
+            </button>
+            {isOpen ? (
+                <div className="absolute left-0 top-[calc(100%+6px)] z-20 w-full min-w-[160px] border border-gold/12 bg-nav p-2 shadow-[0_16px_36px_rgba(0,0,0,0.45)]">
+                    {options.map((option) => (
+                        <button
+                            key={option}
+                            type="button"
+                            className={`${adminRaleway.className} flex w-full items-center px-3 py-2 text-left text-[12px] font-light text-text-primary transition-colors duration-200 hover:bg-gold/8 hover:text-gold`}
+                            onClick={() => onToggle(id)}
+                        >
+                            {option}
+                        </button>
+                    ))}
+                </div>
+            ) : null}
+        </div>
+    );
+}
+
 export default function AdminCustomersPage() {
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const countryOptions = ["All Countries", "India", "USA", "UK"];
+    const recentOptions = ["Recent Registered", "one week", "Two Week", "one Month", "Two Month", "Three Month"];
+
+    useEffect(() => {
+        const handleClick = (event: MouseEvent) => {
+            if (!(event.target instanceof Element)) {
+                return;
+            }
+            if (!event.target.closest("[data-filter-dropdown]")) {
+                setOpenDropdown(null);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClick);
+        return () => {
+            document.removeEventListener("mousedown", handleClick);
+        };
+    }, []);
+
+    const handleToggle = (id: string) => {
+        setOpenDropdown((current) => (current === id ? null : id));
+    };
+
     return (
         <div className="space-y-5">
             <AdminPageHeading
@@ -25,8 +100,22 @@ export default function AdminCustomersPage() {
                     <div className="flex-1">
                         <AdminTextInput placeholder="Search by name, email, username..." className="w-full" />
                     </div>
-                    <AdminSelectBox value="All Countries" className="w-full sm:w-[160px]" />
-                    <AdminSelectBox value="Recent Registered" className="w-full sm:w-[180px]" />
+                    <FilterDropdown
+                        id="countries"
+                        value="All Countries"
+                        options={countryOptions}
+                        openId={openDropdown}
+                        onToggle={handleToggle}
+                        className="w-full sm:w-[160px]"
+                    />
+                    <FilterDropdown
+                        id="recent"
+                        value="Recent Registered"
+                        options={recentOptions}
+                        openId={openDropdown}
+                        onToggle={handleToggle}
+                        className="w-full sm:w-[180px]"
+                    />
                 </div>
             </section>
 

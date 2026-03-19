@@ -1,46 +1,84 @@
 "use client";
 
-import { Minus, Plus, X, Heart } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { Cinzel } from "next/font/google";
+
+const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+
+const cartItems = [
+    {
+        name: "Aurelian Monolith Jacket",
+        meta: "Size: M   Quantity: 1   Price: $238",
+        image: "/collection/nocturne-layer-jacket.png",
+    },
+    {
+        name: "Obsidian Crest Tee",
+        meta: "Size: L   Quantity: 2   Price: $96",
+        image: "/home/arrival-obsidian-crest-tee.png",
+    },
+];
+
+const recommended = [
+    {
+        name: "Rune Column Hoodie",
+        price: "$169",
+        image: "/home/arrival-vanguard-glyph-hoodie.png",
+    },
+    {
+        name: "Shadow Crest Tee",
+        price: "$92",
+        image: "/home/arrival-obsidian-crest-tee.png",
+    },
+    {
+        name: "Aegis Layered Coat",
+        price: "$264",
+        image: "/home/best-aurelian-cargo-jacket.png",
+    },
+];
 
 export default function CartPage() {
     return (
-        <div className="bg-primary min-h-screen">
-            <div className="max-w-7xl mx-auto px-6 py-12">
-                <h1 className="text-gold text-3xl font-bold tracking-wider uppercase mb-10">
-                    Cart
+        <section className="min-h-screen bg-primary">
+            <div className="desktop-frame flex flex-col gap-7 py-6 sm:py-8 lg:gap-7 lg:py-12">
+                <h1 className={`${cinzel.className} text-[32px] font-normal text-gold sm:text-[44px] lg:text-[52px]`}>
+                    Your Cart
                 </h1>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    {/* ── Cart Items ── */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {[1, 2].map((i) => (
-                            <div key={i} className="card-surface p-5 flex gap-5">
-                                <div className="w-24 h-32 bg-surface flex-shrink-0" />
-                                <div className="flex-1">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <p className="text-text-primary text-sm font-medium">Product Name</p>
-                                            <p className="text-text-muted text-xs mt-1">Size: M</p>
-                                        </div>
-                                        <button className="text-text-muted hover:text-red-400 transition-colors">
-                                            <X className="w-4 h-4" />
+                <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+                    <div className="space-y-4">
+                        {cartItems.map((item) => (
+                            <div
+                                key={item.name}
+                                className="flex flex-col gap-4 border border-gold bg-surface p-4 sm:flex-row sm:gap-6"
+                            >
+                                <div className="relative h-[200px] w-full overflow-hidden border border-gold bg-primary-deep sm:w-[180px]">
+                                    <Image
+                                        src={item.image}
+                                        alt={item.name}
+                                        fill
+                                        sizes="(max-width: 640px) 100vw, 180px"
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="flex flex-1 flex-col gap-2.5">
+                                    <p className={`${cinzel.className} text-[22px] text-text-primary sm:text-[26px] lg:text-[28px]`}>
+                                        {item.name}
+                                    </p>
+                                    <p className="font-sans text-[13px] text-text-muted sm:text-[14px]">
+                                        {item.meta}
+                                    </p>
+                                    <div className="flex flex-wrap items-center gap-4 pt-1">
+                                        <button
+                                            type="button"
+                                            className="font-sans text-[13px] text-gold transition-colors duration-200 hover:text-gold-hover sm:text-[14px]"
+                                        >
+                                            Remove
                                         </button>
-                                    </div>
-                                    <p className="text-gold text-sm font-semibold mt-3">₹1,299</p>
-                                    <div className="flex items-center justify-between mt-4">
-                                        <div className="flex items-center gap-0 border border-white/10">
-                                            <button className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-gold transition-colors">
-                                                <Minus className="w-3 h-3" />
-                                            </button>
-                                            <span className="w-10 h-8 flex items-center justify-center text-text-primary text-xs border-x border-white/10">
-                                                1
-                                            </span>
-                                            <button className="w-8 h-8 flex items-center justify-center text-text-muted hover:text-gold transition-colors">
-                                                <Plus className="w-3 h-3" />
-                                            </button>
-                                        </div>
-                                        <button className="text-text-muted hover:text-gold transition-colors text-xs flex items-center gap-1">
-                                            <Heart className="w-3.5 h-3.5" />
+                                        <button
+                                            type="button"
+                                            className="font-sans text-[13px] text-text-primary transition-colors duration-200 hover:text-gold sm:text-[14px]"
+                                        >
                                             Move to Wishlist
                                         </button>
                                     </div>
@@ -49,45 +87,52 @@ export default function CartPage() {
                         ))}
                     </div>
 
-                    {/* ── Summary ── */}
-                    <div className="card-surface p-6 h-fit sticky top-24">
-                        <h3 className="text-text-primary text-lg font-semibold mb-6">Order Summary</h3>
-                        <div className="space-y-3 mb-6">
-                            <div className="flex justify-between text-sm">
-                                <span className="text-text-muted">Subtotal</span>
-                                <span className="text-text-primary">₹2,598</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-text-muted">Shipping</span>
-                                <span className="text-text-primary">Calculated at checkout</span>
-                            </div>
-                            <div className="border-t border-white/5 pt-3 flex justify-between font-semibold">
-                                <span className="text-text-primary">Total</span>
-                                <span className="text-gold">₹2,598</span>
-                            </div>
-                        </div>
-                        <button className="btn-primary w-full">Checkout</button>
+                    <div className="h-fit border border-gold bg-surface p-5 sm:p-6">
+                        <h2 className={`${cinzel.className} text-[26px] text-gold sm:text-[30px] lg:text-[32px]`}>
+                            Order Summary
+                        </h2>
+                        <p className="mt-3 whitespace-pre-line font-sans text-[14px] leading-[1.8] text-text-primary sm:text-[16px]">
+                            {"Subtotal: $430\nShipping: $18\nTotal: $448"}
+                        </p>
+                        <Link
+                            href="/checkout/delivery"
+                            className="mt-4 flex h-[52px] items-center justify-center bg-gold font-sans text-[15px] font-bold text-nav transition-colors duration-200 hover:bg-gold-hover"
+                        >
+                            Checkout
+                        </Link>
                     </div>
                 </div>
 
-                {/* ── Recommended Products ── */}
-                <section className="mt-16">
-                    <h2 className="text-gold text-xl font-semibold tracking-wider uppercase mb-8">
-                        You May Also Like
+                <div className="space-y-5">
+                    <h2 className={`${cinzel.className} text-[28px] text-gold sm:text-[34px] lg:text-[40px]`}>
+                        Recommended for You
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="card-surface group cursor-pointer">
-                                <div className="aspect-[3/4] bg-surface" />
-                                <div className="p-4">
-                                    <p className="text-text-primary text-sm font-medium">Product Name</p>
-                                    <p className="text-text-muted text-sm mt-1">₹1,299</p>
+                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                        {recommended.map((item) => (
+                            <div
+                                key={item.name}
+                                className="flex flex-col gap-3.5 border border-gold bg-surface p-3.5"
+                            >
+                                <div className="relative h-[320px] w-full overflow-hidden bg-primary-deep">
+                                    <Image
+                                        src={item.image}
+                                        alt={item.name}
+                                        fill
+                                        sizes="(max-width: 1024px) 100vw, 308px"
+                                        className="object-cover"
+                                    />
                                 </div>
+                                <p className={`${cinzel.className} text-[20px] text-text-primary sm:text-[22px] lg:text-[24px]`}>
+                                    {item.name}
+                                </p>
+                                <p className="font-sans text-[16px] font-semibold text-gold sm:text-[18px]">
+                                    {item.price}
+                                </p>
                             </div>
                         ))}
                     </div>
-                </section>
+                </div>
             </div>
-        </div>
+        </section>
     );
 }

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { AdminPageHeading } from "@/components/admin/AdminUi";
 import { adminCinzel, adminCormorant, adminRaleway } from "@/components/admin/adminFonts";
 import { analyticsRanges } from "@/lib/admin/analytics";
@@ -20,6 +23,9 @@ const chartHeight = 170;
 const maxSales = Math.max(...netSalesValues);
 const maxOrders = Math.max(...orderValues);
 const chartStep = chartWidth / (chartDates.length - 1);
+const barSlot = chartWidth / chartDates.length;
+const barWidth = barSlot * 0.14;
+const barGap = barSlot * 0.06;
 const salesPoints = netSalesValues
     .map((value, index) => {
         const x = index * chartStep;
@@ -126,6 +132,10 @@ function LeaderboardCard({
 }
 
 export default function AnalyticsOverviewPage() {
+    const [activeRange, setActiveRange] = useState("TODAY");
+    const [activeSeries, setActiveSeries] = useState({ netSales: true, orders: true });
+    const [chartMode, setChartMode] = useState<"line" | "bar">("line");
+
     return (
         <div className="space-y-6">
             <div className="space-y-5">
@@ -134,15 +144,16 @@ export default function AnalyticsOverviewPage() {
                     title="Overview"
                 />
 
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
                     <div className="flex flex-wrap items-center gap-2">
                         {ranges.map((range) => {
-                            const active = range === "TODAY";
+                            const active = range === activeRange;
 
                             return (
                                 <button
                                     key={range}
                                     type="button"
+                                    onClick={() => setActiveRange(range)}
                                     className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
                                         active
                                             ? "border-gold bg-gold/12 text-gold"
@@ -153,20 +164,6 @@ export default function AnalyticsOverviewPage() {
                                 </button>
                             );
                         })}
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                        <button
-                            type="button"
-                            className={`${adminRaleway.className} h-9 w-[130px] border border-gold/12 bg-footer px-3 text-left text-[12px] font-light text-text-muted`}
-                        >
-                            1 Mar 2026
-                        </button>
-                        <button
-                            type="button"
-                            className={`${adminRaleway.className} h-9 w-[130px] border border-gold/12 bg-footer px-3 text-left text-[12px] font-light text-text-muted`}
-                        >
-                            4 Mar 2026
-                        </button>
                     </div>
                 </div>
             </div>
@@ -184,35 +181,74 @@ export default function AnalyticsOverviewPage() {
                     </p>
 
                     <div className="flex gap-2">
-                        <button
-                            type="button"
-                            className={`${adminCinzel.className} border border-gold bg-gold/12 px-4 py-1.5 text-[10px] font-semibold tracking-[0.14em] text-gold`}
-                        >
-                            Line
-                        </button>
-                        <button
-                            type="button"
-                            className={`${adminCinzel.className} border border-gold/12 px-4 py-1.5 text-[10px] font-semibold tracking-[0.14em] text-text-muted`}
-                        >
-                            Bar
-                        </button>
+                        {(["line", "bar"] as const).map((mode) => {
+                            const active = chartMode === mode;
+
+                            return (
+                                <button
+                                    key={mode}
+                                    type="button"
+                                    onClick={() => setChartMode(mode)}
+                                    className={`${adminCinzel.className} border px-4 py-1.5 text-[10px] font-semibold tracking-[0.14em] transition-colors duration-200 ${
+                                        active
+                                            ? "border-gold bg-gold/12 text-gold"
+                                            : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
+                                    }`}
+                                >
+                                    {mode === "line" ? "Line" : "Bar"}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
-                <div className={`mt-4 flex flex-wrap items-center gap-5 text-[12px] text-text-muted ${adminRaleway.className}`}>
-                    <span className="inline-flex items-center gap-2">
+                <div className={`mt-4 flex flex-wrap items-center gap-3 text-[12px] ${adminRaleway.className}`}>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setActiveSeries((current) => {
+                                const nextValue = !current.netSales;
+                                if (!nextValue && !current.orders) {
+                                    return current;
+                                }
+                                return { ...current, netSales: nextValue };
+                            })
+                        }
+                        className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
+                            activeSeries.netSales
+                                ? "border-gold bg-gold/10 text-text-primary"
+                                : "border-gold/20 bg-[#1A1426] text-text-muted hover:border-gold/40 hover:text-text-primary"
+                        }`}
+                    >
                         <span className="h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
                         Net Sales
-                    </span>
-                    <span className="inline-flex items-center gap-2">
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() =>
+                            setActiveSeries((current) => {
+                                const nextValue = !current.orders;
+                                if (!nextValue && !current.netSales) {
+                                    return current;
+                                }
+                                return { ...current, orders: nextValue };
+                            })
+                        }
+                        className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
+                            activeSeries.orders
+                                ? "border-gold bg-gold/10 text-text-primary"
+                                : "border-gold/20 bg-[#1A1426] text-text-muted hover:border-gold/40 hover:text-text-primary"
+                        }`}
+                    >
                         <span className="h-2 w-2 rounded-full bg-[#4A90C4]" aria-hidden="true" />
                         Orders
-                    </span>
+                    </button>
                 </div>
 
-                <div className="mt-4 w-full border border-gold/10 bg-footer px-4 py-3.5">
-                    <div className="relative h-[240px]">
-                        <div className="pointer-events-none absolute inset-0">
+                <div className="mt-4 w-full border border-gold/10 bg-footer px-2 py-3.5">
+                    <div className="w-full max-w-[920px]">
+                        <div className="relative h-[240px]">
+                            <div className="pointer-events-none absolute inset-0">
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <div
                                     key={index}
@@ -228,41 +264,98 @@ export default function AnalyticsOverviewPage() {
                             preserveAspectRatio="none"
                             aria-label="Analytics overview chart"
                         >
-                            <polyline fill="none" stroke="#E6C979" strokeWidth="2" points={salesPoints} />
-                            <polyline fill="none" stroke="#4A90C4" strokeWidth="1.5" points={ordersPoints} />
+                            {chartMode === "line" ? (
+                                <>
+                                    {activeSeries.netSales ? (
+                                        <>
+                                            <polyline fill="none" stroke="#E6C979" strokeWidth="2" points={salesPoints} />
+                                            {netSalesValues.map((value, index) => {
+                                                const x = index * chartStep;
+                                                const y = chartHeight - (value / maxSales) * chartHeight;
 
-                            {netSalesValues.map((value, index) => {
-                                const x = index * chartStep;
-                                const y = chartHeight - (value / maxSales) * chartHeight;
+                                                return <circle key={`sales-${chartDates[index]}`} cx={x} cy={y} r="3" fill="#E6C979" />;
+                                            })}
+                                        </>
+                                    ) : null}
+                                    {activeSeries.orders ? (
+                                        <>
+                                            <polyline fill="none" stroke="#4A90C4" strokeWidth="1.5" points={ordersPoints} />
+                                            {orderValues.map((value, index) => {
+                                                const x = index * chartStep;
+                                                const y = chartHeight - (value / maxOrders) * chartHeight;
 
-                                return <circle key={`sales-${chartDates[index]}`} cx={x} cy={y} r="3" fill="#E6C979" />;
-                            })}
+                                                return <circle key={`orders-${chartDates[index]}`} cx={x} cy={y} r="2.5" fill="#4A90C4" />;
+                                            })}
+                                        </>
+                                    ) : null}
+                                </>
+                            ) : (
+                                <>
+                                    {activeSeries.netSales ? (
+                                        netSalesValues.map((value, index) => {
+                                            const groupStart = index * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2;
+                                            const x = groupStart;
+                                            const barHeight = (value / maxSales) * chartHeight;
+                                            const y = chartHeight - barHeight;
 
-                            {orderValues.map((value, index) => {
-                                const x = index * chartStep;
-                                const y = chartHeight - (value / maxOrders) * chartHeight;
+                                            return (
+                                                <rect
+                                                    key={`sales-bar-${chartDates[index]}`}
+                                                    x={x}
+                                                    y={y}
+                                                    width={barWidth}
+                                                    height={barHeight}
+                                                    fill="#E6C979"
+                                                    opacity={0.85}
+                                                />
+                                            );
+                                        })
+                                    ) : null}
+                                    {activeSeries.orders ? (
+                                        orderValues.map((value, index) => {
+                                            const groupStart = index * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2;
+                                            const x = groupStart + barWidth + barGap;
+                                            const barHeight = (value / maxOrders) * chartHeight;
+                                            const y = chartHeight - barHeight;
 
-                                return <circle key={`orders-${chartDates[index]}`} cx={x} cy={y} r="2.5" fill="#4A90C4" />;
-                            })}
+                                            return (
+                                                <rect
+                                                    key={`orders-bar-${chartDates[index]}`}
+                                                    x={x}
+                                                    y={y}
+                                                    width={barWidth}
+                                                    height={barHeight}
+                                                    fill="#4A90C4"
+                                                    opacity={0.75}
+                                                />
+                                            );
+                                        })
+                                    ) : null}
+                                </>
+                            )}
                         </svg>
 
                         <div className="absolute right-4 top-4 w-[190px] border border-gold/20 bg-nav px-3 py-2">
                             <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
                                 3 Mar 2026
                             </p>
-                            <p className={`${adminCinzel.className} mt-1 text-[12px] text-gold`}>
-                                Net Sales: \u20B984,200
-                            </p>
-                            <p className={`${adminCinzel.className} mt-1 text-[12px] text-[#4A90C4]`}>
-                                Orders: 18
-                            </p>
+                            {activeSeries.netSales ? (
+                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-gold`}>
+                                    Net Sales: \u20B984,200
+                                </p>
+                            ) : null}
+                            {activeSeries.orders ? (
+                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-[#4A90C4]`}>
+                                    Orders: 18
+                                </p>
+                            ) : null}
                         </div>
-                    </div>
-
-                    <div className={`mt-3 grid grid-cols-6 text-center text-[11px] text-text-muted ${adminRaleway.className}`}>
-                        {chartDates.map((date) => (
-                            <span key={date}>{date}</span>
-                        ))}
+                        </div>
+                        <div className={`mt-3 grid grid-cols-6 gap-1 text-center text-[11px] text-text-muted ${adminRaleway.className}`}>
+                            {chartDates.map((date) => (
+                                <span key={date}>{date}</span>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>

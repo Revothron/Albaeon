@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Cinzel } from "next/font/google";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
@@ -188,21 +189,21 @@ export default function ProductView({ product }: { product: Product }) {
                                 >
                                     Add to Cart
                                 </button>
-                                <button
-                                    type="button"
-                                    className="h-[46px] border border-gold bg-surface font-sans text-[13px] font-semibold text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav"
+                                <Link
+                                    href="/checkout/delivery"
+                                    className="flex h-[46px] items-center justify-center border border-gold bg-surface font-sans text-[13px] font-semibold text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav"
                                 >
                                     Buy Now
-                                </button>
+                                </Link>
                             </div>
                         </div>
 
-                        <button
-                            type="button"
-                            className="hidden h-[52px] w-full rounded-full border border-gold bg-surface font-sans text-[14px] font-semibold text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav lg:block"
+                        <Link
+                            href="/checkout/delivery"
+                            className="hidden h-[52px] w-full rounded-full border border-gold bg-surface font-sans text-[14px] font-semibold text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav lg:flex lg:items-center lg:justify-center"
                         >
                             Buy Now
-                        </button>
+                        </Link>
 
                         <div className="border border-gold bg-surface p-4 sm:p-5 lg:p-6">
                             <h2 className={`${cinzel.className} text-[18px] font-bold text-gold`}>

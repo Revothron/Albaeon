@@ -152,7 +152,7 @@ export function AdminDateRangeBox({
             >
                 {fromLabel}
             </button>
-            <span className={`${adminRaleway.className} text-[13px] text-text-muted`}>→</span>
+            <span className={`${adminRaleway.className} text-[13px] text-text-muted`}>{"\u2192"}</span>
             <button
                 type="button"
                 className={`flex h-[38px] flex-1 items-center border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-muted`}
