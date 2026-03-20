@@ -47,7 +47,7 @@ export default function DeleteAccountModal({
             <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="border border-[#C0392B] px-6 py-2.5 font-sans text-[13px] text-[#C0392B] transition-colors duration-200 hover:bg-[#C0392B] hover:text-white"
+                className="btn-danger"
             >
                 Delete Account
             </button>
@@ -67,7 +67,7 @@ export default function DeleteAccountModal({
                         aria-labelledby="delete-account-title"
                         className="w-full max-w-[460px] border border-[#C0392B4D] bg-[#1E1630] p-8 text-center shadow-[0_30px_80px_rgba(0,0,0,0.55)] sm:p-10"
                     >
-                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#C0392B] text-[24px] font-medium text-[#C0392B]">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--status-error)] text-[24px] font-medium text-[var(--status-error)]">
                             !
                         </div>
 
@@ -91,7 +91,7 @@ export default function DeleteAccountModal({
                                 value={confirmEmail}
                                 onChange={(event) => setConfirmEmail(event.target.value)}
                                 placeholder={email}
-                                className="h-[42px] w-full border border-[#C0392B40] bg-primary px-3.5 font-sans text-[14px] text-text-primary outline-none placeholder:text-text-muted"
+                                className="w-full border border-[#C0392B40] bg-primary px-3.5 font-sans text-[14px] text-text-primary outline-none placeholder:text-text-muted"
                             />
                         </div>
 
@@ -106,11 +106,7 @@ export default function DeleteAccountModal({
                             <button
                                 type="button"
                                 disabled={!isMatch}
-                                className={`px-7 py-2.5 font-sans text-[13px] transition-colors duration-200 ${
-                                    isMatch
-                                        ? "border border-[#C0392B] text-[#C0392B] hover:bg-[#C0392B] hover:text-white"
-                                        : "border border-[#C0392B] text-[#C0392B] opacity-40"
-                                }`}
+                                className="btn-danger"
                             >
                                 Delete My Account
                             </button>
@@ -125,3 +121,5 @@ export default function DeleteAccountModal({
         </>
     );
 }
+
+

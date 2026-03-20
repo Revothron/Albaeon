@@ -81,7 +81,7 @@ export default function AdminHeader() {
     }, []);
 
     return (
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-[#E6C97914] bg-[#1A1426]/95 px-4 backdrop-blur md:px-8">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-[#E6C97914] bg-[var(--bg-secondary)]/95 px-4 backdrop-blur md:px-8">
             <div className="min-w-0">
                 <p className={`${adminCormorant.className} truncate text-[18px] font-light text-text-primary md:text-[22px]`}>
                     {pageTitle}
@@ -94,14 +94,14 @@ export default function AdminHeader() {
             <div ref={dropdownRef} className="relative flex items-center">
                 <button
                     type="button"
-                    className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[#E6C9791A] bg-[#130F18] text-text-muted transition-colors duration-200 hover:border-[#E6C97940] hover:text-gold"
+                    className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[#E6C9791A] bg-[var(--nav-bg)] text-text-muted transition-colors duration-200 hover:border-[#E6C97940] hover:text-gold"
                     aria-label="Notifications"
                     aria-expanded={dropdownOpen}
                     aria-haspopup="dialog"
                     onClick={() => setDropdownOpen((open) => !open)}
                 >
                     <Bell className="h-[18px] w-[18px]" strokeWidth={1.8} />
-                    <span className="absolute -right-2 -top-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#C0392B] px-1 text-[8px] font-semibold leading-none text-white">
+                    <span className="absolute -right-2 -top-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--status-error)] px-1 text-[8px] font-semibold leading-none text-white">
                         3
                     </span>
                 </button>
@@ -112,7 +112,7 @@ export default function AdminHeader() {
                             <p className={`${adminCinzel.className} text-[9px] font-bold tracking-[0.32em] text-gold`}>
                                 NOTIFICATIONS
                             </p>
-                            <span className={`${adminCinzel.className} inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#C0392B] text-[9px] font-bold text-white`}>
+                            <span className={`${adminCinzel.className} inline-flex h-5 w-5 items-center justify-center rounded-full bg-[var(--status-error)] text-[9px] font-bold text-white`}>
                                 3
                             </span>
                         </div>

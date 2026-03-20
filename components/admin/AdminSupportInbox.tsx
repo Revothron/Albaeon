@@ -339,7 +339,7 @@ export default function AdminSupportInbox() {
 
                                     <div className="flex items-center gap-2">
                                         {ticket.unread ? (
-                                            <span className="inline-flex h-2 w-2 rounded-full bg-[#C0392B]" aria-hidden="true" />
+                                            <span className="inline-flex h-2 w-2 rounded-full bg-[var(--status-error)]" aria-hidden="true" />
                                         ) : null}
                                         <AdminStatusBadge label={ticket.status} tone={ticket.statusTone} />
                                     </div>
@@ -389,7 +389,7 @@ export default function AdminSupportInbox() {
                                 <div className="flex flex-wrap items-center gap-2">
                                             <button
                                                 type="button"
-                                                className={`${adminRaleway.className} inline-flex h-8 items-center border border-[#4A90C4]/40 bg-[#4A90C4]/10 px-3 text-[12px] font-medium text-[#4A90C4]`}
+                                                className={`${adminRaleway.className} inline-flex h-8 items-center border border-[var(--status-info)]/40 bg-[var(--status-info)]/10 px-3 text-[12px] font-medium text-[var(--status-info)]`}
                                             >
                                                 {statusLabel}
                                             </button>

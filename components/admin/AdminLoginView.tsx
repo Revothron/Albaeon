@@ -20,7 +20,7 @@ export default function AdminLoginView() {
     const [showPassword, setShowPassword] = useState(false);
 
     return (
-        <div className="min-h-screen bg-[#0F0C14] text-text-primary">
+        <div className="min-h-screen bg-[var(--footer-bg)] text-text-primary">
             <div className="mx-auto w-full max-w-[1440px] grid min-h-screen lg:h-screen lg:overflow-hidden lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,749px)_minmax(0,691px)]">
                 <section className="relative overflow-hidden bg-[#0A0810] min-h-[320px] sm:min-h-[380px] lg:h-full lg:min-h-0">
                     <Image
@@ -98,7 +98,7 @@ export default function AdminLoginView() {
                                             defaultValue="admin@albaeon.com"
                                             className={`${adminRaleway.className} h-full w-full bg-transparent text-[14px] font-light text-text-primary outline-none`}
                                         />
-                                        <Check className="h-3.5 w-3.5 shrink-0 text-[#4CAF7D]" strokeWidth={2.1} />
+                                        <Check className="h-3.5 w-3.5 shrink-0 text-[var(--status-success)]" strokeWidth={2.1} />
                                     </div>
                                 </div>
 
@@ -125,10 +125,10 @@ export default function AdminLoginView() {
 
                                 <div className="flex gap-2.5 border border-[#C0392B40] bg-[#C0392B0F] px-4 py-[14px]">
                                     <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full border border-[#C0392B4D] bg-[#C0392B26]">
-                                        <CircleAlert className="h-2.5 w-2.5 text-[#C0392B]" strokeWidth={2.2} />
+                                        <CircleAlert className="h-2.5 w-2.5 text-[var(--status-error)]" strokeWidth={2.2} />
                                     </span>
                                     <div className="space-y-1">
-                                        <p className={`${adminCinzel.className} text-[10px] font-bold tracking-[0.2em] text-[#C0392B]`}>
+                                        <p className={`${adminCinzel.className} text-[10px] font-bold tracking-[0.2em] text-[var(--status-error)]`}>
                                             ACCESS DENIED
                                         </p>
                                         <p className={`${adminRaleway.className} text-[13px] font-light text-text-primary`}>

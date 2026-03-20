@@ -29,10 +29,12 @@ export default function RegisterPage() {
           <div className="relative w-full flex-1 min-h-[200px] border border-gold/30">
             {/* The image now stretches to fill flex-1 instead of causing vertical overflow via aspect ratio */}
             <div className="absolute inset-0 bg-gradient-to-t from-nav to-surface overflow-hidden">
-               <img 
-                src="https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=2070&auto=format&fit=crop" 
+              <Image
+                src="/admin/admin-login-artwork.png"
                 alt="Albaeon Empire Dress"
-                className="w-full h-full object-cover opacity-80 mix-blend-luminosity scale-105"
+                fill
+                priority
+                className="object-cover opacity-80 mix-blend-luminosity scale-105"
               />
               <div className="absolute inset-0 bg-primary/40 mix-blend-multiply"></div>
             </div>

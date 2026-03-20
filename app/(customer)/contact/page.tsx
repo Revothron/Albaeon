@@ -24,7 +24,7 @@ function ContactField({
         <input
             type="text"
             placeholder={placeholder}
-            className="h-[42px] w-full rounded-[10px] bg-primary-deep px-3 font-sans text-[12px] text-text-primary outline-none placeholder:text-text-muted sm:h-[52px] sm:px-4 sm:text-[15px]"
+            className="w-full rounded-[10px] bg-primary-deep px-3 font-sans text-[12px] text-text-primary outline-none placeholder:text-text-muted sm:px-4 sm:text-[15px]"
         />
     );
 }
@@ -80,3 +80,4 @@ export default function ContactPage() {
         </section>
     );
 }
+

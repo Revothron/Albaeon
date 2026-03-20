@@ -50,11 +50,11 @@ function StatusStep({
 function getStatusClassName(status: string) {
     switch (status) {
         case "Shipped":
-            return "text-[#4A90C4]";
+            return "badge-info";
         case "Delivered":
-            return "text-[#4CAF7D]";
+            return "badge-success";
         default:
-            return "text-[#E6A817]";
+            return "badge-warning";
     }
 }
 
@@ -72,6 +72,43 @@ function getStatusProgress(status: string) {
 }
 
 export default function OrdersPage() {
+    if (customerOrders.length === 0) {
+        return (
+            <AccountShell
+                activeTab="orders"
+                title="My Order"
+                subtitle="View and track all your Albaeon orders from one place."
+            >
+                <div style={{
+                    textAlign: 'center',
+                    padding: '80px 20px',
+                    borderTop: '1px solid rgba(230,201,121,0.08)'
+                }}>
+                    <p style={{
+                        fontFamily: 'var(--font-cormorant)',
+                        fontSize: '28px',
+                        fontWeight: 300,
+                        color: 'var(--text-muted)',
+                        marginBottom: '12px'
+                    }}>
+                        No orders yet.
+                    </p>
+                    <p style={{
+                        fontFamily: 'var(--font-raleway)',
+                        fontSize: '13px',
+                        fontWeight: 300,
+                        color: 'var(--text-muted)',
+                        marginBottom: '28px'
+                    }}>
+                        Your order history will appear here.
+                    </p>
+                    <a href="/shop" className="btn-primary">
+                        Start Shopping
+                    </a>
+                </div>
+            </AccountShell>
+        );
+    }
     const featuredOrder = customerOrders[0];
     const otherOrders = customerOrders.slice(1);
     const totalSpend = customerOrders.reduce((total, order) => total + order.payment.amountCharged, 0);
@@ -109,7 +146,7 @@ export default function OrdersPage() {
                         <input
                             type="text"
                             placeholder="Search orders by number or product name..."
-                            className="h-[42px] w-full border border-gold bg-surface pl-10 pr-4 font-sans text-[13px] text-text-primary outline-none placeholder:text-text-muted"
+                            className="w-full border border-gold bg-surface pl-10 pr-4 font-sans text-[13px] text-text-primary outline-none placeholder:text-text-muted"
                         />
                     </label>
 
@@ -117,7 +154,7 @@ export default function OrdersPage() {
                         <select
                             defaultValue="all-orders"
                             aria-label="Filter orders"
-                            className="h-[42px] w-full appearance-none border border-gold bg-surface px-4 pr-10 font-sans text-[12px] text-text-primary outline-none"
+                            className="w-full appearance-none border border-gold bg-surface px-4 pr-10 font-sans text-[12px] text-text-primary outline-none"
                         >
                             <option value="all-orders">All Orders</option>
                             <option value="shipped">Shipped</option>
@@ -129,7 +166,7 @@ export default function OrdersPage() {
                 </div>
 
                 <div className="space-y-2">
-                    <div className="space-y-3.5 border border-gold bg-surface px-4 py-4 sm:px-6 sm:py-5">
+                    <div className="space-y-3.5 border border-gold bg-surface px-4 py-4 sm:px-6 sm:py-5 card-hover">
                         <div className="flex items-start justify-between gap-4">
                             <div className="space-y-1">
                                 <Link
@@ -142,7 +179,7 @@ export default function OrdersPage() {
                                     {getOrderListMeta(featuredOrder)}
                                 </p>
                             </div>
-                            <p className={`font-sans text-[13px] ${getStatusClassName(featuredOrder.status)}`}>
+                            <p className={`badge ${getStatusClassName(featuredOrder.status)}`}>
                                 {featuredOrder.status}
                             </p>
                         </div>
@@ -188,13 +225,13 @@ export default function OrdersPage() {
                             <div className="flex flex-wrap justify-start gap-2 lg:justify-end">
                                 <Link
                                     href={featuredTrackOrderHref}
-                                    className="border border-gold px-5 py-2 font-sans text-[12px] text-gold transition-colors duration-200 hover:bg-gold hover:text-nav"
+                                    className="btn-secondary"
                                 >
                                     Track Order
                                 </Link>
                                 <button
                                     type="button"
-                                    className="border border-gold/15 px-5 py-2 font-sans text-[12px] text-text-muted transition-colors duration-200 hover:border-gold/30 hover:text-text-primary"
+                                    className="btn-secondary"
                                 >
                                     Download Invoice
                                 </button>
@@ -206,7 +243,7 @@ export default function OrdersPage() {
                         <Link
                             key={order.id}
                             href={`/account/orders/${order.id}`}
-                            className="group flex flex-col gap-3 border border-gold bg-surface px-4 py-4 transition-colors duration-200 hover:border-gold-hover sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5"
+                            className="group flex flex-col gap-3 border border-gold bg-surface px-4 py-4 transition-colors duration-200 hover:border-gold-hover sm:flex-row sm:items-center sm:justify-between sm:px-6 sm:py-5 card-hover"
                         >
                             <div className="space-y-1">
                                 <p className="font-sans text-[14px] text-gold">
@@ -217,10 +254,10 @@ export default function OrdersPage() {
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
-                                <p className={`font-sans text-[13px] ${getStatusClassName(order.status)}`}>
+                                <p className={`badge ${getStatusClassName(order.status)}`}>
                                     {order.status}
                                 </p>
-                                <span className="font-sans text-[12px] text-text-muted transition-colors duration-200 group-hover:text-gold">
+                                <span className="btn-secondary">
                                     View Details
                                 </span>
                             </div>
@@ -231,7 +268,7 @@ export default function OrdersPage() {
                 <div className="flex flex-col items-center gap-1 py-2 text-center">
                     <button
                         type="button"
-                        className="font-sans text-[13px] text-gold transition-colors duration-200 hover:text-gold-hover"
+                        className="btn-secondary"
                     >
                         Load more orders
                     </button>
@@ -243,3 +280,5 @@ export default function OrdersPage() {
         </AccountShell>
     );
 }
+
+

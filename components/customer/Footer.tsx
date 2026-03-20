@@ -81,9 +81,8 @@ function XIcon() {
 }
 
 const socialLinks = [
-    { name: "Instagram", href: "#", Icon: InstagramIcon },
-    { name: "Facebook", href: "#", Icon: FacebookIcon },
-    { name: "X", href: "#", Icon: XIcon },
+    { name: "Instagram", href: "https://instagram.com/albaeon", Icon: InstagramIcon },
+    { name: "X", href: "https://x.com/albaeon", Icon: XIcon },
 ];
 
 const footerColumns = [
@@ -99,7 +98,7 @@ export default function Footer() {
         return null;
     }
     return (
-        <footer className="bg-[#0F0C14]">
+        <footer className="bg-[var(--footer-bg)]">
             <div className="desktop-frame flex flex-col gap-9 py-10 sm:py-12 lg:py-14">
                 <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
                     <div className="flex max-w-[283px] flex-col items-start gap-[14px] text-left">
@@ -123,8 +122,10 @@ export default function Footer() {
                                 <a
                                     key={name}
                                     href={href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     aria-label={name}
-                                    className="transition-colors duration-200 hover:text-gold"
+                                    className="transition-all duration-300 hover:text-gold"
                                 >
                                     <Icon />
                                 </a>
@@ -144,7 +145,7 @@ export default function Footer() {
                                         <li key={link.name}>
                                             <Link
                                                 href={link.href}
-                                                className="font-sans text-[14px] leading-[1.9] text-text-primary transition-colors duration-200 hover:text-gold"
+                                                className="font-sans text-[14px] leading-[1.9] text-text-primary transition-all duration-300 hover:text-gold"
                                             >
                                                 {link.name}
                                             </Link>

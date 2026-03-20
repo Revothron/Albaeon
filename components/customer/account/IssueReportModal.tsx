@@ -223,8 +223,8 @@ export default function IssueReportModal({
                 <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                     <div className="max-w-[560px] space-y-2">
                         <div className="flex items-center gap-3">
-                            <TriangleAlert className="h-5 w-5 text-[#E6A817]" />
-                            <p className={`${cinzel.className} text-[15px] font-bold tracking-[0.3em] text-[#E6A817]`}>
+                            <TriangleAlert className="h-5 w-5 text-[var(--status-warning)]" />
+                            <p className={`${cinzel.className} text-[15px] font-bold tracking-[0.3em] text-[var(--status-warning)]`}>
                                 PRODUCT ISSUE?
                             </p>
                         </div>
@@ -237,7 +237,7 @@ export default function IssueReportModal({
                         <button
                             type="button"
                             onClick={openModal}
-                            className={`${cinzel.className} inline-flex items-center gap-2 border border-[#E6A817] px-6 py-3 text-[10px] font-semibold tracking-[0.3em] text-[#E6A817] transition-colors duration-200 hover:bg-[#E6A817] hover:text-nav`}
+                            className={`${cinzel.className} inline-flex items-center gap-2 border border-[var(--status-warning)] px-6 py-3 text-[10px] font-semibold tracking-[0.3em] text-[var(--status-warning)] transition-colors duration-200 hover:bg-[var(--status-warning)] hover:text-nav`}
                         >
                             REPORT AN ISSUE
                         </button>
@@ -267,10 +267,10 @@ export default function IssueReportModal({
                         <div className="flex items-start justify-between gap-4 border-b border-[#E6A81733] bg-surface px-6 py-5 sm:px-8">
                             <div className="space-y-1">
                                 <div className="flex items-center gap-3">
-                                    <TriangleAlert className="h-5 w-5 text-[#E6A817]" />
+                                    <TriangleAlert className="h-5 w-5 text-[var(--status-warning)]" />
                                     <h2
                                         id="report-issue-title"
-                                        className={`${cinzel.className} text-[11px] font-bold tracking-[0.35em] text-[#E6A817]`}
+                                        className={`${cinzel.className} text-[11px] font-bold tracking-[0.35em] text-[var(--status-warning)]`}
                                     >
                                         REPORT A PRODUCT ISSUE
                                     </h2>
@@ -291,14 +291,14 @@ export default function IssueReportModal({
                         </div>
 
                         <div className="max-h-[70vh] space-y-5 overflow-y-auto p-6 sm:p-8">
-                            <div className="flex gap-3 border-l-[3px] border-[#E6A817] bg-[#E6A8170F] px-4 py-3">
-                                <Info className="mt-0.5 h-4 w-4 shrink-0 text-[#E6A817]" />
+                            <div className="flex gap-3 border-l-[3px] border-[var(--status-warning)] bg-[#E6A8170F] px-4 py-3">
+                                <Info className="mt-0.5 h-4 w-4 shrink-0 text-[var(--status-warning)]" />
                                 <div className="space-y-2">
                                     <p className="font-sans text-[12px] leading-6 text-text-muted">
                                         Albaeon does not accept returns. However, if you received a damaged or incorrect product, submit this form with a video clearly showing the issue. Our team will review and respond within 48 hours.
                                     </p>
                                     {!order.issueSupport.available ? (
-                                        <p className="font-sans text-[11px] text-[#E6A817]">
+                                        <p className="font-sans text-[11px] text-[var(--status-warning)]">
                                             {order.issueSupport.note}
                                         </p>
                                     ) : null}
@@ -352,7 +352,7 @@ export default function IssueReportModal({
                                     <p className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] text-text-muted`}>
                                         DESCRIBE THE ISSUE
                                     </p>
-                                    <span className={`${cinzel.className} text-[10px] text-[#E6A817]`}>*</span>
+                                    <span className={`${cinzel.className} text-[10px] text-[var(--status-warning)]`}>*</span>
                                 </div>
                                 <textarea
                                     value={description}
@@ -423,7 +423,7 @@ export default function IssueReportModal({
                                     <p className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] text-text-muted`}>
                                         UPLOAD VIDEO
                                     </p>
-                                    <span className={`${cinzel.className} bg-[#E6A8171A] px-2 py-0.5 text-[9px] font-semibold tracking-[0.2em] text-[#E6A817]`}>
+                                    <span className={`${cinzel.className} bg-[#E6A8171A] px-2 py-0.5 text-[9px] font-semibold tracking-[0.2em] text-[var(--status-warning)]`}>
                                         REQUIRED
                                     </span>
                                 </div>
@@ -441,7 +441,7 @@ export default function IssueReportModal({
                                     </p>
                                     <label
                                         htmlFor={fileInputId}
-                                        className={`${cinzel.className} inline-flex cursor-pointer border border-[#E6A81759] px-6 py-2.5 text-[10px] font-semibold tracking-[0.3em] text-[#E6A817] transition-colors duration-200 hover:bg-[#E6A817] hover:text-nav`}
+                                        className={`${cinzel.className} inline-flex cursor-pointer border border-[#E6A81759] px-6 py-2.5 text-[10px] font-semibold tracking-[0.3em] text-[var(--status-warning)] transition-colors duration-200 hover:bg-[var(--status-warning)] hover:text-nav`}
                                     >
                                         BROWSE FILES
                                     </label>
@@ -475,7 +475,7 @@ export default function IssueReportModal({
                                 ) : null}
 
                                 {fileError ? (
-                                    <p className="font-sans text-[11px] text-[#E6A817]">
+                                    <p className="font-sans text-[11px] text-[var(--status-warning)]">
                                         {fileError}
                                     </p>
                                 ) : null}
@@ -522,8 +522,8 @@ export default function IssueReportModal({
                                     disabled={!canSubmit}
                                     className={`${cinzel.className} border px-6 py-3 text-[10px] font-semibold tracking-[0.3em] transition-colors duration-200 ${
                                         canSubmit
-                                            ? "border-[#E6A817] bg-[#E6A8171A] text-[#E6A817] hover:bg-[#E6A817] hover:text-nav"
-                                            : "border-[#E6A817] bg-[#E6A8171A] text-[#E6A817] opacity-35"
+                                            ? "border-[var(--status-warning)] bg-[#E6A8171A] text-[var(--status-warning)] hover:bg-[var(--status-warning)] hover:text-nav"
+                                            : "border-[var(--status-warning)] bg-[#E6A8171A] text-[var(--status-warning)] opacity-35"
                                     }`}
                                 >
                                     SUBMIT REPORT
@@ -550,8 +550,8 @@ export default function IssueReportModal({
                         aria-labelledby="report-success-title"
                         className="w-full max-w-[600px] border border-gold/15 bg-primary-deep px-8 py-10 text-center shadow-[0_30px_80px_rgba(0,0,0,0.55)] sm:px-10 sm:py-14"
                     >
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[#4CAF7D] bg-[#4CAF7D10]">
-                            <Check className="h-7 w-7 text-[#4CAF7D]" />
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[var(--status-success)] bg-[#4CAF7D10]">
+                            <Check className="h-7 w-7 text-[var(--status-success)]" />
                         </div>
 
                         <h2
@@ -588,3 +588,4 @@ export default function IssueReportModal({
         </>
     );
 }
+

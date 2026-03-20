@@ -209,13 +209,13 @@ export default function AdminProductsPage() {
                     <p className={`${adminRaleway.className} text-[13px] text-text-primary`}>
                         2 products selected
                     </p>
-                    <span className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-[#4CAF7D]`}>
+                    <span className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-[var(--status-success)]`}>
                         SET ACTIVE
                     </span>
                     <span className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
                         SET DRAFT
                     </span>
-                    <span className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-[#C0392B]`}>
+                    <span className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-[var(--status-error)]`}>
                         DELETE SELECTED
                     </span>
                     <span className={`${adminRaleway.className} ml-auto text-[13px] text-text-muted`}>
@@ -223,8 +223,8 @@ export default function AdminProductsPage() {
                     </span>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full min-w-[1094px] table-fixed border-collapse">
+                <div className="overflow-x-auto w-full">
+                    <table className="w-full min-w-[900px] table-fixed border-collapse">
                         <thead className="bg-nav">
                             <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
                                 <th className="w-[40px] px-6 py-3.5 text-center font-semibold"><CheckCell /></th>

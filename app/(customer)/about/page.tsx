@@ -45,7 +45,7 @@ export default function AboutPage() {
                     <h1 className={`${cinzel.className} text-[34px] text-gold sm:text-[46px] lg:text-[56px]`}>
                         About Albaeon
                     </h1>
-                    <p className="max-w-[920px] font-sans text-[12px] leading-[1.4] text-text-muted sm:text-[15px] lg:text-[18px] lg:leading-[1.5]">
+                    <p className="max-w-[920px] w-full mx-auto px-5 font-sans text-[12px] leading-[1.4] text-text-muted sm:text-[15px] lg:text-[18px] lg:leading-[1.5]">
                         Albaeon is an international clothing brand built on myth, structure, and premium modern craft.
                     </p>
                 </div>

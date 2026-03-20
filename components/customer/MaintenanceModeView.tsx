@@ -9,17 +9,17 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400"
 const raleway = Raleway({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 const serviceStatuses = [
-    { label: "Payments", value: "Operational", dotClassName: "bg-[#4CAF7D]", valueClassName: "text-[#4CAF7D]" },
-    { label: "Storefront", value: "Maintenance", dotClassName: "bg-[#E6A817]", valueClassName: "text-[#E6A817]" },
-    { label: "Order Tracking", value: "Maintenance", dotClassName: "bg-[#E6A817]", valueClassName: "text-[#E6A817]" },
-    { label: "Support Email", value: "Available", dotClassName: "bg-[#4CAF7D]", valueClassName: "text-[#4CAF7D]" },
+    { label: "Payments", value: "Operational", dotClassName: "bg-[var(--status-success)]", valueClassName: "text-[var(--status-success)]" },
+    { label: "Storefront", value: "Maintenance", dotClassName: "bg-[var(--status-warning)]", valueClassName: "text-[var(--status-warning)]" },
+    { label: "Order Tracking", value: "Maintenance", dotClassName: "bg-[var(--status-warning)]", valueClassName: "text-[var(--status-warning)]" },
+    { label: "Support Email", value: "Available", dotClassName: "bg-[var(--status-success)]", valueClassName: "text-[var(--status-success)]" },
 ];
 
 const mobileServiceStatuses = [
-    { label: "Payments", value: "Operational", dotClassName: "bg-[#4CAF7D]", valueClassName: "text-[#4CAF7D]" },
-    { label: "Store", value: "Maintenance", dotClassName: "bg-[#E6A817]", valueClassName: "text-[#E6A817]" },
-    { label: "Tracking", value: "Maintenance", dotClassName: "bg-[#E6A817]", valueClassName: "text-[#E6A817]" },
-    { label: "Support", value: "Available", dotClassName: "bg-[#4CAF7D]", valueClassName: "text-[#4CAF7D]" },
+    { label: "Payments", value: "Operational", dotClassName: "bg-[var(--status-success)]", valueClassName: "text-[var(--status-success)]" },
+    { label: "Store", value: "Maintenance", dotClassName: "bg-[var(--status-warning)]", valueClassName: "text-[var(--status-warning)]" },
+    { label: "Tracking", value: "Maintenance", dotClassName: "bg-[var(--status-warning)]", valueClassName: "text-[var(--status-warning)]" },
+    { label: "Support", value: "Available", dotClassName: "bg-[var(--status-success)]", valueClassName: "text-[var(--status-success)]" },
 ];
 
 function MaintenanceSigil({ mobile = false }: { mobile?: boolean }) {
@@ -152,7 +152,7 @@ function MobileStatusGrid() {
 
 export default function MaintenanceModeView() {
     return (
-        <div className="relative overflow-x-hidden bg-[#0F0C14] text-text-primary">
+        <div className="relative overflow-x-hidden bg-[var(--footer-bg)] text-text-primary">
             <MaintenanceWatcher when="disabled" />
             <div className="absolute inset-0 hidden md:block">
                 <Image
@@ -191,10 +191,10 @@ export default function MaintenanceModeView() {
                         />
                     </div>
 
-                    <div className="flex items-center gap-2 text-[12px] font-light text-[#E6A817]">
+                    <div className="flex items-center gap-2 text-[12px] font-light text-[var(--status-warning)]">
                         <span className="relative flex h-[14px] w-[14px] items-center justify-center">
                             <span className="absolute h-[14px] w-[14px] rounded-full border border-[#E6A8174D]" />
-                            <span className="h-2 w-2 rounded-full bg-[#E6A817]" />
+                            <span className="h-2 w-2 rounded-full bg-[var(--status-warning)]" />
                         </span>
                         <span>Under Maintenance</span>
                     </div>
@@ -233,8 +233,8 @@ export default function MaintenanceModeView() {
                     <span className={`${cinzel.className} text-[18px] font-bold tracking-[0.06em] text-gold`}>
                         ALBAEON
                     </span>
-                    <div className="flex items-center gap-1.5 text-[11px] font-light text-[#E6A817]">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#E6A817]" aria-hidden="true" />
+                    <div className="flex items-center gap-1.5 text-[11px] font-light text-[var(--status-warning)]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" aria-hidden="true" />
                         <span>Maintenance</span>
                     </div>
                 </div>

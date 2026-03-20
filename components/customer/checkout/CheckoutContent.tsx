@@ -186,11 +186,11 @@ function DeliveryContent() {
                     </div>
 
                     <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-[#C0392B]">
+                        <div className="flex items-center gap-2 text-[var(--status-error)]">
                             <Info className="h-[11px] w-[11px]" />
                             <span className={`${raleway.className} text-[11px]`}>This field is required</span>
                         </div>
-                        <div className="flex items-center gap-2 text-[#4CAF7D]">
+                        <div className="flex items-center gap-2 text-[var(--status-success)]">
                             <Check className="h-[11px] w-[11px]" />
                             <span className={`${raleway.className} text-[11px]`}>Looks good</span>
                         </div>
@@ -216,7 +216,7 @@ function DeliveryContent() {
                                 </span>
                             </div>
                         </div>
-                        <span className={`${cinzel.className} text-[15px] text-[#4CAF7D]`}>Free</span>
+                        <span className={`${cinzel.className} text-[15px] text-[var(--status-success)]`}>Free</span>
                     </div>
                     <div className="flex items-center gap-2 text-text-muted">
                         <Info className="h-[12px] w-[12px]" />
@@ -253,10 +253,10 @@ function PaymentContent() {
             <div className="flex flex-col gap-6">
                 <div className="flex items-center justify-between border border-gold/10 bg-surface px-5 py-4">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-[22px] w-[22px] items-center justify-center border border-[#4CAF7D] bg-[#4CAF7D1A]">
-                            <Check className="h-[12px] w-[12px] text-[#4CAF7D]" />
+                        <div className="flex h-[22px] w-[22px] items-center justify-center border border-[var(--status-success)] bg-[#4CAF7D1A]">
+                            <Check className="h-[12px] w-[12px] text-[var(--status-success)]" />
                         </div>
-                        <span className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] text-[#4CAF7D]`}>
+                        <span className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] text-[var(--status-success)]`}>
                             DELIVERING TO
                         </span>
                         <span className={`${raleway.className} text-[13px] text-text-muted`}>
@@ -308,8 +308,8 @@ function PaymentContent() {
                         ))}
                     </div>
 
-                    <div className="flex gap-3 border-l-2 border-[#4A90C4] bg-[#4A90C410] px-4 py-3">
-                        <Info className="mt-0.5 h-[14px] w-[14px] text-[#4A90C4]" />
+                    <div className="flex gap-3 border-l-2 border-[var(--status-info)] bg-[#4A90C410] px-4 py-3">
+                        <Info className="mt-0.5 h-[14px] w-[14px] text-[var(--status-info)]" />
                         <p className={`${raleway.className} text-[13px] leading-[1.7] text-text-muted`}>
                             You will be redirected to Razorpay's secure payment page to complete your purchase. Supports UPI, Net Banking, Credit / Debit Cards, Wallets, and EMI options.
                         </p>
@@ -364,12 +364,12 @@ function PaymentContent() {
                 </div>
 
                 <div className="space-y-4">
-                    <div className="flex gap-3 border-l-2 border-[#C0392B] bg-[#C0392B14] px-5 py-4">
-                        <div className="flex h-[18px] w-[18px] items-center justify-center border border-[#C0392B]">
-                            <X className="h-[12px] w-[12px] text-[#C0392B]" />
+                    <div className="flex gap-3 border-l-2 border-[var(--status-error)] bg-[#C0392B14] px-5 py-4">
+                        <div className="flex h-[18px] w-[18px] items-center justify-center border border-[var(--status-error)]">
+                            <X className="h-[12px] w-[12px] text-[var(--status-error)]" />
                         </div>
                         <div className="space-y-1">
-                            <span className={`${cinzel.className} text-[11px] font-bold tracking-[0.2em] text-[#C0392B]`}>
+                            <span className={`${cinzel.className} text-[11px] font-bold tracking-[0.2em] text-[var(--status-error)]`}>
                                 PAYMENT FAILED
                             </span>
                             <p className={`${raleway.className} text-[13px] text-text-primary`}>
@@ -413,10 +413,10 @@ function ConfirmationContent() {
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center gap-3 border border-gold/20 bg-surface px-10 py-12 text-center">
-                    <div className="flex h-24 w-24 items-center justify-center border-2 border-[#4CAF7D] bg-[#4CAF7D1A]">
-                        <Check className="h-10 w-10 text-[#4CAF7D]" />
+                    <div className="flex h-24 w-24 items-center justify-center border-2 border-[var(--status-success)] bg-[#4CAF7D1A]">
+                        <Check className="h-10 w-10 text-[var(--status-success)]" />
                     </div>
-                    <span className={`${cinzel.className} text-[10px] font-bold tracking-[0.5em] text-[#4CAF7D]`}>
+                    <span className={`${cinzel.className} text-[10px] font-bold tracking-[0.5em] text-[var(--status-success)]`}>
                         PAYMENT SUCCESSFUL
                     </span>
                     <span className={`${cormorant.className} text-[38px] font-light text-text-primary sm:text-[48px]`}>
@@ -447,7 +447,7 @@ function ConfirmationContent() {
                             ESTIMATED DELIVERY
                         </span>
                         <span className={`${raleway.className} text-[14px] text-text-primary`}>5-7 Business Days</span>
-                        <span className={`${raleway.className} text-[12px] text-[#4CAF7D]`}>
+                        <span className={`${raleway.className} text-[12px] text-[var(--status-success)]`}>
                             Standard Shipping · Free
                         </span>
                     </div>
@@ -467,7 +467,7 @@ function ConfirmationContent() {
                         ))}
                         <div className="flex items-center justify-between text-[13px] text-text-muted">
                             <span>Status</span>
-                            <span className="border border-[#4CAF7D] bg-[#4CAF7D1A] px-2 py-0.5 text-[9px] text-[#4CAF7D]">
+                            <span className="border border-[var(--status-success)] bg-[#4CAF7D1A] px-2 py-0.5 text-[9px] text-[var(--status-success)]">
                                 PAID
                             </span>
                         </div>
@@ -518,7 +518,7 @@ function ConfirmationContent() {
                         ].map((row) => (
                             <div key={row.label} className="flex items-center justify-between text-[13px] text-text-muted">
                                 <span>{row.label}</span>
-                                <span className={row.accent ? "text-[#4CAF7D]" : "text-text-primary"}>{row.value}</span>
+                                <span className={row.accent ? "text-[var(--status-success)]" : "text-text-primary"}>{row.value}</span>
                             </div>
                         ))}
                         <div className="h-px w-full bg-gold/20" />
@@ -579,7 +579,7 @@ function ConfirmationContent() {
             </div>
 
             <div className="flex flex-col gap-4 border border-gold/20 bg-[#1E1A2E] p-7">
-                <div className="flex items-center gap-2 border-b border-gold/10 pb-4 text-[#4CAF7D]">
+                <div className="flex items-center gap-2 border-b border-gold/10 pb-4 text-[var(--status-success)]">
                     <CheckCircle2 className="h-[22px] w-[22px]" />
                     <span className={`${cinzel.className} text-[11px] font-bold tracking-[0.3em]`}>
                         ORDER CONFIRMED

@@ -106,12 +106,12 @@ export function AdminTextInput({
     className?: string;
 }) {
     return (
-        <div className={`flex h-[38px] items-center gap-2 border border-gold/12 bg-footer px-3 ${className}`}>
+        <div className={`flex h-[46px] min-h-[46px] items-center gap-2 border border-gold/12 bg-footer px-3 ${className}`}>
             <Search className="h-3.5 w-3.5 text-text-muted" strokeWidth={1.8} />
             <input
                 type="text"
                 placeholder={placeholder}
-                className={`${adminRaleway.className} w-full bg-transparent text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
+                className={`${adminRaleway.className} h-full w-full bg-transparent py-0 text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
             />
         </div>
     );
@@ -127,7 +127,7 @@ export function AdminSelectBox({
     return (
         <button
             type="button"
-            className={`flex h-[38px] items-center justify-between border border-gold/12 bg-footer px-3 text-left ${className}`}
+            className={`flex h-[46px] min-h-[46px] items-center justify-between border border-gold/12 bg-footer px-3 text-left ${className}`}
         >
             <span className={`${adminRaleway.className} text-[13px] font-light text-text-primary`}>
                 {value}
@@ -148,14 +148,14 @@ export function AdminDateRangeBox({
         <div className="flex items-center gap-2">
             <button
                 type="button"
-                className={`flex h-[38px] flex-1 items-center border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-muted`}
+                className={`flex h-[46px] min-h-[46px] flex-1 items-center border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-muted`}
             >
                 {fromLabel}
             </button>
-            <span className={`${adminRaleway.className} text-[13px] text-text-muted`}>{"\u2192"}</span>
+            <span className={`${adminRaleway.className} inline-flex h-[46px] items-center text-[13px] text-text-muted`}>{"\u2192"}</span>
             <button
                 type="button"
-                className={`flex h-[38px] flex-1 items-center border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-muted`}
+                className={`flex h-[46px] min-h-[46px] flex-1 items-center border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-muted`}
             >
                 {toLabel}
             </button>
@@ -189,17 +189,15 @@ export function AdminPillGroup({ items, activeItem }: AdminPillGroupProps) {
 
 export function AdminStatusBadge({ label, tone }: AdminStatusBadgeProps) {
     const toneClassName = {
-        success: "border-[#4CAF7D]/35 bg-[#4CAF7D]/12 text-[#4CAF7D]",
-        info: "border-[#4A90C4]/35 bg-[#4A90C4]/12 text-[#4A90C4]",
-        warning: "border-[#E6A817]/35 bg-[#E6A817]/12 text-[#E6A817]",
-        danger: "border-[#C0392B]/35 bg-[#C0392B]/12 text-[#C0392B]",
-        muted: "border-white/15 bg-white/6 text-text-muted",
+        success: "badge-success",
+        info: "badge-info",
+        warning: "badge-warning",
+        danger: "badge-error",
+        muted: "badge-neutral",
     }[tone];
 
     return (
-        <span
-            className={`${adminRaleway.className} inline-flex items-center border px-2.5 py-1 text-[11px] font-medium ${toneClassName}`}
-        >
+        <span className={`badge ${toneClassName}`}>
             {label}
         </span>
     );
@@ -237,3 +235,4 @@ export function AdminPagination({
         </div>
     );
 }
+

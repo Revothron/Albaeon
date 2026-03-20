@@ -16,8 +16,8 @@ const statCards = [
         trendSubtext: "vs last month",
         Icon: ClipboardList,
         accentClassName: "text-text-primary",
-        progressClassName: "bg-[#4CAF7D]",
-        progressTrackClassName: "bg-[#4CAF7D]/25",
+        progressClassName: "bg-[var(--status-success)]",
+        progressTrackClassName: "bg-[var(--status-success)]/25",
         progressWidth: "68%",
     },
     {
@@ -27,8 +27,8 @@ const statCards = [
         trendSubtext: "vs last month",
         Icon: Wallet,
         accentClassName: "text-gold",
-        progressClassName: "bg-[#4CAF7D]",
-        progressTrackClassName: "bg-[#4CAF7D]/25",
+        progressClassName: "bg-[var(--status-success)]",
+        progressTrackClassName: "bg-[var(--status-success)]/25",
         progressWidth: "62%",
     },
     {
@@ -37,9 +37,9 @@ const statCards = [
         trend: "+3",
         trendSubtext: "since yesterday",
         Icon: Hourglass,
-        accentClassName: "text-[#E6A817]",
-        progressClassName: "bg-[#E6A817]",
-        progressTrackClassName: "bg-[#E6A817]/25",
+        accentClassName: "text-[var(--status-warning)]",
+        progressClassName: "bg-[var(--status-warning)]",
+        progressTrackClassName: "bg-[var(--status-warning)]/25",
         progressWidth: "28%",
     },
     {
@@ -49,8 +49,8 @@ const statCards = [
         trendSubtext: "vs yesterday",
         Icon: CalendarDays,
         accentClassName: "text-text-primary",
-        progressClassName: "bg-[#4CAF7D]",
-        progressTrackClassName: "bg-[#4CAF7D]/25",
+        progressClassName: "bg-[var(--status-success)]",
+        progressTrackClassName: "bg-[var(--status-success)]/25",
         progressWidth: "42%",
     },
 ];
@@ -74,15 +74,15 @@ const quickStats = [
     { label: "Banian Orders", value: "842", valueClassName: "text-text-primary" },
     { label: "Gelato Orders", value: "442", valueClassName: "text-text-primary" },
     { label: "Active Coupons", value: "6", valueClassName: "text-text-primary" },
-    { label: "Open Support Tickets", value: "3", valueClassName: "text-[#C0392B]" },
+    { label: "Open Support Tickets", value: "3", valueClassName: "text-[var(--status-error)]" },
     { label: "Products Active", value: "24", valueClassName: "text-text-primary" },
     { label: "Products Draft", value: "8", valueClassName: "text-text-muted" },
 ];
 
 const statusClassNames: Record<string, string> = {
-    Accepted: "border-[#4A90C4]/35 bg-[#4A90C4]/12 text-[#4A90C4]",
-    Fulfilled: "border-[#4CAF7D]/35 bg-[#4CAF7D]/12 text-[#4CAF7D]",
-    Processing: "border-[#E6A817]/35 bg-[#E6A817]/12 text-[#E6A817]",
+    Accepted: "border-[var(--status-info)]/35 bg-[var(--status-info)]/12 text-[var(--status-info)]",
+    Fulfilled: "border-[var(--status-success)]/35 bg-[var(--status-success)]/12 text-[var(--status-success)]",
+    Processing: "border-[var(--status-warning)]/35 bg-[var(--status-warning)]/12 text-[var(--status-warning)]",
     Draft: "border-white/15 bg-white/6 text-text-muted",
 };
 
@@ -117,7 +117,7 @@ function StatCard({
     progressWidth,
 }: (typeof statCards)[number]) {
     return (
-        <div className="border border-gold/10 bg-[#1E1A2E] p-5 sm:p-6">
+        <div className="card-hover border border-gold/10 bg-[#1E1A2E] p-5 sm:p-6">
             <div className="flex items-center justify-between gap-3">
                 <p className={`${adminCinzel.className} text-[9px] tracking-[0.28em] text-text-muted`}>
                     {label}
@@ -130,7 +130,7 @@ function StatCard({
             </p>
 
             <div className={`mt-3 flex items-center gap-2 ${adminRaleway.className} text-[12px]`}>
-                <span className={trend.startsWith("+") ? "text-[#4CAF7D]" : "text-text-muted"}>
+                <span className={trend.startsWith("+") ? "text-[var(--status-success)]" : "text-text-muted"}>
                     {trend}
                 </span>
                 <span className="text-text-muted">{trendSubtext}</span>
@@ -233,8 +233,8 @@ export default function AdminDashboard() {
                                     stroke="rgba(230, 201, 121, 0.25)"
                                     strokeWidth="1"
                                 />
-                                <polyline fill="none" stroke="#E6C979" strokeWidth="2" points={revenuePoints} />
-                                <polyline fill="none" stroke="#4A90C4" strokeWidth="1.5" points={orderPoints} />
+                                <polyline fill="none" stroke="var(--gold)" strokeWidth="2" points={revenuePoints} />
+                                <polyline fill="none" stroke="var(--status-info)" strokeWidth="1.5" points={orderPoints} />
 
                                 {revenueValues.map((value, index) => {
                                     const x = index * chartStep;
@@ -246,7 +246,7 @@ export default function AdminDashboard() {
                                             cx={x}
                                             cy={y}
                                             r="3.5"
-                                            fill="#E6C979"
+                                            fill="var(--gold)"
                                         />
                                     );
                                 })}
@@ -261,7 +261,7 @@ export default function AdminDashboard() {
                                             cx={x}
                                             cy={y}
                                             r="2.5"
-                                            fill="#4A90C4"
+                                            fill="var(--status-info)"
                                         />
                                     );
                                 })}
@@ -279,13 +279,13 @@ export default function AdminDashboard() {
                                 <p className={`${adminCinzel.className} mt-1 text-[12px] text-gold`}>
                                     Revenue: Rs 84,200
                                 </p>
-                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-[#4A90C4]`}>
+                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-[var(--status-info)]`}>
                                     Orders: 18
                                 </p>
                             </div>
                         </div>
 
-                        <div className={`flex h-[210px] flex-col items-end justify-between text-[10px] text-[#4A90C4] md:text-[11px] ${adminRaleway.className}`}>
+                        <div className={`flex h-[210px] flex-col items-end justify-between text-[10px] text-[var(--status-info)] md:text-[11px] ${adminRaleway.className}`}>
                             {["24", "18", "12", "6", "0"].map((label) => (
                                 <span key={label}>{label}</span>
                             ))}
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
                         Revenue
                     </span>
                     <span className="inline-flex items-center gap-2">
-                        <span className="h-2 w-2 bg-[#4A90C4]" aria-hidden="true" />
+                        <span className="h-2 w-2 bg-[var(--status-info)]" aria-hidden="true" />
                         Orders
                     </span>
                 </div>

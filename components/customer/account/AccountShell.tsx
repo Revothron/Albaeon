@@ -19,16 +19,13 @@ const tabs: Array<{ key: AccountTabKey; label: string; href: string }> = [
 ];
 
 function HeaderAction({ action }: { action: AccountAction }) {
-    const className =
-        action.variant === "solid"
-            ? "bg-gold text-nav hover:bg-gold-hover"
-            : "border border-gold text-gold hover:bg-gold hover:text-nav";
+    const className = action.variant === "solid" ? "btn-primary" : "btn-secondary";
 
     if (action.href) {
         return (
             <Link
                 href={action.href}
-                className={`inline-flex items-center justify-center px-[18px] py-3 font-sans text-[14px] font-semibold transition-colors duration-200 ${className}`}
+                className={className}
             >
                 {action.label}
             </Link>
@@ -38,7 +35,7 @@ function HeaderAction({ action }: { action: AccountAction }) {
     return (
         <button
             type="button"
-            className={`inline-flex items-center justify-center px-[18px] py-3 font-sans text-[14px] font-semibold transition-colors duration-200 ${className}`}
+            className={className}
         >
             {action.label}
         </button>
@@ -145,3 +142,4 @@ export default function AccountShell({
         </section>
     );
 }
+

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Cinzel, Cormorant_Garamond } from "next/font/google";
 import { CircleCheck, Eye, Info, Lock, TriangleAlert } from "lucide-react";
 import AccountShell from "@/components/customer/account/AccountShell";
@@ -9,22 +12,38 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"
 function Field({
     label,
     value,
+    placeholder,
     helperText,
     icon,
+    readOnly = false,
+    type = "text",
 }: {
     label: string;
-    value: string;
+    value?: string;
+    placeholder?: string;
     helperText?: string;
     icon?: React.ReactNode;
+    readOnly?: boolean;
+    type?: string;
 }) {
     return (
         <div className="space-y-1.5">
             <label className="font-sans text-[11px] uppercase tracking-[0.08em] text-text-muted">
                 {label}
             </label>
-            <div className="flex h-[42px] items-center justify-between border border-gold/15 bg-primary px-3.5 font-sans text-[14px] text-text-primary">
-                <span>{value}</span>
-                {icon}
+            <div className="relative">
+                <input
+                    type={type}
+                    defaultValue={value}
+                    placeholder={placeholder}
+                    readOnly={readOnly}
+                    className={`w-full border border-gold/15 bg-primary px-3.5 font-sans text-[14px] text-text-primary outline-none ${icon ? "pr-10" : ""}`}
+                />
+                {icon ? (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
+                        {icon}
+                    </span>
+                ) : null}
             </div>
             {helperText ? (
                 <p className="font-sans text-[11px] text-text-muted">
@@ -40,14 +59,20 @@ function ToggleRow({
     subtitle,
     enabled,
     isLast = false,
+    onToggle,
 }: {
     title: string;
     subtitle: string;
     enabled: boolean;
     isLast?: boolean;
+    onToggle: () => void;
 }) {
     return (
-        <div className={`flex items-center justify-between gap-4 py-3.5 ${isLast ? "" : "border-b border-gold/10"}`}>
+        <div
+            className={`flex items-center justify-between gap-4 py-4 transition-all duration-300 ${
+                isLast ? "" : "border-b border-[rgba(230,201,121,0.08)]"
+            }`}
+        >
             <div className="space-y-1">
                 <p className="font-sans text-[14px] text-text-primary">
                     {title}
@@ -56,14 +81,35 @@ function ToggleRow({
                     {subtitle}
                 </p>
             </div>
-            <div className={`flex h-[22px] w-10 items-center rounded-full p-0.5 ${enabled ? "justify-end bg-gold/20" : "justify-start border border-gold/15 bg-primary-deep"}`}>
-                <div className={`h-[18px] w-[18px] rounded-full ${enabled ? "bg-gold" : "bg-text-muted"}`} />
-            </div>
+            <button
+                type="button"
+                onClick={onToggle}
+                role="switch"
+                aria-checked={enabled}
+                className="relative flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full transition-colors duration-300"
+                style={{
+                    background: enabled
+                        ? "var(--gold, var(--albaeon-gold, #E6C979))"
+                        : "rgba(183,175,195,0.20)",
+                }}
+            >
+                <span
+                    className={`absolute top-[3px] h-[18px] w-[18px] rounded-full transition-all duration-300 ${
+                        enabled ? "left-[23px]" : "left-[3px]"
+                    }`}
+                    style={{
+                        background: "var(--text-primary, var(--albaeon-text-primary, #E8E2D6))",
+                    }}
+                />
+            </button>
         </div>
     );
 }
 
 export default function ProfileSettingsPage() {
+    const [orderUpdatesEnabled, setOrderUpdatesEnabled] = useState(true);
+    const [promotionsEnabled, setPromotionsEnabled] = useState(false);
+    const [restockEnabled, setRestockEnabled] = useState(true);
     return (
         <AccountShell
             activeTab="profile"
@@ -113,6 +159,7 @@ export default function ProfileSettingsPage() {
                             value="alex@albaeon.com"
                             helperText="Sign-in email cannot be changed here"
                             icon={<Lock className="h-4 w-4 text-text-muted" />}
+                            readOnly
                         />
                         <Field
                             label="Phone Number"
@@ -122,7 +169,7 @@ export default function ProfileSettingsPage() {
                         <div className="flex justify-end">
                             <button
                                 type="button"
-                                className="bg-gold px-8 py-2.5 font-sans text-[13px] font-medium text-nav transition-colors duration-200 hover:bg-gold-hover"
+                                className="btn-primary"
                             >
                                 Save Changes
                             </button>
@@ -138,14 +185,14 @@ export default function ProfileSettingsPage() {
                         <div className="h-px w-full bg-gold/10" />
                     </div>
 
-                    <div className="space-y-2 border-l-2 border-[#4A90C4] bg-[#4A90C410] px-[18px] py-[14px]">
+                    <div className="space-y-2 border-l-2 border-[var(--status-info)] bg-[#4A90C410] px-[18px] py-[14px]">
                         <div className="flex items-start gap-3">
-                            <Info className="mt-0.5 h-4 w-4 text-[#4A90C4]" />
+                            <Info className="mt-0.5 h-4 w-4 text-[var(--status-info)]" />
                             <p className="font-sans text-[13px] leading-[1.6] text-text-muted">
                                 Your account uses Google Sign-In. Manage your password through your Google account settings.
                             </p>
                         </div>
-                        <button type="button" className="font-sans text-[13px] text-[#4A90C4]">
+            <button type="button" className="font-sans text-[13px] text-[var(--status-info)]">
                             Go to Google Security →
                         </button>
                     </div>
@@ -153,24 +200,25 @@ export default function ProfileSettingsPage() {
                     <div className="space-y-4 opacity-40">
                         <Field
                             label="Current Password"
-                            value="Enter current password"
+                            placeholder="Enter current password"
+                            type="password"
                             icon={<Eye className="h-4 w-4 text-text-muted" />}
                         />
                         <div className="space-y-1.5">
-                            <Field label="New Password" value="Enter new password" />
+                            <Field label="New Password" placeholder="Enter new password" type="password" />
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1">
-                                    <div className="h-[3px] w-8 bg-[#E6A817]" />
-                                    <div className="h-[3px] w-8 bg-[#E6A817]" />
+                                    <div className="h-[3px] w-8 bg-[var(--status-warning)]" />
+                                    <div className="h-[3px] w-8 bg-[var(--status-warning)]" />
                                     <div className="h-[3px] w-8 bg-text-muted/30" />
                                     <div className="h-[3px] w-8 bg-text-muted/30" />
                                 </div>
-                                <span className="font-sans text-[11px] text-[#E6A817]">
+                                <span className="font-sans text-[11px] text-[var(--status-warning)]">
                                     Fair
                                 </span>
                             </div>
                         </div>
-                        <Field label="Confirm Password" value="Confirm password" />
+                        <Field label="Confirm Password" placeholder="Confirm password" type="password" />
                         <div className="flex justify-end">
                             <button
                                 type="button"
@@ -191,17 +239,20 @@ export default function ProfileSettingsPage() {
                         <ToggleRow
                             title="Order updates"
                             subtitle="Confirmations, shipping, delivery"
-                            enabled
+                            enabled={orderUpdatesEnabled}
+                            onToggle={() => setOrderUpdatesEnabled((current) => !current)}
                         />
                         <ToggleRow
                             title="Promotions & offers"
                             subtitle="New arrivals, drops, discounts"
-                            enabled={false}
+                            enabled={promotionsEnabled}
+                            onToggle={() => setPromotionsEnabled((current) => !current)}
                         />
                         <ToggleRow
                             title="Restock alerts"
                             subtitle="Sold-out items you viewed"
-                            enabled
+                            enabled={restockEnabled}
+                            onToggle={() => setRestockEnabled((current) => !current)}
                             isLast
                         />
                     </div>
@@ -209,8 +260,8 @@ export default function ProfileSettingsPage() {
 
                 <div className="space-y-5 border border-red-500/20 bg-[#C0392B0A] p-5 sm:p-7">
                     <div className="flex items-center gap-2">
-                        <TriangleAlert className="h-4 w-4 text-[#C0392B]" />
-                        <h2 className={`${cormorant.className} text-[20px] text-[#C0392B]`}>
+                        <TriangleAlert className="h-4 w-4 text-[var(--status-error)]" />
+                        <h2 className={`${cormorant.className} text-[20px] text-[var(--status-error)]`}>
                             Danger Zone
                         </h2>
                     </div>
@@ -229,8 +280,8 @@ export default function ProfileSettingsPage() {
                 </div>
 
                 <div className="flex justify-end">
-                    <div className="flex w-full max-w-[300px] items-start gap-3 border-l-[3px] border-[#4CAF7D] bg-surface px-[18px] py-[14px]">
-                        <CircleCheck className="mt-0.5 h-4 w-4 text-[#4CAF7D]" />
+                    <div className="flex w-full max-w-[300px] items-start gap-3 border-l-[3px] border-[var(--status-success)] bg-surface px-[18px] py-[14px]">
+                        <CircleCheck className="mt-0.5 h-4 w-4 text-[var(--status-success)]" />
                         <div className="min-w-0 flex-1 space-y-0.5">
                             <p className="font-sans text-[13px] text-text-primary">
                                 Profile updated
@@ -246,3 +297,19 @@ export default function ProfileSettingsPage() {
         </AccountShell>
     );
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

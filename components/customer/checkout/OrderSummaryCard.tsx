@@ -61,11 +61,11 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
                 </div>
             </div>
 
-            <div className="flex items-center justify-between border-l-2 border-[#4CAF7D] bg-[#4CAF7D1A] px-3 py-2">
-                <span className={`${raleway.className} text-[12px] text-[#4CAF7D]`}>
+            <div className="flex items-center justify-between border-l-2 border-[var(--status-success)] bg-[#4CAF7D1A] px-3 py-2">
+                <span className={`${raleway.className} text-[12px] text-[var(--status-success)]`}>
                     MYTH10 — ₹130 off
                 </span>
-                <span className={`${cinzel.className} text-[9px] font-semibold tracking-[0.1em] text-[#C0392B]`}>
+                <span className={`${cinzel.className} text-[9px] font-semibold tracking-[0.1em] text-[var(--status-error)]`}>
                     REMOVE ×
                 </span>
             </div>
@@ -78,11 +78,11 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
             </div>
             <div className="flex items-center justify-between">
                 <span className={`${raleway.className} text-[13px] text-text-muted`}>Shipping</span>
-                <span className={`${raleway.className} text-[13px] text-[#4CAF7D]`}>Free</span>
+                <span className={`${raleway.className} text-[13px] text-[var(--status-success)]`}>Free</span>
             </div>
             <div className="flex items-center justify-between">
                 <span className={`${raleway.className} text-[13px] text-text-muted`}>Discount (MYTH10)</span>
-                <span className={`${raleway.className} text-[13px] text-[#4CAF7D]`}>−₹130</span>
+                <span className={`${raleway.className} text-[13px] text-[var(--status-success)]`}>−₹130</span>
             </div>
 
             <div className="h-px w-full bg-gold/20" />
@@ -112,7 +112,7 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
             ) : null}
 
             <div className="flex items-center gap-2 border-b border-gold/10 py-2">
-                <ShieldCheck className="h-[12px] w-[12px] text-[#4CAF7D]" />
+                <ShieldCheck className="h-[12px] w-[12px] text-[var(--status-success)]" />
                 <span className={`${raleway.className} text-[12px] text-text-muted`}>
                     SSL Encrypted — 256-bit security
                 </span>

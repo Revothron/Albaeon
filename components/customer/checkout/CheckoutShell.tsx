@@ -30,7 +30,7 @@ function CheckoutNavbar({ step }: { step: CheckoutStepKey }) {
             <Image src="/g3.png" alt="Albaeon" width={153} height={35} priority />
 
             {isConfirmation ? (
-                <div className="flex items-center gap-2 text-[#4CAF7D]">
+                <div className="flex items-center gap-2 text-[var(--status-success)]">
                     <CheckCircle2 className="h-[16px] w-[16px]" />
                     <span className={`${raleway.className} text-[15px] font-light`}>
                         Order Confirmed
@@ -61,13 +61,13 @@ function StepBadge({ label, state }: { label: string; state: "active" | "inactiv
     const isActive = state === "active";
 
     const circleClass = isDone
-        ? "border border-[#4CAF7D] bg-[#4CAF7D1A] text-[#4CAF7D]"
+        ? "border border-[var(--status-success)] bg-[#4CAF7D1A] text-[var(--status-success)]"
         : isActive
             ? "bg-gold text-nav"
             : "border border-text-muted/30 text-text-muted";
 
     const labelClass = isDone
-        ? "text-[#4CAF7D]"
+        ? "text-[var(--status-success)]"
         : isActive
             ? "text-gold"
             : "text-text-muted";
@@ -90,7 +90,7 @@ function Connector({ variant }: { variant: "solid" | "dashed" | "done" }) {
     }
 
     return (
-        <div className={`h-px w-20 ${variant === "done" ? "bg-[#4CAF7D]" : "bg-gold"}`} />
+        <div className={`h-px w-20 ${variant === "done" ? "bg-[var(--status-success)]" : "bg-gold"}`} />
     );
 }
 

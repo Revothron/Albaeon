@@ -349,18 +349,18 @@ export default function AdminProductEditor({
                             <button
                                 type="button"
                                 onClick={() => setStatus("published")}
-                                className={`w-full border px-4 py-3 text-left transition-colors duration-200 ${status === "published" ? "border-[#4CAF7D] bg-[#4CAF7D]/8" : "border-gold/12 bg-footer"}`}
+                                className={`w-full border px-4 py-3 text-left transition-colors duration-200 ${status === "published" ? "border-[var(--status-success)] bg-[var(--status-success)]/8" : "border-gold/12 bg-footer"}`}
                                 role="radio"
                                 aria-checked={status === "published"}
                             >
                                 <div className="flex items-start gap-3">
                                     <span
                                         className={`mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full border ${
-                                            status === "published" ? "border-[#4CAF7D]" : "border-text-muted/40"
+                                            status === "published" ? "border-[var(--status-success)]" : "border-text-muted/40"
                                         }`}
                                         aria-hidden="true"
                                     >
-                                        <span className={`h-2 w-2 rounded-full ${status === "published" ? "bg-[#4CAF7D]" : ""}`} />
+                                        <span className={`h-2 w-2 rounded-full ${status === "published" ? "bg-[var(--status-success)]" : ""}`} />
                                     </span>
                                     <div>
                                         <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
@@ -467,11 +467,11 @@ export default function AdminProductEditor({
                                     sizes="120px"
                                     className="object-cover"
                                 />
-                                <span className="absolute right-1 top-1 inline-flex h-4 w-4 items-center justify-center bg-[#C0392B] text-[10px] text-white">
+                                <span className="absolute right-1 top-1 inline-flex h-4 w-4 items-center justify-center bg-[var(--status-error)] text-[10px] text-white">
                                     x
                                 </span>
                             </div>
-                            <p className={`${adminCinzel.className} text-[8px] tracking-[0.18em] text-[#4CAF7D]`}>
+                            <p className={`${adminCinzel.className} text-[8px] tracking-[0.18em] text-[var(--status-success)]`}>
                                 PRIMARY
                             </p>
                         </div>
@@ -536,7 +536,7 @@ export default function AdminProductEditor({
                         </button>
                         <button
                             type="button"
-                            className={`${adminCinzel.className} flex h-11 w-full items-center justify-center border border-[#C0392B]/35 text-[10px] font-semibold tracking-[0.18em] text-[#C0392B] transition-colors duration-200 hover:bg-[#C0392B]/8`}
+                            className={`${adminCinzel.className} flex h-11 w-full items-center justify-center border border-[var(--status-error)]/35 text-[10px] font-semibold tracking-[0.18em] text-[var(--status-error)] transition-colors duration-200 hover:bg-[var(--status-error)]/8`}
                         >
                             DELETE PRODUCT
                         </button>

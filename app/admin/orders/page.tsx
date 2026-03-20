@@ -56,7 +56,7 @@ function FilterDropdown({
         <div className="group relative w-full" data-filter-dropdown>
             <button
                 type="button"
-                className={`flex h-[38px] w-full items-center justify-between border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-primary transition-colors duration-200 hover:border-gold/30`}
+                className={`flex h-[46px] min-h-[46px] w-full items-center justify-between border border-gold/12 bg-footer px-3 text-left ${adminRaleway.className} text-[13px] font-light text-text-primary transition-colors duration-200 hover:border-gold/30`}
                 aria-expanded={isOpen}
                 onClick={() => onToggle(id)}
             >
@@ -141,7 +141,7 @@ export default function AdminOrdersPage() {
                     <div className="self-end justify-self-start lg:justify-self-end">
                         <button
                             type="button"
-                            className={`${adminRaleway.className} inline-flex h-[38px] items-center border border-gold/20 px-4 text-[12px] text-text-muted transition-colors duration-200 hover:text-text-primary`}
+                            className={`${adminRaleway.className} inline-flex h-[46px] min-h-[46px] items-center border border-gold/20 px-4 text-[12px] text-text-muted transition-colors duration-200 hover:text-text-primary`}
                         >
                             RESET
                         </button>
@@ -149,20 +149,21 @@ export default function AdminOrdersPage() {
                 </div>
             </section>
 
-            <section className="overflow-x-auto border border-gold/10 bg-[#1E1A2E]">
-                <table className="w-full min-w-[760px] border-collapse lg:min-w-[900px] xl:min-w-[1040px] 2xl:min-w-[1180px]">
-                    <thead className="bg-nav">
-                        <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
-                            {headerColumns.map((column, index) => (
-                                <th key={`${column}-${index}`} className="px-3 py-4 text-center font-semibold md:px-6">
-                                    {column || <CheckCell />}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {adminOrders.map((order) => (
-                            <tr key={order.id} className="border-t border-gold/6">
+            <section className="border border-gold/10 bg-[#1E1A2E]">
+                <div className="overflow-x-auto w-full">
+                    <table className="w-full min-w-[900px] border-collapse">
+                        <thead className="bg-nav">
+                            <tr className={`${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}>
+                                {headerColumns.map((column, index) => (
+                                    <th key={`${column}-${index}`} className="px-3 py-4 text-center font-semibold md:px-6">
+                                        {column || <CheckCell />}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {adminOrders.map((order) => (
+                                <tr key={order.id} className="card-hover border-t border-gold/6">
                                 <td className="px-3 py-4 text-center md:px-6">
                                     <CheckCell />
                                 </td>
@@ -206,7 +207,8 @@ export default function AdminOrdersPage() {
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                    </table>
+                </div>
 
                 <AdminPagination
                     summary="Showing 1-7 of 1,284 orders"
@@ -217,3 +219,4 @@ export default function AdminOrdersPage() {
         </div>
     );
 }
+

@@ -37,7 +37,7 @@ function Field({ label, placeholder }: { label: string; placeholder: string }) {
             <input
                 type="text"
                 placeholder={placeholder}
-                className="h-[44px] border border-gold/20 bg-primary px-4 font-sans text-[13px] text-text-primary outline-none placeholder:text-text-muted"
+                className="border border-gold/20 bg-primary px-4 font-sans text-[13px] text-text-primary outline-none placeholder:text-text-muted"
             />
         </label>
     );
@@ -135,3 +135,4 @@ export default function CheckoutPaymentPage() {
         </CheckoutShell>
     );
 }
+

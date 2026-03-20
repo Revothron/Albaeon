@@ -39,7 +39,7 @@ export const adminAnalyticsScreens = {
         series: [
             { label: "Items Sold", color: "#E6C979", active: true, values: [21, 23, 44, 27, 29, 24, 31], format: "number" },
             { label: "Net Sales", color: "#4A90C4", values: [18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
-            { label: "Orders", color: "#C87A5A", values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
+            { label: "Orders", color: "#E6A817", values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
         ],
         table: {
             title: "PRODUCTS",
@@ -83,7 +83,7 @@ export const adminAnalyticsScreens = {
         tooltipLabel: "4 Mar 2026",
         series: [
             { label: "Gross Sales", color: "#E6C979", active: true, values: [14289, 18186, 20784, 40269, 24681, 27279, 23382, 29877], format: "currency" },
-            { label: "Coupons", color: "#C86B6B", values: [300, 0, 400, 2100, 900, 650, 0, 1200], format: "currency" },
+            { label: "Coupons", color: "#C0392B", values: [300, 0, 400, 2100, 900, 650, 0, 1200], format: "currency" },
             { label: "Net Sales", color: "#4A90C4", active: true, values: [13989, 18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
             { label: "Total Sales", color: "#4CAF7D", values: [15240, 19450, 22460, 41860, 25740, 28490, 24620, 31720], format: "currency" },
         ],
@@ -128,7 +128,7 @@ export const adminAnalyticsScreens = {
             { label: "Orders", color: "#E6C979", active: true, values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
             { label: "Net Sales", color: "#4A90C4", values: [18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
             { label: "Average Order Value", color: "#4CAF7D", values: [1299, 1274, 1231, 1252, 1268, 1299, 1247], format: "currency" },
-            { label: "Average Items Per Order", color: "#C87A5A", values: [1.5, 1.4, 1.4, 1.4, 1.4, 1.3, 1.3], format: "decimal" },
+            { label: "Average Items Per Order", color: "#E6A817", values: [1.5, 1.4, 1.4, 1.4, 1.4, 1.3, 1.3], format: "decimal" },
         ],
         table: {
             title: "ORDERS",
@@ -170,7 +170,7 @@ export const adminAnalyticsScreens = {
         series: [
             { label: "Items Sold", color: "#E6C979", active: true, values: [21, 23, 44, 27, 29, 24, 31], format: "number" },
             { label: "Net Sales", color: "#4A90C4", values: [18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
-            { label: "Orders", color: "#C87A5A", values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
+            { label: "Orders", color: "#E6A817", values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
         ],
         table: {
             title: "CATEGORIES",
@@ -198,3 +198,4 @@ export const adminAnalyticsScreens = {
         },
     },
 } satisfies Record<string, AdminAnalyticsScreen>;
+

@@ -26,15 +26,15 @@ function getStatusTone(status: CustomerOrderStatus) {
     switch (status) {
         case "Shipped":
             return {
-                badge: "border-[#4A90C459] bg-[#4A90C41F] text-[#4A90C4]",
+                badge: "badge-info",
             };
         case "Delivered":
             return {
-                badge: "border-[#4CAF7D4D] bg-[#4CAF7D1F] text-[#4CAF7D]",
+                badge: "badge-success",
             };
         default:
             return {
-                badge: "border-[#E6A81766] bg-[#E6A8171A] text-[#E6A817]",
+                badge: "badge-warning",
             };
     }
 }
@@ -125,9 +125,9 @@ function TimelineStep({
                 </p>
 
                 {step.update ? (
-                    <div className="mt-3 space-y-1 border-l-2 border-[#4A90C4] bg-[#4A90C414] px-4 py-3">
+                    <div className="mt-3 space-y-1 border-l-2 border-[var(--status-info)] bg-[#4A90C414] px-4 py-3">
                         <div className="flex items-center gap-3">
-                            <Truck className="h-4 w-4 text-[#4A90C4]" />
+                            <Truck className="h-4 w-4 text-[var(--status-info)]" />
                             <p className="font-sans text-[12px] text-text-muted">
                                 {step.update.label}
                             </p>
@@ -216,7 +216,7 @@ export default function OrderDetailsView({
 
                         <div className="flex flex-wrap items-center gap-4">
                             <span
-                                className={`${cinzel.className} inline-flex border px-4 py-2 text-[10px] font-semibold tracking-[0.2em] uppercase ${statusTone.badge}`}
+                                className={`badge ${statusTone.badge}`}`
                             >
                                 {order.status}
                             </span>
@@ -346,7 +346,7 @@ export default function OrderDetailsView({
                                         <p className="font-sans text-[13px] text-text-muted">
                                             {order.delivery.detail}
                                         </p>
-                                        <p className={`${cinzel.className} text-[14px] text-[#4CAF7D]`}>
+                                        <p className={`${cinzel.className} text-[14px] text-[var(--status-success)]`}>
                                             {order.delivery.cost === 0 ? "Free" : formatOrderAmount(order.delivery.cost)}
                                         </p>
                                     </div>
@@ -377,7 +377,7 @@ export default function OrderDetailsView({
                                         <p className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] text-text-muted`}>
                                             PAYMENT STATUS
                                         </p>
-                                        <span className={`${cinzel.className} inline-flex border border-[#4CAF7D4D] bg-[#4CAF7D1F] px-3 py-1 text-[10px] font-semibold tracking-[0.2em] text-[#4CAF7D]`}>
+                                        <span className="badge badge-success">
                                             {order.payment.statusLabel.toUpperCase()}
                                         </span>
                                     </div>
@@ -433,7 +433,7 @@ export default function OrderDetailsView({
                                 </div>
                                 <div className="flex items-center justify-between gap-4 font-sans text-[13px] text-text-muted">
                                     <span>Shipping</span>
-                                    <span className="text-[#4CAF7D]">
+                                    <span className="text-[var(--status-success)]">
                                         {order.delivery.cost === 0 ? "Free" : formatOrderAmount(order.delivery.cost)}
                                     </span>
                                 </div>
@@ -514,3 +514,5 @@ export default function OrderDetailsView({
         </section>
     );
 }
+
+

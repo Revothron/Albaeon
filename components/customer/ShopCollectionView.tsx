@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Cinzel } from "next/font/google";
 import StripedMarker from "@/components/customer/StripedMarker";
 import type { Product } from "@/lib/customer/products";
+import WishlistButton from "@/components/customer/WishlistButton";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
@@ -77,6 +78,9 @@ function ProductCard({
             className="group flex flex-col gap-3 border border-gold bg-surface p-3 transition-colors duration-200 hover:border-gold-hover sm:gap-3.5 sm:p-3.5"
         >
             <div className="relative aspect-[1.16/1] overflow-hidden bg-primary-deep">
+                <div className="absolute right-3 top-3 z-10">
+                    <WishlistButton productId={slug} />
+                </div>
                 <Image
                     src={image}
                     alt={name}

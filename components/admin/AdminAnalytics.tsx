@@ -212,7 +212,7 @@ function AnalyticsChartCard({
                                 key={`${screen.title}-${item.label}-line`}
                                 fill="none"
                                 stroke={item.color}
-                                strokeWidth={item.color === "#4A90C4" ? "1.8" : "2.4"}
+                                strokeWidth={item.color === "var(--status-info)" ? "1.8" : "2.4"}
                                 points={getSeriesPoints(item.values, chartWidth, chartHeight, maxValue)}
                             />
                         ))}
@@ -228,7 +228,7 @@ function AnalyticsChartCard({
                                         key={`${screen.title}-${item.label}-${screen.chartLabels[index]}`}
                                         cx={x}
                                         cy={y}
-                                        r={item.color === "#4A90C4" ? "2.6" : "3"}
+                                        r={item.color === "var(--status-info)" ? "2.6" : "3"}
                                         fill={item.color}
                                     />
                                 );

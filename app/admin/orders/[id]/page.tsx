@@ -6,11 +6,11 @@ import { adminOrders } from "@/adminOrders";
 type Tone = "success" | "info" | "warning" | "danger" | "muted";
 
 const tonePalette: Record<Tone, { text: string; border: string; bg: string }> = {
-    success: { text: "#4CAF7D", border: "#4CAF7D40", bg: "#4CAF7D1F" },
-    info: { text: "#4A90C4", border: "#4A90C44D", bg: "#4A90C41F" },
-    warning: { text: "#E6A817", border: "#E6A8174D", bg: "#E6A8171F" },
-    danger: { text: "#C0392B", border: "#C0392B4D", bg: "#C0392B1F" },
-    muted: { text: "#B7AFC3", border: "#E6C9791F", bg: "#E6C9790F" },
+    success: { text: "var(--status-success)", border: "#4CAF7D40", bg: "#4CAF7D1F" },
+    info: { text: "var(--status-info)", border: "#4A90C44D", bg: "#4A90C41F" },
+    warning: { text: "var(--status-warning)", border: "#E6A8174D", bg: "#E6A8171F" },
+    danger: { text: "var(--status-error)", border: "#C0392B4D", bg: "#C0392B1F" },
+    muted: { text: "var(--text-muted)", border: "#E6C9791F", bg: "#E6C9790F" },
 };
 
 function getInitials(name: string) {
@@ -106,7 +106,7 @@ export default async function AdminOrderDetailPage({
     const fulfillmentStatusTone = order.fulfillment.tone;
     const paymentStatusTone = order.payment.tone;
     const shippingLabel = order.totals.shipping === "Rs 0" ? "Free" : order.totals.shipping;
-    const shippingTone = order.totals.shipping === "Rs 0" ? "text-[#4CAF7D]" : "text-text-primary";
+    const shippingTone = order.totals.shipping === "Rs 0" ? "text-[var(--status-success)]" : "text-text-primary";
     const firstItem = order.items[0];
     const itemVariant = firstItem?.variant ?? "Black / XL";
     const itemSku = firstItem?.sku ?? "ALB-EMT";
@@ -193,7 +193,7 @@ export default async function AdminOrderDetailPage({
                         <SectionHeading>ORDER ITEMS</SectionHeading>
                         <div className="mt-4 space-y-4">
                             <div className="flex items-center gap-4">
-                                <div className="h-16 w-16 border border-gold/10 bg-[#130F18]" />
+                            <div className="h-16 w-16 border border-gold/10 bg-[var(--nav-bg)]" />
                                 <div className="space-y-1">
                                     <p className={`${adminRaleway.className} text-[14px] font-medium text-text-primary`}>
                                         {firstItem?.name ?? "Empire Oversized Tee"}
@@ -305,13 +305,13 @@ export default async function AdminOrderDetailPage({
                         <div className="mt-4 space-y-3">
                             <button
                                 type="button"
-                                className={`${adminCinzel.className} w-full border border-[#E6A817] px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-[#E6A817] transition-colors duration-200 hover:bg-[#E6A817] hover:text-[#130F18]`}
+                                className={`${adminCinzel.className} w-full border border-[var(--status-warning)] px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-[var(--status-warning)] transition-colors duration-200 hover:bg-[var(--status-warning)] hover:text-[var(--nav-bg)]`}
                             >
                                 MARK AS PROCESSING
                             </button>
                             <button
                                 type="button"
-                                className={`${adminCinzel.className} w-full border border-[#4A90C4] px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-[#4A90C4] transition-colors duration-200 hover:bg-[#4A90C4] hover:text-[#130F18]`}
+                                className={`${adminCinzel.className} w-full border border-[var(--status-info)] px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-[var(--status-info)] transition-colors duration-200 hover:bg-[var(--status-info)] hover:text-[var(--nav-bg)]`}
                             >
                                 MARK AS SHIPPED
                             </button>
@@ -323,7 +323,7 @@ export default async function AdminOrderDetailPage({
                             </button>
                             <button
                                 type="button"
-                                className={`${adminCinzel.className} w-full border border-[#C0392B] px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-[#C0392B] transition-colors duration-200 hover:bg-[#C0392B] hover:text-white`}
+                                className={`${adminCinzel.className} w-full border border-[var(--status-error)] px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-[var(--status-error)] transition-colors duration-200 hover:bg-[var(--status-error)] hover:text-white`}
                             >
                                 CANCEL ORDER
                             </button>
@@ -344,7 +344,7 @@ export default async function AdminOrderDetailPage({
                                     key={field.placeholder}
                                     type={field.type}
                                     placeholder={field.placeholder}
-                                    className={`${adminRaleway.className} h-[38px] w-full border border-gold/15 bg-[#0F0C14] px-3 text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
+                                    className={`${adminRaleway.className} h-[38px] w-full border border-gold/15 bg-[var(--footer-bg)] px-3 text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
                                 />
                             ))}
                             <button
@@ -361,11 +361,11 @@ export default async function AdminOrderDetailPage({
                         <textarea
                             rows={3}
                             placeholder="Add internal notes..."
-                            className={`${adminRaleway.className} mt-3 w-full resize-none border border-gold/15 bg-[#0F0C14] px-3 py-2 text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
+                            className={`${adminRaleway.className} mt-3 w-full resize-none border border-gold/15 bg-[var(--footer-bg)] px-3 py-2 text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
                         />
                         <button
                             type="button"
-                            className={`${adminCinzel.className} mt-3 w-full border border-gold/100 px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-text-muted transition-colors duration-200 hover:border-[#130F18] hover:bg-gold-hover hover:text-[#130F18]`}
+                            className={`${adminCinzel.className} mt-3 w-full border border-gold/100 px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-text-muted transition-colors duration-200 hover:border-[var(--nav-bg)] hover:bg-gold-hover hover:text-[var(--nav-bg)]`}
                         >
                             SAVE NOTE
                         </button>

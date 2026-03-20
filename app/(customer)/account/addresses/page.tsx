@@ -17,14 +17,12 @@ function AddressCard({
     actions: Array<{ label: string; className: string }>;
 }) {
     return (
-        <div className="space-y-4 border border-gold bg-surface p-5 sm:p-6">
+        <div className="space-y-4 border border-gold bg-surface p-5 sm:p-6 card-hover">
             <div className="flex items-center justify-between gap-3">
                 <h2 className={`${cinzel.className} text-[20px] text-gold`}>
                     {title}
                 </h2>
-                <span className={`border px-2.5 py-1 text-[11px] tracking-[0.08em] ${
-                    badgeMuted ? "border-gold/25 text-text-muted" : "border-gold text-gold"
-                }`}>
+                <span className={`badge ${badgeMuted ? "badge-neutral" : "badge-success"}`}>
                     {badge}
                 </span>
             </div>
@@ -69,7 +67,7 @@ export default function AddressesPage() {
                         body={"Alex Morgan\n42, MG Road, Indiranagar\nBengaluru, Karnataka 560038\nIndia · +91 98765 43210"}
                         actions={[
                             { label: "Edit", className: "text-gold" },
-                            { label: "Delete", className: "text-[#C0392B]" },
+                            { label: "Delete", className: "text-[var(--status-error)]" },
                             { label: "Set as billing", className: "text-text-muted" },
                         ]}
                     />
@@ -80,7 +78,7 @@ export default function AddressesPage() {
                         body={"Alex Morgan\n12, Brigade Road, Apt 4B\nBengaluru, Karnataka 560025\nIndia · +91 98765 43210"}
                         actions={[
                             { label: "Edit", className: "text-gold" },
-                            { label: "Delete", className: "text-[#C0392B]" },
+                            { label: "Delete", className: "text-[var(--status-error)]" },
                             { label: "Set as primary", className: "text-text-muted" },
                         ]}
                     />
@@ -98,3 +96,5 @@ export default function AddressesPage() {
         </AccountShell>
     );
 }
+
+

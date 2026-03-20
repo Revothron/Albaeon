@@ -17,9 +17,9 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"
 
 function StatusBadge({ status }: { status: CustomerOrder["status"] }) {
     const toneClassName = {
-        Processing: "border-[#E6A81766] bg-[#E6A8171A] text-[#E6A817]",
-        Shipped: "border-[#4A90C459] bg-[#4A90C41F] text-[#4A90C4]",
-        Delivered: "border-[#4CAF7D4D] bg-[#4CAF7D1F] text-[#4CAF7D]",
+        Processing: "border-[#E6A81766] bg-[#E6A8171A] text-[var(--status-warning)]",
+        Shipped: "border-[#4A90C459] bg-[#4A90C41F] text-[var(--status-info)]",
+        Delivered: "border-[#4CAF7D4D] bg-[#4CAF7D1F] text-[var(--status-success)]",
     }[status];
 
     return (
@@ -32,12 +32,12 @@ function StatusBadge({ status }: { status: CustomerOrder["status"] }) {
 function NoMatchState() {
     return (
         <div className="flex flex-col items-center gap-4 text-center">
-            <CircleAlert className="h-14 w-14 text-[#E6A817]" strokeWidth={1.5} />
+            <CircleAlert className="h-14 w-14 text-[var(--status-warning)]" strokeWidth={1.5} />
             <div className="space-y-2">
                 <p className={`${cinzel.className} text-[12px] font-semibold tracking-[0.24em] text-gold`}>
                     NO MATCH FOUND
                 </p>
-                <p className="max-w-[420px] font-sans text-[14px] font-light leading-7 text-text-muted">
+                <p className="max-w-[420px] w-full font-sans text-[14px] font-light leading-7 text-text-muted">
                     We could not find an order with that combination of order ID and registered email or phone number.
                 </p>
             </div>
@@ -158,8 +158,8 @@ function TrackingResultSection({ order }: { order: CustomerOrder }) {
 
     return (
         <div className="px-6 pb-20 pt-12 sm:px-10 lg:px-14">
-            <section className="mx-auto max-w-[900px] space-y-4">
-                <div className="flex flex-col gap-4 border border-[#E6C97926] border-l-[3px] border-l-gold bg-[#2C2040] px-8 py-7 sm:flex-row sm:items-center sm:justify-between">
+            <section className="mx-auto max-w-[900px] w-full px-5 space-y-4">
+                <div className="flex flex-col gap-4 border border-[#E6C97926] border-l-[3px] border-l-gold bg-[var(--surface-card)] px-8 py-7 sm:flex-row sm:items-center sm:justify-between">
                     <div className="space-y-1.5">
                         <p className={`${cinzel.className} text-[13px] font-bold tracking-[0.18em] text-gold`}>
                             {`ORDER ${order.id}`}
@@ -171,7 +171,7 @@ function TrackingResultSection({ order }: { order: CustomerOrder }) {
                     <StatusBadge status={order.status} />
                 </div>
 
-                <div className="border border-gold/10 bg-[#2C2040] px-8 py-6">
+                <div className="border border-gold/10 bg-[var(--surface-card)] px-8 py-6">
                     <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.35em] text-gold`}>
                         IN THIS SHIPMENT
                     </p>
@@ -204,10 +204,10 @@ function TrackingResultSection({ order }: { order: CustomerOrder }) {
                     </div>
                 </div>
 
-                <div className="border border-gold/10 bg-[#2C2040] px-8 py-9">
+                <div className="border border-gold/10 bg-[var(--surface-card)] px-8 py-9">
                     <div className="space-y-8">
-                        <div className="flex items-start gap-4 border-l-[3px] border-l-[#4CAF7D] bg-[#4CAF7D10] px-5 py-4">
-                            <Truck className="mt-1 h-6 w-6 shrink-0 text-[#4CAF7D]" strokeWidth={1.8} />
+                        <div className="flex items-start gap-4 border-l-[3px] border-l-[var(--status-success)] bg-[#4CAF7D10] px-5 py-4">
+                            <Truck className="mt-1 h-6 w-6 shrink-0 text-[var(--status-success)]" strokeWidth={1.8} />
                             <div className="space-y-1">
                                 <p className={`${cormorant.className} text-[28px] font-light leading-none text-text-primary`}>
                                     {formatDeliveryHeadline(order.delivery.detail)}
@@ -312,7 +312,7 @@ export default async function TrackOrderPage({
                     <h1 className={`${cormorant.className} mt-5 text-[42px] font-light text-text-primary sm:text-[52px]`}>
                         Track Your Order
                     </h1>
-                    <p className="mt-3 max-w-[520px] font-sans text-[15px] font-light leading-8 text-text-muted">
+                    <p className="mt-3 max-w-[520px] w-full font-sans text-[15px] font-light leading-8 text-text-muted">
                         Enter your Order ID and registered email or phone number to track your shipment.
                     </p>
                 </div>
@@ -322,7 +322,7 @@ export default async function TrackOrderPage({
                 <form
                     action="/track-order"
                     method="get"
-                    className="mx-auto max-w-[640px] border border-[#E6C97926] bg-[#2C2040] p-8 sm:px-10 sm:py-9"
+                    className="mx-auto max-w-[640px] w-full border border-[#E6C97926] bg-[var(--surface-card)] p-8 sm:px-10 sm:py-9"
                 >
                     <p className={`${cinzel.className} text-[10px] font-semibold tracking-[0.35em] text-gold`}>
                         FIND YOUR ORDER
@@ -382,7 +382,7 @@ export default async function TrackOrderPage({
 
             {hasLookupAttempt && !matchedOrder ? (
                 <div className="px-6 pb-8 pt-8 sm:px-10 lg:px-14">
-                    <div className="mx-auto max-w-[640px] border border-[#E6C97926] bg-[#2C2040] px-8 py-10">
+                    <div className="mx-auto max-w-[640px] w-full border border-[#E6C97926] bg-[var(--surface-card)] px-8 py-10">
                         <NoMatchState />
                     </div>
                 </div>

@@ -120,70 +120,74 @@ export default function AdminCustomersPage() {
             </section>
 
             <section className="overflow-hidden border border-gold/10 bg-[#1E1A2E]">
-                <div
-                    className={`grid min-w-0 grid-cols-[repeat(11,minmax(0,1fr))_79px_42px] bg-nav px-6 py-3 text-center ${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}
-                >
-                    {["NAME", "USERNAME", "REGISTERED", "EMAIL", "ORDERS", "SPENT", "LAST ORDER", "AOV", "COUNTRY", "CITY", "REGION", "POSTAL", "VIEW"].map((column) => (
-                        <div key={column} className="min-w-0 truncate font-semibold">
-                            {column}
+                <div className="overflow-x-auto w-full">
+                    <div className="min-w-[900px]">
+                        <div
+                            className={`grid min-w-0 grid-cols-[repeat(11,minmax(0,1fr))_79px_42px] bg-nav px-6 py-3 text-center ${adminCinzel.className} text-[10px] tracking-[0.18em] text-text-muted`}
+                        >
+                            {["NAME", "USERNAME", "REGISTERED", "EMAIL", "ORDERS", "SPENT", "LAST ORDER", "AOV", "COUNTRY", "CITY", "REGION", "POSTAL", "VIEW"].map((column) => (
+                                <div key={column} className="min-w-0 truncate font-semibold">
+                                    {column}
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
 
-                {adminCustomers.map((customer, index) => (
-                    <div
-                        key={customer.id}
-                        className={`grid min-w-0 grid-cols-[repeat(11,minmax(0,1fr))_79px_42px] px-6 py-3 text-center ${
-                            index < adminCustomers.length - 1 ? "border-b border-gold/6" : ""
-                        }`}
-                    >
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[13px] font-medium text-text-primary`}>
-                            {customer.name}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.username}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.registered}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.email}
-                        </div>
-                        <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-text-primary`}>
-                            {customer.orders}
-                        </div>
-                        <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-gold`}>
-                            {customer.spent}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.lastOrder}
-                        </div>
-                        <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-text-primary`}>
-                            {customer.aov}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.countryCode}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.city}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.region}
-                        </div>
-                        <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
-                            {customer.postal}
-                        </div>
-                        <div className="flex items-center justify-center">
-                            <Link
-                                href={`/admin/customers/${customer.id}`}
-                                className="inline-flex text-gold transition-colors duration-200 hover:text-gold-hover"
-                                aria-label={`View ${customer.name}`}
+                        {adminCustomers.map((customer, index) => (
+                            <div
+                                key={customer.id}
+                                className={`card-hover grid min-w-0 grid-cols-[repeat(11,minmax(0,1fr))_79px_42px] px-6 py-3 text-center ${
+                                    index < adminCustomers.length - 1 ? "border-b border-gold/6" : ""
+                                }`}
                             >
-                                <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
-                            </Link>
-                        </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[13px] font-medium text-text-primary`}>
+                                    {customer.name}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.username}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.registered}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.email}
+                                </div>
+                                <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-text-primary`}>
+                                    {customer.orders}
+                                </div>
+                                <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-gold`}>
+                                    {customer.spent}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.lastOrder}
+                                </div>
+                                <div className={`${adminCinzel.className} min-w-0 truncate text-[13px] text-text-primary`}>
+                                    {customer.aov}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.countryCode}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.city}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.region}
+                                </div>
+                                <div className={`${adminRaleway.className} min-w-0 truncate text-[12px] font-light text-text-muted`}>
+                                    {customer.postal}
+                                </div>
+                                <div className="flex items-center justify-center">
+                                    <Link
+                                        href={`/admin/customers/${customer.id}`}
+                                        className="inline-flex text-gold transition-colors duration-200 hover:text-gold-hover"
+                                        aria-label={`View ${customer.name}`}
+                                    >
+                                        <Eye className="h-3.5 w-3.5" strokeWidth={1.8} />
+                                    </Link>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                ))}
+                </div>
 
                 <AdminPagination
                     summary={`Showing 1-${adminCustomers.length} of 3,284 customers`}

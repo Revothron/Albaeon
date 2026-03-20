@@ -6,6 +6,9 @@ import { Cinzel } from "next/font/google";
 import { Minus, Plus } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "@/lib/customer/products";
+import WishlistButton from "@/components/customer/WishlistButton";
+import { useCartStore } from "@/store/cartStore";
+import { useUiStore } from "@/store/uiStore";
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
@@ -70,10 +73,32 @@ export default function ProductView({ product }: { product: Product }) {
     const [selectedSize, setSelectedSize] = useState(product.defaultSize);
     const [quantity, setQuantity] = useState(1);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const addItem = useCartStore((s) => s.addItem);
+    const addToast = useUiStore((s) => s.addToast);
 
     const activeImage = product.gallery[activeImageIndex] ?? product.image;
     const leftHighlights = product.highlights.slice(0, 3);
     const rightHighlights = product.highlights.slice(3, 6);
+
+    const handleAddToCart = () => {
+        addItem({
+            id: Date.now().toString(),
+            variantId: `${product.slug}-${selectedSize ?? ""}`,
+            productId: product.slug,
+            name: product.name,
+            sku: `SKU-${product.slug}`,
+            color: "",
+            size: selectedSize ?? "",
+            price: product.priceUSD ?? product.priceINR ?? 0,
+            currency: "USD",
+            image: product.images?.[0] ?? "",
+            quantity: quantity ?? 1,
+        });
+        addToast({
+            message: `${product.name} added to cart`,
+            type: "success",
+        });
+    };
 
     return (
         <section className="min-h-screen bg-primary">
@@ -85,6 +110,9 @@ export default function ProductView({ product }: { product: Product }) {
                         </h1>
 
                         <div className="relative aspect-[5/4] overflow-hidden border border-gold bg-surface">
+                            <div className="absolute right-3 top-3 z-10">
+                                <WishlistButton productId={product.slug} />
+                            </div>
                             <Image
                                 src={activeImage}
                                 alt={product.name}
@@ -168,6 +196,7 @@ export default function ProductView({ product }: { product: Product }) {
                             <button
                                 type="button"
                                 className="h-11 rounded-full border border-gold px-6 font-sans text-[14px] font-semibold text-gold transition-colors duration-200 hover:bg-gold hover:text-nav"
+                                onClick={handleAddToCart}
                             >
                                 Add to Cart
                             </button>
@@ -186,6 +215,7 @@ export default function ProductView({ product }: { product: Product }) {
                                 <button
                                     type="button"
                                     className="h-[46px] border border-gold bg-transparent font-sans text-[13px] font-semibold text-gold transition-colors duration-200 hover:bg-gold hover:text-nav"
+                                    onClick={handleAddToCart}
                                 >
                                     Add to Cart
                                 </button>

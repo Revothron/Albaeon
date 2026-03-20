@@ -308,7 +308,7 @@ export default async function CustomerDetailPage({
                         <div className="space-y-3">
                             <button
                                 type="button"
-                                className={`${adminRaleway.className} flex w-full items-center justify-center border border-[#C0392B] px-4 py-3 text-[13px] text-[#C0392B] transition-colors duration-200 hover:bg-[#C0392B] hover:text-white`}
+                                className={`${adminRaleway.className} flex w-full items-center justify-center border border-[var(--status-error)] px-4 py-3 text-[13px] text-[var(--status-error)] transition-colors duration-200 hover:bg-[var(--status-error)] hover:text-white`}
                             >
                                 Ban Account
                             </button>

@@ -22,7 +22,9 @@
 
   /* ── 3. Structural Dark ── */
   --albaeon-nav: #130F18;
-  --albaeon-footer: #0F0C14;
+  --albaeon-footer: #0f0c14;
+  --nav-bg: #130F18;
+  --footer-bg: #0f0c14;
 
   /* ── 4. Typography Colors ── */
   --albaeon-text-primary: #E8E2D6;
@@ -38,6 +40,13 @@
   --albaeon-btn-secondary-bg: #2C2040;
   --albaeon-btn-secondary-text: #E8E2D6;
   --albaeon-btn-secondary-hover-bg: #3A2952;
+
+  /* -- Status & System -- */
+  --status-success: #4CAF7D;
+  --status-warning: #E6A817;
+  --status-error: #C0392B;
+  --status-info: #4A90C4;
+  --btn-secondary-hover: #3A2952;
 
   /* ── 6. Subtle Gradient (Hero / Cinematic) ── */
   --albaeon-gradient-from: #241A33;
@@ -87,6 +96,49 @@ body {
   font-family: var(--font-sans, Arial, Helvetica, sans-serif);
 }
 
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+input[type="search"],
+input[type="number"],
+select,
+textarea {
+  height: 46px;
+  min-height: 46px;
+  background: var(--bg-secondary, #1A1426);
+  border: 1px solid rgba(230, 201, 121, 0.15);
+  color: var(--text-primary, #E8E2D6);
+  padding: 0 14px;
+  transition: border-color 0.3s ease;
+  outline: none;
+  width: 100%;
+  font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-muted, #B7AFC3);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--gold, #E6C979);
+}
+
+textarea {
+  height: auto;
+  min-height: 100px;
+  padding: 12px 14px;
+}
+
+a,
+button,
+[role="button"] {
+  transition: all 0.3s ease;
+}
+
 /* ── Selection highlight ── */
 ::selection {
   background: var(--albaeon-gold);
@@ -120,21 +172,31 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 2rem;
-  background: var(--albaeon-btn-primary-bg);
-  border: 1.5px solid var(--albaeon-btn-primary-border);
-  color: var(--albaeon-btn-primary-text);
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--gold, #E6C979);
+  color: var(--gold, #E6C979);
+  font-family: var(--font-cinzel), serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
   text-transform: uppercase;
+  padding: 14px 36px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .btn-primary:hover {
-  background: var(--albaeon-btn-primary-hover-bg);
-  color: var(--albaeon-btn-primary-hover-text);
+  background: var(--gold, #E6C979);
+  color: var(--nav-bg, #130F18);
+}
+
+.btn-primary:disabled,
+.btn-primary[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Secondary button */
@@ -142,20 +204,102 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 2rem;
-  background: var(--albaeon-btn-secondary-bg);
-  border: 1.5px solid transparent;
-  color: var(--albaeon-btn-secondary-text);
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  gap: 8px;
+  background: var(--surface-card, #2C2040);
+  border: none;
+  color: var(--text-primary, #E8E2D6);
+  font-family: var(--font-cinzel), serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
   text-transform: uppercase;
+  padding: 14px 36px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
+  text-decoration: none;
 }
 
 .btn-secondary:hover {
-  background: var(--albaeon-btn-secondary-hover-bg);
+  background: var(--btn-secondary-hover, #3A2952);
+}
+
+.btn-secondary:disabled,
+.btn-secondary[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--status-error, #C0392B);
+  color: var(--status-error, #C0392B);
+  font-family: var(--font-cinzel), serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 14px 36px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background: rgba(192, 57, 43, 0.1);
+}
+
+.btn-danger:disabled,
+.btn-danger[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-cinzel), serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid;
+  line-height: 1;
+}
+
+.badge-success {
+  color: var(--status-success, #4CAF7D);
+  background: rgba(76, 175, 125, 0.1);
+  border-color: rgba(76, 175, 125, 0.25);
+}
+
+.badge-warning {
+  color: var(--status-warning, #E6A817);
+  background: rgba(230, 168, 23, 0.1);
+  border-color: rgba(230, 168, 23, 0.25);
+}
+
+.badge-error {
+  color: var(--status-error, #C0392B);
+  background: rgba(192, 57, 43, 0.1);
+  border-color: rgba(192, 57, 43, 0.25);
+}
+
+.badge-info {
+  color: var(--status-info, #4A90C4);
+  background: rgba(74, 144, 196, 0.1);
+  border-color: rgba(74, 144, 196, 0.25);
+}
+
+.badge-neutral {
+  color: var(--text-muted, #B7AFC3);
+  background: rgba(183, 175, 195, 0.1);
+  border-color: rgba(183, 175, 195, 0.2);
 }
 
 /* Hero gradient background */
@@ -172,6 +316,15 @@ body {
   color: var(--albaeon-gold);
 }
 
+a.link-gold {
+  color: var(--gold, #E6C979);
+  transition: opacity 0.3s ease;
+}
+
+a.link-gold:hover {
+  opacity: 0.75;
+}
+
 /* Card / Surface container */
 .card-surface {
   background: var(--albaeon-surface);
@@ -183,6 +336,14 @@ body {
   border-color: rgba(230, 201, 121, 0.2);
 }
 
+.card-hover {
+  transition: border-color 0.3s ease;
+}
+
+.card-hover:hover {
+  border-color: rgba(230, 201, 121, 0.25) !important;
+}
+
 @layer utilities {
   .desktop-frame {
     width: 100%;
@@ -192,4 +353,143 @@ body {
     padding-left: clamp(16px, 4vw, 56px);
     padding-right: clamp(16px, 4vw, 56px);
   }
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold, #E6C979);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0%   { opacity: 0.4; }
+  50%  { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes goldPulse {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(230,201,121,0); 
+  }
+  50% { 
+    box-shadow: 0 0 0 4px rgba(230,201,121,0.12); 
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease forwards;
+}
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease forwards;
+}
+.animate-slideInRight {
+  animation: slideInRight 0.4s ease forwards;
+}
+.animate-slideInLeft {
+  animation: slideInLeft 0.4s ease forwards;
+}
+.animate-slideInDown {
+  animation: slideInDown 0.3s ease forwards;
+}
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease forwards;
+}
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+.animate-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+/* Stagger delay utilities */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
+/* Skeleton loading pulse */
+.skeleton {
+  background: rgba(230,201,121,0.06);
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Toast slide-in */
+.toast-enter {
+  animation: slideInRight 0.35s ease forwards;
+}
+.toast-exit {
+  animation: slideInRight 0.25s ease reverse forwards;
 }

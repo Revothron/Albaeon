@@ -8,11 +8,11 @@ import { analyticsRanges } from "@/lib/admin/analytics";
 const ranges = analyticsRanges;
 
 const metricCards = [
-    { label: "TOTAL SALES", value: "\u20B918,42,300", trend: "\u2191 12% vs last period", trendClassName: "text-[#4CAF7D]", valueClassName: "text-gold" },
-    { label: "NET SALES", value: "\u20B916,94,820", trend: "\u2191 9.8%", trendClassName: "text-[#4CAF7D]", valueClassName: "text-text-primary" },
-    { label: "ORDERS", value: "1,284", trend: "\u2191 7.2%", trendClassName: "text-[#4CAF7D]", valueClassName: "text-text-primary" },
-    { label: "PRODUCTS SOLD", value: "2,108 items", trend: "\u2191 14.3%", trendClassName: "text-[#4CAF7D]", valueClassName: "text-text-primary" },
-    { label: "VARIATIONS SOLD", value: "2,108", trend: "\u2193 2.1%", trendClassName: "text-[#C0392B]", valueClassName: "text-text-primary" },
+    { label: "TOTAL SALES", value: "\u20B918,42,300", trend: "\u2191 12% vs last period", trendClassName: "text-[var(--status-success)]", valueClassName: "text-gold" },
+    { label: "NET SALES", value: "\u20B916,94,820", trend: "\u2191 9.8%", trendClassName: "text-[var(--status-success)]", valueClassName: "text-text-primary" },
+    { label: "ORDERS", value: "1,284", trend: "\u2191 7.2%", trendClassName: "text-[var(--status-success)]", valueClassName: "text-text-primary" },
+    { label: "PRODUCTS SOLD", value: "2,108 items", trend: "\u2191 14.3%", trendClassName: "text-[var(--status-success)]", valueClassName: "text-text-primary" },
+    { label: "VARIATIONS SOLD", value: "2,108", trend: "\u2193 2.1%", trendClassName: "text-[var(--status-error)]", valueClassName: "text-text-primary" },
 ];
 
 const chartDates = ["28 Feb", "1 Mar", "2 Mar", "3 Mar", "4 Mar", "5 Mar"];
@@ -217,7 +217,7 @@ export default function AnalyticsOverviewPage() {
                         className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
                             activeSeries.netSales
                                 ? "border-gold bg-gold/10 text-text-primary"
-                                : "border-gold/20 bg-[#1A1426] text-text-muted hover:border-gold/40 hover:text-text-primary"
+                                : "border-gold/20 bg-[var(--bg-secondary)] text-text-muted hover:border-gold/40 hover:text-text-primary"
                         }`}
                     >
                         <span className="h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
@@ -237,10 +237,10 @@ export default function AnalyticsOverviewPage() {
                         className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
                             activeSeries.orders
                                 ? "border-gold bg-gold/10 text-text-primary"
-                                : "border-gold/20 bg-[#1A1426] text-text-muted hover:border-gold/40 hover:text-text-primary"
+                                : "border-gold/20 bg-[var(--bg-secondary)] text-text-muted hover:border-gold/40 hover:text-text-primary"
                         }`}
                     >
-                        <span className="h-2 w-2 rounded-full bg-[#4A90C4]" aria-hidden="true" />
+                        <span className="h-2 w-2 rounded-full bg-[var(--status-info)]" aria-hidden="true" />
                         Orders
                     </button>
                 </div>
@@ -268,23 +268,23 @@ export default function AnalyticsOverviewPage() {
                                 <>
                                     {activeSeries.netSales ? (
                                         <>
-                                            <polyline fill="none" stroke="#E6C979" strokeWidth="2" points={salesPoints} />
+                                            <polyline fill="none" stroke="var(--gold)" strokeWidth="2" points={salesPoints} />
                                             {netSalesValues.map((value, index) => {
                                                 const x = index * chartStep;
                                                 const y = chartHeight - (value / maxSales) * chartHeight;
 
-                                                return <circle key={`sales-${chartDates[index]}`} cx={x} cy={y} r="3" fill="#E6C979" />;
+                                                return <circle key={`sales-${chartDates[index]}`} cx={x} cy={y} r="3" fill="var(--gold)" />;
                                             })}
                                         </>
                                     ) : null}
                                     {activeSeries.orders ? (
                                         <>
-                                            <polyline fill="none" stroke="#4A90C4" strokeWidth="1.5" points={ordersPoints} />
+                                            <polyline fill="none" stroke="var(--status-info)" strokeWidth="1.5" points={ordersPoints} />
                                             {orderValues.map((value, index) => {
                                                 const x = index * chartStep;
                                                 const y = chartHeight - (value / maxOrders) * chartHeight;
 
-                                                return <circle key={`orders-${chartDates[index]}`} cx={x} cy={y} r="2.5" fill="#4A90C4" />;
+                                                return <circle key={`orders-${chartDates[index]}`} cx={x} cy={y} r="2.5" fill="var(--status-info)" />;
                                             })}
                                         </>
                                     ) : null}
@@ -305,7 +305,7 @@ export default function AnalyticsOverviewPage() {
                                                     y={y}
                                                     width={barWidth}
                                                     height={barHeight}
-                                                    fill="#E6C979"
+                                                    fill="var(--gold)"
                                                     opacity={0.85}
                                                 />
                                             );
@@ -325,7 +325,7 @@ export default function AnalyticsOverviewPage() {
                                                     y={y}
                                                     width={barWidth}
                                                     height={barHeight}
-                                                    fill="#4A90C4"
+                                                    fill="var(--status-info)"
                                                     opacity={0.75}
                                                 />
                                             );
@@ -345,7 +345,7 @@ export default function AnalyticsOverviewPage() {
                                 </p>
                             ) : null}
                             {activeSeries.orders ? (
-                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-[#4A90C4]`}>
+                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-[var(--status-info)]`}>
                                     Orders: 18
                                 </p>
                             ) : null}
