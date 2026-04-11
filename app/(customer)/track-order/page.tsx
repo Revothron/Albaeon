@@ -299,10 +299,10 @@ export default async function TrackOrderPage({
     const orderId = typeof params.orderId === "string" ? params.orderId.trim() : "";
     const contact = typeof params.contact === "string" ? params.contact.trim() : "";
     const hasLookupAttempt = orderId.length > 0 || contact.length > 0;
-    const matchedOrder = orderId && contact ? findOrderByLookup(orderId, contact) : undefined;
+    const matchedOrder = orderId && contact ? await findOrderByLookup(orderId, contact) : null;
 
     return (
-        <section className="min-h-screen bg-primary">
+        <section className="min-h-screen bg-primary animate-fadeInUp">
             <div className="border-b border-gold/10 bg-primary-deep">
                 <div className="desktop-frame flex flex-col items-center py-14 text-center">
                     <p className={`${cinzel.className} text-[9px] font-bold tracking-[0.48em] text-gold`}>

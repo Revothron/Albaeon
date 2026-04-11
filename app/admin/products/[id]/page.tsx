@@ -1,18 +1,30 @@
-import { notFound } from "next/navigation";
-import AdminProductEditor from "@/components/admin/AdminProductEditor";
-import { getAdminProductById } from "@/lib/admin/products";
+import { createClient } from '@/lib/supabase/server'
+import { redirect, notFound } from 'next/navigation'
+import { getAdminProductForEdit, getAdminCategories } from '@/lib/admin/products'
+import AdminProductEditorClient from '@/components/admin/AdminProductEditorClient'
 
 export default async function EditProductPage({
-    params,
+  params,
 }: {
-    params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }) {
-    const { id } = await params;
-    const product = getAdminProductById(id);
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/admin/login')
 
-    if (!product) {
-        notFound();
-    }
+  const { id } = await params
+  const [product, categories] = await Promise.all([
+    getAdminProductForEdit(id),
+    getAdminCategories(),
+  ])
 
-    return <AdminProductEditor mode="edit" product={product} />;
+  if (!product) notFound()
+
+  return (
+    <AdminProductEditorClient
+      mode="edit"
+      product={product}
+      categories={categories}
+    />
+  )
 }

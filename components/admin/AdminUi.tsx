@@ -78,16 +78,28 @@ export function AdminOutlineButton({ label, icon, className = "" }: AdminOutline
     );
 }
 
-export function AdminPrimaryButton({ label, icon, className = "" }: AdminPrimaryButtonProps) {
+export function AdminPrimaryButton({
+    label,
+    icon,
+    onClick,
+    disabled = false,
+}: {
+    label: string
+    icon?: React.ReactNode
+    onClick?: () => void
+    disabled?: boolean
+}) {
     return (
         <button
             type="button"
-            className={`${adminCinzel.className} inline-flex items-center justify-center gap-2 bg-gold px-5 py-2.5 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover ${className}`}
+            onClick={onClick}
+            disabled={disabled}
+            className={`${adminCinzel.className} inline-flex h-9 items-center gap-2 bg-gold px-4 text-[10px] font-semibold tracking-[0.18em] text-nav transition-colors duration-200 hover:bg-gold-hover disabled:opacity-50 disabled:cursor-not-allowed`}
         >
             {icon}
             {label}
         </button>
-    );
+    )
 }
 
 export function AdminFieldLabel({ children }: { children: ReactNode }) {
@@ -101,9 +113,13 @@ export function AdminFieldLabel({ children }: { children: ReactNode }) {
 export function AdminTextInput({
     placeholder,
     className = "",
+    value,
+    onChange,
 }: {
-    placeholder: string;
-    className?: string;
+    placeholder: string
+    className?: string
+    value?: string
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) {
     return (
         <div className={`flex h-[46px] min-h-[46px] items-center gap-2 border border-gold/12 bg-footer px-3 ${className}`}>
@@ -111,10 +127,12 @@ export function AdminTextInput({
             <input
                 type="text"
                 placeholder={placeholder}
+                value={value}
+                onChange={onChange}
                 className={`${adminRaleway.className} h-full w-full bg-transparent py-0 text-[13px] font-light text-text-primary outline-none placeholder:text-text-muted`}
             />
         </div>
-    );
+    )
 }
 
 export function AdminSelectBox({
@@ -173,11 +191,10 @@ export function AdminPillGroup({ items, activeItem }: AdminPillGroupProps) {
                     <button
                         key={item}
                         type="button"
-                        className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
-                            active
-                                ? "border-gold bg-gold/12 text-gold"
-                                : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
-                        }`}
+                        className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${active
+                            ? "border-gold bg-gold/12 text-gold"
+                            : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
+                            }`}
                     >
                         {item}
                     </button>

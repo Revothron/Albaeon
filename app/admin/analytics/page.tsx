@@ -1,369 +1,314 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { AdminPageHeading } from "@/components/admin/AdminUi";
-import { adminCinzel, adminCormorant, adminRaleway } from "@/components/admin/adminFonts";
-import { analyticsRanges } from "@/lib/admin/analytics";
+import { useState, useEffect } from 'react'
+import { AdminPageHeading } from '@/components/admin/AdminUi'
+import { adminCinzel, adminCormorant, adminRaleway } from '@/components/admin/adminFonts'
+import { analyticsRanges } from '@/lib/admin/analytics'
 
-const ranges = analyticsRanges;
+const ranges = analyticsRanges
 
-const metricCards = [
-    { label: "TOTAL SALES", value: "\u20B918,42,300", trend: "\u2191 12% vs last period", trendClassName: "text-[var(--status-success)]", valueClassName: "text-gold" },
-    { label: "NET SALES", value: "\u20B916,94,820", trend: "\u2191 9.8%", trendClassName: "text-[var(--status-success)]", valueClassName: "text-text-primary" },
-    { label: "ORDERS", value: "1,284", trend: "\u2191 7.2%", trendClassName: "text-[var(--status-success)]", valueClassName: "text-text-primary" },
-    { label: "PRODUCTS SOLD", value: "2,108 items", trend: "\u2191 14.3%", trendClassName: "text-[var(--status-success)]", valueClassName: "text-text-primary" },
-    { label: "VARIATIONS SOLD", value: "2,108", trend: "\u2193 2.1%", trendClassName: "text-[var(--status-error)]", valueClassName: "text-text-primary" },
-];
-
-const chartDates = ["28 Feb", "1 Mar", "2 Mar", "3 Mar", "4 Mar", "5 Mar"];
-const netSalesValues = [74200, 76800, 78100, 84200, 85900, 87300];
-const orderValues = [14, 15, 16, 18, 18, 19];
-const chartWidth = 920;
-const chartHeight = 170;
-const maxSales = Math.max(...netSalesValues);
-const maxOrders = Math.max(...orderValues);
-const chartStep = chartWidth / (chartDates.length - 1);
-const barSlot = chartWidth / chartDates.length;
-const barWidth = barSlot * 0.14;
-const barGap = barSlot * 0.06;
-const salesPoints = netSalesValues
-    .map((value, index) => {
-        const x = index * chartStep;
-        const y = chartHeight - (value / maxSales) * chartHeight;
-        return `${x},${y}`;
-    })
-    .join(" ");
-const ordersPoints = orderValues
-    .map((value, index) => {
-        const x = index * chartStep;
-        const y = chartHeight - (value / maxOrders) * chartHeight;
-        return `${x},${y}`;
-    })
-    .join(" ");
-
-const topCategories = [
-    { rank: "01", name: "T-Shirts", items: "1,204 items", share: 57 },
-    { rank: "02", name: "Hoodies", items: "904 items", share: 43 },
-    { rank: "03", name: "Accessories", items: "0 items", share: 0 },
-    { rank: "04", name: "\u2014", items: "0 items", share: 0 },
-    { rank: "05", name: "\u2014", items: "0 items", share: 0 },
-];
-
-const topProducts = [
-    { rank: "01", name: "Empire Oversized Tee", items: "312 items", share: 14.8 },
-    { rank: "02", name: "Pantheon Hoodie", items: "248 items", share: 11.7 },
-    { rank: "03", name: "Medusa Crop Tee", items: "186 items", share: 8.8 },
-    { rank: "04", name: "Atlas Drop Shoulder", items: "142 items", share: 6.7 },
-    { rank: "05", name: "Olympus Oversized Hoodie", items: "108 items", share: 5.1 },
-];
-
-function MetricCard({
-    label,
-    value,
-    trend,
-    trendClassName,
-    valueClassName = "text-text-primary",
-}: (typeof metricCards)[number] & { valueClassName?: string }) {
-    return (
-        <article className="border border-gold/10 bg-[#1E1A2E] p-5">
-            <p className={`${adminCinzel.className} text-[9px] tracking-[0.28em] text-text-muted`}>
-                {label}
-            </p>
-            <p className={`${adminCormorant.className} mt-2.5 text-[36px] font-light leading-none ${valueClassName}`}>
-                {value}
-            </p>
-            <p className={`${adminRaleway.className} mt-2.5 text-[12px] font-light ${trendClassName}`}>
-                {trend}
-            </p>
-        </article>
-    );
+type OverviewData = {
+  totalSales: number
+  netSales: number
+  totalOrders: number
+  productsSold: number
+  salesTrend: number
+  chartLabels: string[]
+  netSalesValues: number[]
+  orderValues: number[]
 }
 
-function LeaderboardCard({
-    title,
-    rows,
-    nameLabel,
-}: {
-    title: string;
-    rows: Array<{ rank: string; name: string; items: string; share: number }>;
-    nameLabel: string;
+function MetricCard({ label, value, trend, trendClassName, valueClassName = 'text-text-primary' }: {
+  label: string; value: string; trend: string
+  trendClassName: string; valueClassName?: string
 }) {
-    return (
-        <article className="border border-gold/10 bg-[#1E1A2E] p-6">
-            <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
-                {title}
-            </p>
+  return (
+    <article className="border border-gold/10 bg-[#1E1A2E] p-5">
+      <p className={`${adminCinzel.className} text-[9px] tracking-[0.28em] text-text-muted`}>{label}</p>
+      <p className={`${adminCormorant.className} mt-2.5 text-[36px] font-light leading-none ${valueClassName}`}>{value}</p>
+      <p className={`${adminRaleway.className} mt-2.5 text-[12px] font-light ${trendClassName}`}>{trend}</p>
+    </article>
+  )
+}
 
-            <div className="mt-4 overflow-hidden border border-gold/10">
-                <div className={`grid grid-cols-[70px_minmax(0,1fr)_120px_140px] bg-nav px-4 py-2.5 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}>
-                    <span>RANK</span>
-                    <span>{nameLabel}</span>
-                    <span>ITEMS SOLD</span>
-                    <span>SHARE</span>
-                </div>
-
-                {rows.map((row) => (
-                    <div
-                        key={`${title}-${row.rank}`}
-                        className="grid grid-cols-[70px_minmax(0,1fr)_120px_140px] items-center gap-3 border-t border-gold/6 px-4 py-3"
-                    >
-                        <span className={`${adminCinzel.className} text-[18px] text-gold`}>
-                            {row.rank}
-                        </span>
-                        <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
-                            {row.name}
-                        </span>
-                        <span className={`${adminRaleway.className} text-[13px] font-light text-text-primary`}>
-                            {row.items}
-                        </span>
-                        <div className="space-y-1.5">
-                            <div className="h-1.5 bg-gold/10">
-                                <div className="h-full bg-gold" style={{ width: `${Math.min(row.share, 100)}%` }} />
-                            </div>
-                            <p className={`${adminRaleway.className} text-[11px] font-light text-text-muted`}>
-                                {row.share > 0 ? `${row.share}%` : "-"}
-                            </p>
-                        </div>
-                    </div>
-                ))}
+function LeaderboardCard({ title, rows, nameLabel }: {
+  title: string
+  rows: { rank: string; name: string; items: string; share: number }[]
+  nameLabel: string
+}) {
+  return (
+    <article className="border border-gold/10 bg-[#1E1A2E] p-6">
+      <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>{title}</p>
+      <div className="mt-4 overflow-hidden border border-gold/10">
+        <div className={`grid grid-cols-[70px_minmax(0,1fr)_120px_140px] bg-nav px-4 py-2.5 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}>
+          <span>RANK</span>
+          <span>{nameLabel}</span>
+          <span>ITEMS SOLD</span>
+          <span>SHARE</span>
+        </div>
+        {rows.map((row) => (
+          <div key={`${title}-${row.rank}`} className="grid grid-cols-[70px_minmax(0,1fr)_120px_140px] items-center gap-3 border-t border-gold/6 px-4 py-3">
+            <span className={`${adminCinzel.className} text-[18px] text-gold`}>{row.rank}</span>
+            <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>{row.name}</span>
+            <span className={`${adminRaleway.className} text-[13px] font-light text-text-primary`}>{row.items}</span>
+            <div className="space-y-1.5">
+              <div className="h-1.5 bg-gold/10">
+                <div className="h-full bg-gold" style={{ width: `${Math.min(row.share, 100)}%` }} />
+              </div>
+              <p className={`${adminRaleway.className} text-[11px] font-light text-text-muted`}>
+                {row.share > 0 ? `${row.share}%` : '—'}
+              </p>
             </div>
-        </article>
-    );
+          </div>
+        ))}
+      </div>
+    </article>
+  )
 }
 
 export default function AnalyticsOverviewPage() {
-    const [activeRange, setActiveRange] = useState("TODAY");
-    const [activeSeries, setActiveSeries] = useState({ netSales: true, orders: true });
-    const [chartMode, setChartMode] = useState<"line" | "bar">("line");
+  const [activeRange, setActiveRange] = useState('30D')
+  const [activeSeries, setActiveSeries] = useState({ netSales: true, orders: true })
+  const [chartMode, setChartMode] = useState<'line' | 'bar'>('line')
+  const [data, setData] = useState<OverviewData | null>(null)
+  const [loading, setLoading] = useState(true)
 
-    return (
-        <div className="space-y-6">
-            <div className="space-y-5">
-                <AdminPageHeading
-                    eyebrow="ANALYTICS"
-                    title="Overview"
-                />
+  useEffect(() => {
+    setLoading(true)
+    fetch(`/api/admin/analytics?type=overview&range=${activeRange}`)
+      .then((r) => r.json())
+      .then((d) => { setData(d); setLoading(false) })
+      .catch(() => setLoading(false))
+  }, [activeRange])
 
-                <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-                    <div className="flex flex-wrap items-center gap-2">
-                        {ranges.map((range) => {
-                            const active = range === activeRange;
+  const chartLabels = data?.chartLabels ?? []
+  const netSalesValues = data?.netSalesValues ?? []
+  const orderValues = data?.orderValues ?? []
+  const chartWidth = 920
+  const chartHeight = 170
+  const maxSales = Math.max(...netSalesValues, 1)
+  const maxOrders = Math.max(...orderValues, 1)
+  const chartStep = chartLabels.length > 1 ? chartWidth / (chartLabels.length - 1) : chartWidth
+  const barSlot = chartWidth / (chartLabels.length || 1)
+  const barWidth = barSlot * 0.14
+  const barGap = barSlot * 0.06
 
-                            return (
-                                <button
-                                    key={range}
-                                    type="button"
-                                    onClick={() => setActiveRange(range)}
-                                    className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
-                                        active
-                                            ? "border-gold bg-gold/12 text-gold"
-                                            : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
-                                    }`}
-                                >
-                                    {range}
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
+  const salesPoints = netSalesValues.map((v, i) => `${i * chartStep},${chartHeight - (v / maxSales) * chartHeight}`).join(' ')
+  const ordersPoints = orderValues.map((v, i) => `${i * chartStep},${chartHeight - (v / maxOrders) * chartHeight}`).join(' ')
 
-            <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
-                {metricCards.map((card) => (
-                    <MetricCard key={card.label} {...card} />
-                ))}
-            </div>
+  const trend = data?.salesTrend ?? 0
+  const trendSign = trend >= 0 ? '↑' : '↓'
+  const trendClass = trend >= 0 ? 'text-[var(--status-success)]' : 'text-[var(--status-error)]'
 
-            <section className="border border-gold/10 bg-[#1E1A2E] p-7">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>
-                        NET SALES & ORDERS
-                    </p>
+  const metricCards = data ? [
+    { label: 'TOTAL SALES', value: `₹${data.totalSales.toLocaleString('en-IN')}`, trend: `${trendSign} ${Math.abs(trend)}% vs last period`, trendClassName: trendClass, valueClassName: 'text-gold' },
+    { label: 'NET SALES', value: `₹${data.netSales.toLocaleString('en-IN')}`, trend: `${trendSign} ${Math.abs(trend)}%`, trendClassName: trendClass, valueClassName: 'text-text-primary' },
+    { label: 'ORDERS', value: data.totalOrders.toLocaleString('en-IN'), trend: `${data.totalOrders} total`, trendClassName: 'text-text-muted', valueClassName: 'text-text-primary' },
+    { label: 'PRODUCTS SOLD', value: `${data.productsSold.toLocaleString('en-IN')} items`, trend: 'units ordered', trendClassName: 'text-text-muted', valueClassName: 'text-text-primary' },
+  ] : []
 
-                    <div className="flex gap-2">
-                        {(["line", "bar"] as const).map((mode) => {
-                            const active = chartMode === mode;
+  // Top chart index for tooltip
+  const peakIndex = netSalesValues.indexOf(Math.max(...netSalesValues))
 
-                            return (
-                                <button
-                                    key={mode}
-                                    type="button"
-                                    onClick={() => setChartMode(mode)}
-                                    className={`${adminCinzel.className} border px-4 py-1.5 text-[10px] font-semibold tracking-[0.14em] transition-colors duration-200 ${
-                                        active
-                                            ? "border-gold bg-gold/12 text-gold"
-                                            : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
-                                    }`}
-                                >
-                                    {mode === "line" ? "Line" : "Bar"}
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                <div className={`mt-4 flex flex-wrap items-center gap-3 text-[12px] ${adminRaleway.className}`}>
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setActiveSeries((current) => {
-                                const nextValue = !current.netSales;
-                                if (!nextValue && !current.orders) {
-                                    return current;
-                                }
-                                return { ...current, netSales: nextValue };
-                            })
-                        }
-                        className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
-                            activeSeries.netSales
-                                ? "border-gold bg-gold/10 text-text-primary"
-                                : "border-gold/20 bg-[var(--bg-secondary)] text-text-muted hover:border-gold/40 hover:text-text-primary"
-                        }`}
-                    >
-                        <span className="h-2 w-2 rounded-full bg-gold" aria-hidden="true" />
-                        Net Sales
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setActiveSeries((current) => {
-                                const nextValue = !current.orders;
-                                if (!nextValue && !current.netSales) {
-                                    return current;
-                                }
-                                return { ...current, orders: nextValue };
-                            })
-                        }
-                        className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
-                            activeSeries.orders
-                                ? "border-gold bg-gold/10 text-text-primary"
-                                : "border-gold/20 bg-[var(--bg-secondary)] text-text-muted hover:border-gold/40 hover:text-text-primary"
-                        }`}
-                    >
-                        <span className="h-2 w-2 rounded-full bg-[var(--status-info)]" aria-hidden="true" />
-                        Orders
-                    </button>
-                </div>
-
-                <div className="mt-4 w-full border border-gold/10 bg-footer px-2 py-3.5">
-                    <div className="w-full max-w-[920px]">
-                        <div className="relative h-[240px]">
-                            <div className="pointer-events-none absolute inset-0">
-                            {Array.from({ length: 5 }).map((_, index) => (
-                                <div
-                                    key={index}
-                                    className="absolute left-0 right-0 border-t border-gold/6"
-                                    style={{ top: `${index * 25}%` }}
-                                />
-                            ))}
-                        </div>
-
-                        <svg
-                            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                            className="absolute inset-x-0 top-4 h-[170px] w-full"
-                            preserveAspectRatio="none"
-                            aria-label="Analytics overview chart"
-                        >
-                            {chartMode === "line" ? (
-                                <>
-                                    {activeSeries.netSales ? (
-                                        <>
-                                            <polyline fill="none" stroke="var(--gold)" strokeWidth="2" points={salesPoints} />
-                                            {netSalesValues.map((value, index) => {
-                                                const x = index * chartStep;
-                                                const y = chartHeight - (value / maxSales) * chartHeight;
-
-                                                return <circle key={`sales-${chartDates[index]}`} cx={x} cy={y} r="3" fill="var(--gold)" />;
-                                            })}
-                                        </>
-                                    ) : null}
-                                    {activeSeries.orders ? (
-                                        <>
-                                            <polyline fill="none" stroke="var(--status-info)" strokeWidth="1.5" points={ordersPoints} />
-                                            {orderValues.map((value, index) => {
-                                                const x = index * chartStep;
-                                                const y = chartHeight - (value / maxOrders) * chartHeight;
-
-                                                return <circle key={`orders-${chartDates[index]}`} cx={x} cy={y} r="2.5" fill="var(--status-info)" />;
-                                            })}
-                                        </>
-                                    ) : null}
-                                </>
-                            ) : (
-                                <>
-                                    {activeSeries.netSales ? (
-                                        netSalesValues.map((value, index) => {
-                                            const groupStart = index * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2;
-                                            const x = groupStart;
-                                            const barHeight = (value / maxSales) * chartHeight;
-                                            const y = chartHeight - barHeight;
-
-                                            return (
-                                                <rect
-                                                    key={`sales-bar-${chartDates[index]}`}
-                                                    x={x}
-                                                    y={y}
-                                                    width={barWidth}
-                                                    height={barHeight}
-                                                    fill="var(--gold)"
-                                                    opacity={0.85}
-                                                />
-                                            );
-                                        })
-                                    ) : null}
-                                    {activeSeries.orders ? (
-                                        orderValues.map((value, index) => {
-                                            const groupStart = index * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2;
-                                            const x = groupStart + barWidth + barGap;
-                                            const barHeight = (value / maxOrders) * chartHeight;
-                                            const y = chartHeight - barHeight;
-
-                                            return (
-                                                <rect
-                                                    key={`orders-bar-${chartDates[index]}`}
-                                                    x={x}
-                                                    y={y}
-                                                    width={barWidth}
-                                                    height={barHeight}
-                                                    fill="var(--status-info)"
-                                                    opacity={0.75}
-                                                />
-                                            );
-                                        })
-                                    ) : null}
-                                </>
-                            )}
-                        </svg>
-
-                        <div className="absolute right-4 top-4 w-[190px] border border-gold/20 bg-nav px-3 py-2">
-                            <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
-                                3 Mar 2026
-                            </p>
-                            {activeSeries.netSales ? (
-                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-gold`}>
-                                    Net Sales: \u20B984,200
-                                </p>
-                            ) : null}
-                            {activeSeries.orders ? (
-                                <p className={`${adminCinzel.className} mt-1 text-[12px] text-[var(--status-info)]`}>
-                                    Orders: 18
-                                </p>
-                            ) : null}
-                        </div>
-                        </div>
-                        <div className={`mt-3 grid grid-cols-6 gap-1 text-center text-[11px] text-text-muted ${adminRaleway.className}`}>
-                            {chartDates.map((date) => (
-                                <span key={date}>{date}</span>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <div className="grid gap-5 lg:grid-cols-2">
-                <LeaderboardCard title="TOP CATEGORIES \u2014 ITEMS SOLD" rows={topCategories} nameLabel="CATEGORY" />
-                <LeaderboardCard title="TOP PRODUCTS \u2014 ITEMS SOLD" rows={topProducts} nameLabel="PRODUCT" />
-            </div>
+  return (
+    <div className="space-y-6 animate-fadeInUp">
+      <div className="space-y-5">
+        <AdminPageHeading eyebrow="ANALYTICS" title="Overview" />
+        <div className="flex flex-wrap items-center gap-2">
+          {ranges.map((range) => (
+            <button
+              key={range}
+              type="button"
+              onClick={() => setActiveRange(range)}
+              className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
+                activeRange === range
+                  ? 'border-gold bg-gold/12 text-gold'
+                  : 'border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary'
+              }`}
+            >
+              {range}
+            </button>
+          ))}
         </div>
-    );
+      </div>
+
+      {/* Metric cards */}
+      {loading ? (
+        <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-[120px] animate-pulse border border-gold/10 bg-[#1E1A2E]" />
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
+          {metricCards.map((card) => <MetricCard key={card.label} {...card} />)}
+        </div>
+      )}
+
+      {/* Chart */}
+      <section className="border border-gold/10 bg-[#1E1A2E] p-7">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <p className={`${adminCinzel.className} text-[10px] tracking-[0.24em] text-gold`}>NET SALES & ORDERS</p>
+          <div className="flex gap-2">
+            {(['line', 'bar'] as const).map((mode) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => setChartMode(mode)}
+                className={`${adminCinzel.className} border px-4 py-1.5 text-[10px] font-semibold tracking-[0.14em] transition-colors duration-200 ${
+                  chartMode === mode ? 'border-gold bg-gold/12 text-gold' : 'border-gold/12 text-text-muted hover:border-gold/30'
+                }`}
+              >
+                {mode === 'line' ? 'Line' : 'Bar'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className={`mt-4 flex flex-wrap items-center gap-3 text-[12px] ${adminRaleway.className}`}>
+          {[
+            { key: 'netSales', label: 'Net Sales', color: 'bg-gold', active: activeSeries.netSales },
+            { key: 'orders', label: 'Orders', color: 'bg-[var(--status-info)]', active: activeSeries.orders },
+          ].map((s) => (
+            <button
+              key={s.key}
+              type="button"
+              onClick={() => setActiveSeries((c) => {
+                const next = !c[s.key as keyof typeof c]
+                if (!next && !c[s.key === 'netSales' ? 'orders' : 'netSales']) return c
+                return { ...c, [s.key]: next }
+              })}
+              className={`inline-flex items-center gap-2 border px-4 py-2 transition-colors duration-200 ${
+                s.active ? 'border-gold bg-gold/10 text-text-primary' : 'border-gold/20 bg-[var(--bg-secondary)] text-text-muted'
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${s.color}`} />
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="mt-4 w-full border border-gold/10 bg-footer px-2 py-3.5">
+          <div className="w-full">
+            <div className="relative h-[240px]">
+              <div className="pointer-events-none absolute inset-0">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <div key={i} className="absolute left-0 right-0 border-t border-gold/6" style={{ top: `${i * 25}%` }} />
+                ))}
+              </div>
+
+              {!loading && (
+                <svg
+                  viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                  className="absolute inset-x-0 top-4 h-[170px] w-full"
+                  preserveAspectRatio="none"
+                >
+                  {chartMode === 'line' ? (
+                    <>
+                      {activeSeries.netSales && (
+                        <>
+                          <polyline fill="none" stroke="var(--gold)" strokeWidth="2" points={salesPoints} />
+                          {netSalesValues.map((v, i) => (
+                            <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxSales) * chartHeight} r="3" fill="var(--gold)" />
+                          ))}
+                        </>
+                      )}
+                      {activeSeries.orders && (
+                        <>
+                          <polyline fill="none" stroke="var(--status-info)" strokeWidth="1.5" points={ordersPoints} />
+                          {orderValues.map((v, i) => (
+                            <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxOrders) * chartHeight} r="2.5" fill="var(--status-info)" />
+                          ))}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {netSalesValues.map((v, i) => {
+                        const groupStart = i * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2
+                        const bh = (v / maxSales) * chartHeight
+                        return activeSeries.netSales ? (
+                          <rect key={i} x={groupStart} y={chartHeight - bh} width={barWidth} height={bh} fill="var(--gold)" opacity={0.85} />
+                        ) : null
+                      })}
+                      {orderValues.map((v, i) => {
+                        const groupStart = i * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2
+                        const bh = (v / maxOrders) * chartHeight
+                        return activeSeries.orders ? (
+                          <rect key={i} x={groupStart + barWidth + barGap} y={chartHeight - bh} width={barWidth} height={bh} fill="var(--status-info)" opacity={0.75} />
+                        ) : null
+                      })}
+                    </>
+                  )}
+                </svg>
+              )}
+
+              {!loading && peakIndex >= 0 && (
+                <div className="absolute right-4 top-4 w-[190px] border border-gold/20 bg-nav px-3 py-2">
+                  <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
+                    {chartLabels[peakIndex]}
+                  </p>
+                  {activeSeries.netSales && (
+                    <p className={`${adminCinzel.className} mt-1 text-[12px] text-gold`}>
+                      Net Sales: ₹{netSalesValues[peakIndex]?.toLocaleString('en-IN')}
+                    </p>
+                  )}
+                  {activeSeries.orders && (
+                    <p className={`${adminCinzel.className} mt-1 text-[12px] text-[var(--status-info)]`}>
+                      Orders: {orderValues[peakIndex]}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div
+              className={`mt-3 grid gap-1 text-center text-[11px] text-text-muted ${adminRaleway.className}`}
+              style={{ gridTemplateColumns: `repeat(${chartLabels.length || 6}, minmax(0, 1fr))` }}
+            >
+              {chartLabels.map((label) => <span key={label}>{label}</span>)}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Leaderboards */}
+      <LeaderboardsSection range={activeRange} />
+    </div>
+  )
+}
+
+function LeaderboardsSection({ range }: { range: string }) {
+  const [catData, setCatData] = useState<{ tableRows: { id: string; cells: Record<string, string> }[] } | null>(null)
+  const [prodData, setProdData] = useState<{ tableRows: { id: string; cells: Record<string, string> }[] } | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/admin/analytics?type=category&range=${range}`).then((r) => r.json()).then(setCatData)
+    fetch(`/api/admin/analytics?type=products&range=${range}`).then((r) => r.json()).then(setProdData)
+  }, [range])
+
+  const catRows = (catData?.tableRows ?? []).slice(0, 5).map((r) => ({
+    rank: r.cells.rank,
+    name: r.cells.name,
+    items: r.cells.qty + ' items',
+    share: parseFloat(r.cells.share),
+  }))
+
+  const prodRows = (prodData?.tableRows ?? []).slice(0, 5).map((r) => ({
+    rank: r.cells.rank,
+    name: r.cells.name,
+    items: r.cells.qty + ' items',
+    share: parseFloat(r.cells.share),
+  }))
+
+  // Fill empty rows
+  while (catRows.length < 5) catRows.push({ rank: String(catRows.length + 1).padStart(2, '0'), name: '—', items: '0 items', share: 0 })
+  while (prodRows.length < 5) prodRows.push({ rank: String(prodRows.length + 1).padStart(2, '0'), name: '—', items: '0 items', share: 0 })
+
+  return (
+    <div className="grid gap-5 lg:grid-cols-2">
+      <LeaderboardCard title="TOP CATEGORIES — ITEMS SOLD" rows={catRows} nameLabel="CATEGORY" />
+      <LeaderboardCard title="TOP PRODUCTS — ITEMS SOLD" rows={prodRows} nameLabel="PRODUCT" />
+    </div>
+  )
 }

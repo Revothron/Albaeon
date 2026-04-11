@@ -65,7 +65,7 @@ export default function DeleteAccountModal({
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="delete-account-title"
-                        className="w-full max-w-[460px] border border-[#C0392B4D] bg-[#1E1630] p-8 text-center shadow-[0_30px_80px_rgba(0,0,0,0.55)] sm:p-10"
+                        className="w-full max-w-[460px] border border-[#C0392B4D] bg-[#1E1630] p-8 text-center shadow-[0_30px_80px_rgba(0,0,0,0.55)] sm:p-10 animate-scaleIn"
                     >
                         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--status-error)] text-[24px] font-medium text-[var(--status-error)]">
                             !
@@ -121,5 +121,6 @@ export default function DeleteAccountModal({
         </>
     );
 }
+
 
 

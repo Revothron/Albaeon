@@ -1,11 +1,14 @@
-'use client';
-import { useWishlistStore } from '@/store/wishlistStore';
-import { useUiStore } from '@/store/uiStore';
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useWishlistStore } from '@/store/wishlistStore'
+import { useUiStore } from '@/store/uiStore'
+import { useRouter } from 'next/navigation'
 
 interface WishlistButtonProps {
-  productId: string;
-  className?: string;
-  style?: React.CSSProperties;
+  productId: string
+  className?: string
+  style?: React.CSSProperties
 }
 
 export default function WishlistButton({
@@ -13,29 +16,66 @@ export default function WishlistButton({
   className,
   style,
 }: WishlistButtonProps) {
-  const toggle = useWishlistStore((s) => s.toggle);
-  const isIn = useWishlistStore((s) =>
-    s.isInWishlist(productId));
-  const addToast = useUiStore((s) => s.addToast);
+  const toggle = useWishlistStore((s) => s.toggle)
+  const isInWishlist = useWishlistStore((s) => s.isInWishlist)
+  const addToast = useUiStore((s) => s.addToast)
+  const router = useRouter()
+
+  // ── Defer to client only to prevent hydration mismatch ──
+  const [mounted, setMounted] = useState(false)
+  const [isIn, setIsIn] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+    setIsIn(isInWishlist(productId))
+  }, [productId, isInWishlist])
+
+  // Keep in sync when store changes
+  useEffect(() => {
+    if (!mounted) return
+    setIsIn(isInWishlist(productId))
+  }, [mounted, productId, isInWishlist])
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle(productId);
+    e.preventDefault()
+    e.stopPropagation()
+    toggle(productId)
+    const nowIn = !isIn
+    setIsIn(nowIn)
     addToast({
-      message: isIn
-        ? 'Removed from wishlist'
-        : 'Added to wishlist',
-      type: isIn ? 'info' : 'success',
-    });
-  };
+      message: nowIn ? 'Added to wishlist' : 'Removed from wishlist',
+      type: nowIn ? 'success' : 'info',
+    })
+    router.refresh()
+  }
+
+  // ── Render neutral state on server / before mount ──────
+  if (!mounted) {
+    return (
+      <button
+        aria-label="Add to wishlist"
+        className={className}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '6px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'var(--albaeon-text-muted, #B7AFC3)',
+          ...style,
+        }}
+      >
+        ♡
+      </button>
+    )
+  }
 
   return (
     <button
       onClick={handleClick}
-      aria-label={isIn
-        ? 'Remove from wishlist'
-        : 'Add to wishlist'}
+      aria-label={isIn ? 'Remove from wishlist' : 'Add to wishlist'}
       className={className}
       style={{
         background: 'none',
@@ -55,5 +95,5 @@ export default function WishlistButton({
     >
       {isIn ? '♥' : '♡'}
     </button>
-  );
+  )
 }

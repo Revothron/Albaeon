@@ -493,3 +493,55 @@ a.link-gold:hover {
 .toast-exit {
   animation: slideInRight 0.25s ease reverse forwards;
 }
+
+/* Button loading state */
+.btn-loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.75;
+}
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 9999px;
+  animation: spin 0.7s linear infinite;
+}
+
+/* Smooth scroll on html */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Image zoom container */
+.img-zoom-container {
+  overflow: hidden;
+}
+.img-zoom-container img,
+.img-zoom-container > div {
+  transition: transform 0.5s ease;
+}
+.img-zoom-container:hover img,
+.img-zoom-container:hover > div {
+  transform: scale(1.04);
+}
+
+/* Gold separator line — animated draw */
+.gold-rule {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--albaeon-gold, #E6C979),
+    transparent
+  );
+  width: 100%;
+}
+
+/* Page transition wrapper */
+.page-enter {
+  animation: fadeInUp 0.45s ease forwards;
+}

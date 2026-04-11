@@ -129,11 +129,10 @@ export default function AdminSidebar() {
                             <Link
                                 key={item.href}
                                 href={item.subMenu ? item.subMenu[0].href : item.href}
-                                className={`shrink-0 border px-3 py-2 text-[11px] tracking-[0.16em] uppercase transition-all duration-300 ${
-                                    active
+                                className={`shrink-0 border px-3 py-2 text-[11px] tracking-[0.16em] uppercase transition-all duration-300 ${active
                                         ? "border-gold bg-gold/10 text-gold"
                                         : "border-[#E6C9791F] text-text-muted"
-                                }`}
+                                    }`}
                                 onClick={() => {
                                     if (item.subMenu) {
                                         setAnalyticsOpen(true);
@@ -152,11 +151,10 @@ export default function AdminSidebar() {
                             <Link
                                 key={subItem.href}
                                 href={subItem.href}
-                                className={`shrink-0 border px-3 py-2 text-[10px] tracking-[0.16em] uppercase transition-all duration-300 ${
-                                    pathname === subItem.href
+                                className={`shrink-0 border px-3 py-2 text-[10px] tracking-[0.16em] uppercase transition-all duration-300 ${pathname === subItem.href
                                         ? "border-gold bg-gold/10 text-gold"
                                         : "border-[#E6C9791A] text-text-muted"
-                                }`}
+                                    }`}
                             >
                                 {subItem.name}
                             </Link>
@@ -166,9 +164,8 @@ export default function AdminSidebar() {
             </div>
 
             <aside
-                className={`hidden h-screen shrink-0 flex-col justify-between border-r border-[#E6C97914] bg-[var(--nav-bg)] transition-[width] duration-200 md:sticky md:top-0 md:flex ${
-                    collapsed ? "w-[72px]" : "w-[220px]"
-                }`}
+                className={`hidden h-screen shrink-0 flex-col justify-between border-r border-[#E6C97914] bg-[var(--nav-bg)] transition-all duration-300 ease-in-out md:sticky md:top-0 md:flex ${collapsed ? "w-[72px]" : "w-[220px]"
+                    }`}
             >
                 <div>
                     <div className={`relative flex h-16 items-center border-b border-[#E6C97914] ${collapsed ? "justify-center px-2" : "px-6"}`}>
@@ -192,9 +189,8 @@ export default function AdminSidebar() {
                             type="button"
                             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
                             onClick={() => setCollapsed((current) => !current)}
-                            className={`absolute right-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E6C9791F] text-text-muted transition-colors duration-200 hover:border-[#E6C97940] hover:text-gold ${
-                                collapsed ? "right-2" : ""
-                            }`}
+                            className={`absolute right-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E6C9791F] text-text-muted transition-colors duration-200 hover:border-[#E6C97940] hover:text-gold ${collapsed ? "right-2" : ""
+                                }`}
                         >
                             {collapsed ? (
                                 <PanelRightClose className="h-4 w-4" strokeWidth={1.8} />
@@ -215,11 +211,10 @@ export default function AdminSidebar() {
                                         <Link
                                             key={item.name}
                                             href={item.href}
-                                            className={`flex w-full items-center justify-center px-2.5 py-3 transition-all duration-300 ${
-                                                active
+                                            className={`flex w-full items-center justify-center px-2.5 py-3 transition-all duration-300 ${active
                                                     ? "border-l-2 border-gold bg-[#E6C97914] text-gold"
                                                     : "text-text-muted hover:bg-gold/5 hover:text-text-primary"
-                                            }`}
+                                                }`}
                                             title={item.name}
                                             onClick={() => setAnalyticsOpen(true)}
                                         >
@@ -238,20 +233,18 @@ export default function AdminSidebar() {
                                                 }
                                                 setAnalyticsOpen((open) => !open);
                                             }}
-                                            className={`flex w-full items-center justify-between px-5 py-2.5 transition-all duration-300 ${
-                                                active
+                                            className={`flex w-full items-center justify-between px-5 py-2.5 transition-all duration-300 ${active
                                                     ? "text-gold"
                                                     : "text-text-muted hover:bg-gold/5 hover:text-text-primary"
-                                            }`}
+                                                }`}
                                         >
                                             <span className={`flex items-center gap-2.5 ${adminRaleway.className} text-[13px]`}>
                                                 <Icon className="h-4 w-4" strokeWidth={1.8} />
                                                 {item.name}
                                             </span>
                                             <ChevronDown
-                                                className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                                                    analyticsVisible ? "rotate-180" : ""
-                                                }`}
+                                                className={`h-3.5 w-3.5 transition-transform duration-200 ${analyticsVisible ? "rotate-180" : ""
+                                                    }`}
                                                 strokeWidth={1.8}
                                             />
                                         </button>
@@ -265,11 +258,10 @@ export default function AdminSidebar() {
                                                         <Link
                                                             key={subItem.href}
                                                             href={subItem.href}
-                                                            className={`block px-11 py-2 text-[12px] transition-all duration-300 ${
-                                                                subActive
+                                                            className={`block px-11 py-2 text-[12px] transition-all duration-300 ${subActive
                                                                     ? "border-l-2 border-gold bg-[#E6C97914] pl-[42px] text-gold"
                                                                     : "text-text-muted hover:bg-gold/5 hover:text-text-primary"
-                                                            } ${adminRaleway.className}`}
+                                                                } ${adminRaleway.className}`}
                                                         >
                                                             {subItem.name}
                                                         </Link>
@@ -285,15 +277,13 @@ export default function AdminSidebar() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={`flex items-center transition-all duration-300 ${
-                                        collapsed
+                                    className={`flex items-center transition-all duration-300 ${collapsed
                                             ? "justify-center px-2.5 py-3"
                                             : "justify-between px-5 py-2.5"
-                                    } ${
-                                        active
+                                        } ${active
                                             ? "border-l-2 border-gold bg-[#E6C97914] text-gold"
                                             : "text-text-muted hover:bg-gold/5 hover:text-text-primary"
-                                    } ${collapsed ? "" : "pl-[18px]"}`}
+                                        } ${collapsed ? "" : "pl-[18px]"}`}
                                     title={collapsed ? item.name : undefined}
                                 >
                                     {collapsed ? (
@@ -345,9 +335,8 @@ export default function AdminSidebar() {
                                 aria-hidden="true"
                             >
                                 <span
-                                    className={`absolute left-0.5 top-0.5 h-[14px] w-[14px] rounded-full shadow-[0_0_8px_rgba(0,0,0,0.35)] transition-transform duration-300 ${
-                                        maintenanceMode ? "translate-x-[14px]" : "translate-x-0"
-                                    }`}
+                                    className={`absolute left-0.5 top-0.5 h-[14px] w-[14px] rounded-full shadow-[0_0_8px_rgba(0,0,0,0.35)] transition-transform duration-300 ${maintenanceMode ? "translate-x-[14px]" : "translate-x-0"
+                                        }`}
                                     style={{
                                         background: "var(--text-muted, var(--albaeon-text-muted, #B7AFC3))",
                                     }}
@@ -358,11 +347,17 @@ export default function AdminSidebar() {
 
                     <button
                         type="button"
+                        onClick={async () => {
+                            const supabase = (await import('@/lib/supabase/client')).createClient()
+                            await supabase.auth.signOut()
+                            router.push('/admin/login')
+                            router.refresh()
+                        }}
                         className={`flex h-10 w-full items-center justify-center gap-2 rounded-full border border-[#FF0000] text-[13px] text-[#FF0000] transition-colors duration-200 hover:bg-[#FF0000]/10 ${adminRaleway.className}`}
                         aria-label="Logout"
                     >
                         <LogOut className="h-4 w-4" strokeWidth={1.8} />
-                        {!collapsed ? "Logout" : null}
+                        {!collapsed ? 'Logout' : null}
                     </button>
                 </div>
             </aside>

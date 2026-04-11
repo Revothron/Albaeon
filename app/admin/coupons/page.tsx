@@ -2,7 +2,7 @@ import { Search, Plus } from "lucide-react";
 
 export default function AdminCouponsPage() {
     return (
-        <div>
+        <div className="animate-fadeInUp">
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-text-primary text-2xl font-bold">Coupons</h1>
                 <button className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
@@ -44,3 +44,5 @@ export default function AdminCouponsPage() {
         </div>
     );
 }
+
+

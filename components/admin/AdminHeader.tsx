@@ -106,8 +106,8 @@ export default function AdminHeader() {
                     </span>
                 </button>
 
-                {dropdownOpen ? (
-                    <div className="absolute right-0 top-[calc(100%+12px)] z-30 w-80 border border-[#E6C97926] bg-[#1E1A2E] shadow-[0_24px_48px_rgba(0,0,0,0.4)]">
+                {dropdownOpen && (
+                    <div className="absolute right-0 top-[calc(100%+12px)] z-30 w-80 border border-[#E6C97926] bg-[#1E1A2E] shadow-[0_24px_48px_rgba(0,0,0,0.4)] animate-slideInDown">
                         <div className="flex items-center justify-between border-b border-[#E6C97914] px-4 pb-3 pt-4">
                             <p className={`${adminCinzel.className} text-[9px] font-bold tracking-[0.32em] text-gold`}>
                                 NOTIFICATIONS
@@ -135,7 +135,7 @@ export default function AdminHeader() {
                             ))}
                         </div>
                     </div>
-                ) : null}
+                )}
             </div>
         </header>
     );

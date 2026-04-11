@@ -262,7 +262,7 @@ export default function IssueReportModal({
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="report-issue-title"
-                        className="w-full max-w-[600px] overflow-hidden border border-[#E6A8174D] bg-primary-deep shadow-[0_30px_80px_rgba(0,0,0,0.55)]"
+                        className="w-full max-w-[600px] overflow-hidden border border-[#E6A8174D] bg-primary-deep shadow-[0_30px_80px_rgba(0,0,0,0.55)] animate-scaleIn"
                     >
                         <div className="flex items-start justify-between gap-4 border-b border-[#E6A81733] bg-surface px-6 py-5 sm:px-8">
                             <div className="space-y-1">
@@ -548,7 +548,7 @@ export default function IssueReportModal({
                         role="dialog"
                         aria-modal="true"
                         aria-labelledby="report-success-title"
-                        className="w-full max-w-[600px] border border-gold/15 bg-primary-deep px-8 py-10 text-center shadow-[0_30px_80px_rgba(0,0,0,0.55)] sm:px-10 sm:py-14"
+                        className="w-full max-w-[600px] border border-gold/15 bg-primary-deep px-8 py-10 text-center shadow-[0_30px_80px_rgba(0,0,0,0.55)] sm:px-10 sm:py-14 animate-scaleIn"
                     >
                         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-[var(--status-success)] bg-[#4CAF7D10]">
                             <Check className="h-7 w-7 text-[var(--status-success)]" />
@@ -588,4 +588,5 @@ export default function IssueReportModal({
         </>
     );
 }
+
 

@@ -1,472 +1,326 @@
+import { createClient } from '@/lib/supabase/server'
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 export type ProductHighlight = {
-    label: string;
-    value: string;
-};
+  label: string
+  value: string
+}
 
 export const productCategories = [
-    { slug: "t-shirts", label: "T-Shirts" },
-    { slug: "hoodies", label: "Hoodies" },
-    { slug: "shirts", label: "Shirts" },
-    { slug: "pants", label: "Pants" },
-    { slug: "jackets", label: "Jackets" },
-    { slug: "sets", label: "Sets" },
-] as const;
+  { slug: 't-shirts', label: 'T-Shirts' },
+  { slug: 'hoodies', label: 'Hoodies' },
+  { slug: 'shirts', label: 'Shirts' },
+  { slug: 'pants', label: 'Pants' },
+  { slug: 'jackets', label: 'Jackets' },
+  { slug: 'sets', label: 'Sets' },
+] as const
 
-export type ProductCategorySlug = (typeof productCategories)[number]["slug"];
+export type ProductCategorySlug = (typeof productCategories)[number]['slug']
 
 export type Product = {
-    slug: string;
-    category: ProductCategorySlug;
-    name: string;
-    price: string;
-    image: string;
-    gallery: string[];
-    sizes: string[];
-    defaultSize: string;
-    description: string;
-    sizeChart: string;
-    washCare: string;
-    returnPolicy: string;
-    highlights: ProductHighlight[];
-};
-
-const products: Product[] = [
-    {
-        slug: "aurelian-crest-tee",
-        category: "t-shirts",
-        name: "Aurelian Crest Tee",
-        price: "$95",
-        image: "/collection/aurelian-crest-tee.png",
-        gallery: [
-            "/collection/aurelian-crest-tee.png",
-            "/collection/aurelian-crest-tee.png",
-            "/collection/aurelian-crest-tee.png",
-            "/collection/aurelian-crest-tee.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Heavyweight cotton tee with crest artwork, a clean oversized drape, and a premium finish designed for daily wear.",
-        sizeChart: "S (Chest 36) / M (Chest 38) / L (Chest 40) / XL (Chest 42) / 2XL (Chest 44)",
-        washCare:
-            "Machine wash cold, turn inside out, and hang dry to preserve the print depth and fabric structure.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Oversized Fit" },
-            { label: "Neck", value: "Round Neck" },
-            { label: "Pattern", value: "Printed Crest" },
-            { label: "Fabric", value: "240 GSM Cotton" },
-            { label: "Sleeve", value: "Regular Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "sovereign-hoodie",
-        category: "hoodies",
-        name: "Sovereign Hoodie",
-        price: "$176",
-        image: "/collection/sovereign-hoodie.png",
-        gallery: [
-            "/collection/sovereign-hoodie.png",
-            "/collection/sovereign-hoodie.png",
-            "/collection/sovereign-hoodie.png",
-            "/collection/sovereign-hoodie.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Structured hoodie with a rich tonal body, refined embroidery, and a dense fleece interior built for colder layers.",
-        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
-        washCare:
-            "Machine wash cold on gentle cycle. Wash with similar colors and dry flat or tumble dry low.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Relaxed Fit" },
-            { label: "Hood", value: "Drawcord Hood" },
-            { label: "Pattern", value: "Minimal Embroidery" },
-            { label: "Fabric", value: "420 GSM Fleece" },
-            { label: "Sleeve", value: "Drop Shoulder" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "monolith-shirt",
-        category: "shirts",
-        name: "Monolith Shirt",
-        price: "$124",
-        image: "/collection/monolith-shirt.png",
-        gallery: [
-            "/collection/monolith-shirt.png",
-            "/collection/monolith-shirt.png",
-            "/collection/monolith-shirt.png",
-            "/collection/monolith-shirt.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Sharp long-sleeve shirt with a disciplined silhouette, premium blend fabric, and understated Albaeon detailing.",
-        sizeChart: "S (Chest 37) / M (Chest 39) / L (Chest 41) / XL (Chest 43) / 2XL (Chest 45)",
-        washCare:
-            "Machine wash cold with mild detergent. Reshape while damp and iron on low heat if needed.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Tailored Fit" },
-            { label: "Collar", value: "Spread Collar" },
-            { label: "Pattern", value: "Minimal Solid" },
-            { label: "Fabric", value: "Cotton Blend" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Curved Hem" },
-        ],
-    },
-    {
-        slug: "empire-utility-pant",
-        category: "pants",
-        name: "Empire Utility Pant",
-        price: "$142",
-        image: "/collection/empire-utility-pant.png",
-        gallery: [
-            "/collection/empire-utility-pant.png",
-            "/collection/empire-utility-pant.png",
-            "/collection/empire-utility-pant.png",
-            "/collection/empire-utility-pant.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Utility trouser with precise panel construction, a clean taper, and sturdy twill for structured everyday wear.",
-        sizeChart: "S (Waist 30) / M (Waist 32) / L (Waist 34) / XL (Waist 36) / 2XL (Waist 38)",
-        washCare:
-            "Machine wash cold, wash inside out, and hang dry to maintain panel definition and color depth.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Straight Fit" },
-            { label: "Waist", value: "Mid Rise" },
-            { label: "Pattern", value: "Utility Paneling" },
-            { label: "Fabric", value: "Structured Twill" },
-            { label: "Leg", value: "Tapered Leg" },
-            { label: "Length", value: "Ankle Length" },
-        ],
-    },
-    {
-        slug: "nocturne-layer-jacket",
-        category: "jackets",
-        name: "Nocturne Layer Jacket",
-        price: "$238",
-        image: "/collection/nocturne-layer-jacket.png",
-        gallery: [
-            "/collection/nocturne-layer-jacket.png",
-            "/collection/nocturne-layer-jacket.png",
-            "/collection/nocturne-layer-jacket.png",
-            "/collection/nocturne-layer-jacket.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Layered jacket with a sculpted front, dense fabric body, and quiet technical detailing for a modern mythic silhouette.",
-        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
-        washCare:
-            "Dry clean recommended. For spot care, use a cool damp cloth and avoid harsh agitation on layered panels.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Relaxed Fit" },
-            { label: "Neck", value: "Stand Collar" },
-            { label: "Pattern", value: "Layered Panels" },
-            { label: "Fabric", value: "Tech Twill Blend" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "glyph-knit-set",
-        category: "sets",
-        name: "Glyph Knit Set",
-        price: "$210",
-        image: "/collection/glyph-knit-set.png",
-        gallery: [
-            "/collection/glyph-knit-set.png",
-            "/collection/glyph-knit-set.png",
-            "/collection/glyph-knit-set.png",
-            "/collection/glyph-knit-set.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Coordinated knit set built for comfort, depth, and a refined tonal finish across both pieces.",
-        sizeChart: "S (Chest 38 / Waist 30) / M (Chest 40 / Waist 32) / L (Chest 42 / Waist 34) / XL (Chest 44 / Waist 36)",
-        washCare:
-            "Hand wash cold or use a delicate wool cycle. Dry flat away from direct heat to keep the knit shape intact.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Comfort Fit" },
-            { label: "Neck", value: "Crew Neck" },
-            { label: "Pattern", value: "Textured Knit" },
-            { label: "Fabric", value: "Premium Knit Blend" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-];
-
-const homeProducts: Product[] = [
-    {
-        slug: "obsidian-crest-tee",
-        category: "t-shirts",
-        name: "Obsidian Crest Tee",
-        price: "$96",
-        image: "/home/arrival-obsidian-crest-tee.png",
-        gallery: [
-            "/home/arrival-obsidian-crest-tee.png",
-            "/home/arrival-obsidian-crest-tee.png",
-            "/home/arrival-obsidian-crest-tee.png",
-            "/home/arrival-obsidian-crest-tee.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Signature crest tee with deep tonal artwork, built on a structured cotton base for a bold daily uniform.",
-        sizeChart: "S (Chest 36) / M (Chest 38) / L (Chest 40) / XL (Chest 42) / 2XL (Chest 44)",
-        washCare:
-            "Machine wash cold, turn inside out, and hang dry to preserve the print depth and fabric structure.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Oversized Fit" },
-            { label: "Neck", value: "Round Neck" },
-            { label: "Pattern", value: "Crest Print" },
-            { label: "Fabric", value: "240 GSM Cotton" },
-            { label: "Sleeve", value: "Regular Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "vanguard-glyph-hoodie",
-        category: "hoodies",
-        name: "Vanguard Glyph Hoodie",
-        price: "$168",
-        image: "/home/arrival-vanguard-glyph-hoodie.png",
-        gallery: [
-            "/home/arrival-vanguard-glyph-hoodie.png",
-            "/home/arrival-vanguard-glyph-hoodie.png",
-            "/home/arrival-vanguard-glyph-hoodie.png",
-            "/home/arrival-vanguard-glyph-hoodie.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Glyph-stitched hoodie with a dense fleece core, designed for colder nights and heavy layering.",
-        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
-        washCare:
-            "Machine wash cold on gentle cycle. Wash with similar colors and dry flat or tumble dry low.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Relaxed Fit" },
-            { label: "Hood", value: "Drawcord Hood" },
-            { label: "Pattern", value: "Glyph Embroidery" },
-            { label: "Fabric", value: "420 GSM Fleece" },
-            { label: "Sleeve", value: "Drop Shoulder" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "imperial-cut-shirt",
-        category: "shirts",
-        name: "Imperial Cut Shirt",
-        price: "$122",
-        image: "/home/arrival-imperial-cut-shirt.png",
-        gallery: [
-            "/home/arrival-imperial-cut-shirt.png",
-            "/home/arrival-imperial-cut-shirt.png",
-            "/home/arrival-imperial-cut-shirt.png",
-            "/home/arrival-imperial-cut-shirt.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Tailored cut shirt with clean architectural lines and a soft structured hand for daily uniform dressing.",
-        sizeChart: "S (Chest 37) / M (Chest 39) / L (Chest 41) / XL (Chest 43) / 2XL (Chest 45)",
-        washCare:
-            "Machine wash cold with mild detergent. Reshape while damp and iron on low heat if needed.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Tailored Fit" },
-            { label: "Collar", value: "Spread Collar" },
-            { label: "Pattern", value: "Clean Solid" },
-            { label: "Fabric", value: "Cotton Blend" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Curved Hem" },
-        ],
-    },
-    {
-        slug: "nocturne-utility-set",
-        category: "sets",
-        name: "Nocturne Utility Set",
-        price: "$214",
-        image: "/home/arrival-nocturne-utility-set.png",
-        gallery: [
-            "/home/arrival-nocturne-utility-set.png",
-            "/home/arrival-nocturne-utility-set.png",
-            "/home/arrival-nocturne-utility-set.png",
-            "/home/arrival-nocturne-utility-set.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Coordinated utility set with layered paneling, built for movement and grounded in structured fabric weight.",
-        sizeChart: "S (Chest 38 / Waist 30) / M (Chest 40 / Waist 32) / L (Chest 42 / Waist 34) / XL (Chest 44 / Waist 36)",
-        washCare:
-            "Machine wash cold, wash inside out, and hang dry to maintain panel definition and color depth.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Comfort Fit" },
-            { label: "Neck", value: "Crew Neck" },
-            { label: "Pattern", value: "Utility Panels" },
-            { label: "Fabric", value: "Structured Twill" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "atlas-prime-hoodie",
-        category: "hoodies",
-        name: "Atlas Prime Hoodie",
-        price: "$172",
-        image: "/home/best-atlas-prime-hoodie.png",
-        gallery: [
-            "/home/best-atlas-prime-hoodie.png",
-            "/home/best-atlas-prime-hoodie.png",
-            "/home/best-atlas-prime-hoodie.png",
-            "/home/best-atlas-prime-hoodie.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Heavy fleece hoodie with a sculpted hood and clean branding details, designed for everyday armor.",
-        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
-        washCare:
-            "Machine wash cold on gentle cycle. Wash with similar colors and dry flat or tumble dry low.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Relaxed Fit" },
-            { label: "Hood", value: "Structured Hood" },
-            { label: "Pattern", value: "Minimal Embroidery" },
-            { label: "Fabric", value: "420 GSM Fleece" },
-            { label: "Sleeve", value: "Drop Shoulder" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "mythcore-long-tee",
-        category: "t-shirts",
-        name: "Mythcore Long Tee",
-        price: "$104",
-        image: "/home/best-mythcore-long-tee.png",
-        gallery: [
-            "/home/best-mythcore-long-tee.png",
-            "/home/best-mythcore-long-tee.png",
-            "/home/best-mythcore-long-tee.png",
-            "/home/best-mythcore-long-tee.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Extended-length tee with mythcore insignia and a balanced weight for layered styling.",
-        sizeChart: "S (Chest 36) / M (Chest 38) / L (Chest 40) / XL (Chest 42) / 2XL (Chest 44)",
-        washCare:
-            "Machine wash cold, turn inside out, and hang dry to preserve the print depth and fabric structure.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Longline Fit" },
-            { label: "Neck", value: "Round Neck" },
-            { label: "Pattern", value: "Mythcore Print" },
-            { label: "Fabric", value: "220 GSM Cotton" },
-            { label: "Sleeve", value: "Regular Sleeve" },
-            { label: "Length", value: "Longline" },
-        ],
-    },
-    {
-        slug: "aurelian-cargo-jacket",
-        category: "jackets",
-        name: "Aurelian Cargo Jacket",
-        price: "$238",
-        image: "/home/best-aurelian-cargo-jacket.png",
-        gallery: [
-            "/home/best-aurelian-cargo-jacket.png",
-            "/home/best-aurelian-cargo-jacket.png",
-            "/home/best-aurelian-cargo-jacket.png",
-            "/home/best-aurelian-cargo-jacket.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Cargo jacket with engineered storage and a rigid silhouette, cut for layered city wear.",
-        sizeChart: "S (Chest 38) / M (Chest 40) / L (Chest 42) / XL (Chest 44) / 2XL (Chest 46)",
-        washCare:
-            "Dry clean recommended. For spot care, use a cool damp cloth and avoid harsh agitation on layered panels.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Relaxed Fit" },
-            { label: "Neck", value: "Stand Collar" },
-            { label: "Pattern", value: "Utility Panels" },
-            { label: "Fabric", value: "Tech Twill Blend" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-    {
-        slug: "rune-line-essentials",
-        category: "sets",
-        name: "Rune-Line Essentials",
-        price: "$128",
-        image: "/home/best-rune-line-essentials.png",
-        gallery: [
-            "/home/best-rune-line-essentials.png",
-            "/home/best-rune-line-essentials.png",
-            "/home/best-rune-line-essentials.png",
-            "/home/best-rune-line-essentials.png",
-        ],
-        sizes: ["S", "M", "L", "XL", "2XL"],
-        defaultSize: "M",
-        description:
-            "Essential set with rune detailing and a soft structured feel, designed for comfortable daily rotation.",
-        sizeChart: "S (Chest 38 / Waist 30) / M (Chest 40 / Waist 32) / L (Chest 42 / Waist 34) / XL (Chest 44 / Waist 36)",
-        washCare:
-            "Hand wash cold or use a delicate wool cycle. Dry flat away from direct heat to keep the knit shape intact.",
-        returnPolicy:
-            "Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.",
-        highlights: [
-            { label: "Fit", value: "Comfort Fit" },
-            { label: "Neck", value: "Crew Neck" },
-            { label: "Pattern", value: "Rune Detailing" },
-            { label: "Fabric", value: "Premium Knit Blend" },
-            { label: "Sleeve", value: "Full Sleeve" },
-            { label: "Length", value: "Regular" },
-        ],
-    },
-];
-
-export const collectionProducts = products;
-const allProducts = [...products, ...homeProducts];
-
-export function getCategoryBySlug(slug: string) {
-    return productCategories.find((category) => category.slug === slug);
+  id: string
+  slug: string
+  name: string
+  category: string
+  price: string
+  priceINR: number
+  priceUSD: number | null
+  image: string
+  gallery: string[]
+  images: string[]
+  sizes: string[]
+  defaultSize: string
+  variants: {
+    id: string
+    size: string
+    color: string
+    color_hex: string | null
+    sku: string
+    stock_status: string
+  }[]
+  description: string
+  sizeChart: string
+  washCare: string
+  returnPolicy: string
+  highlights: ProductHighlight[]
+  is_new_arrival: boolean
+  is_best_seller: boolean
 }
 
-export function getProductsByCategory(category: ProductCategorySlug) {
-    return products.filter((product) => product.category === category);
+// ── Constants ─────────────────────────────────────────────────────────────────
+const DEFAULT_RETURN_POLICY =
+  'Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.'
+
+const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+
+// ── Supabase row type ─────────────────────────────────────────────────────────
+type ProductRow = {
+  id: string
+  name: string
+  slug: string
+  price_inr: number
+  price_usd: number | null
+  description: string | null
+  wash_care: string | null
+  size_chart: { text?: string } | string | null
+  highlights: { key: string; value: string }[] | null
+  is_new_arrival: boolean
+  is_best_seller: boolean
+  categories: { slug: string; name: string } | null
+  product_images: {
+    url: string
+    is_primary: boolean
+    sort_order: number
+  }[]
+  product_variants: {
+    id?: string
+    size: string
+    color?: string
+    color_hex?: string | null
+    sku?: string
+    stock_status: string
+    sort_order: number
+  }[]
 }
 
-export function getProductBySlug(slug: string) {
-    return allProducts.find((product) => product.slug === slug);
+// ── Map Supabase row → Product shape ──────────────────────────────────────────
+function mapProduct(row: ProductRow): Product {
+  // Sort images — primary first
+  const sortedImages = [...(row.product_images ?? [])].sort(
+    (a, b) =>
+      (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0) ||
+      a.sort_order - b.sort_order
+  )
+
+  const gallery = sortedImages.map((img) => img.url)
+  const image = gallery[0] ?? '/placeholder.png'
+
+  // Available sizes from in_stock variants only
+  const rawSizes = [
+    ...new Set(
+      (row.product_variants ?? [])
+        .filter((v) => v.stock_status === 'in_stock')
+        .map((v) => v.size)
+    ),
+  ].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b))
+
+  const sizes = rawSizes.length > 0 ? rawSizes : ['S', 'M', 'L', 'XL']
+  const defaultSize = sizes.includes('M') ? 'M' : sizes[0]
+
+  // Size chart text
+  const sizeChartText =
+    typeof row.size_chart === 'string'
+      ? row.size_chart
+      : typeof row.size_chart === 'object' && row.size_chart?.text
+        ? row.size_chart.text
+        : ''
+
+  // Map variants
+  const variants = (row.product_variants ?? []).map((v) => ({
+    id: v.id ?? '',
+    size: v.size,
+    color: v.color ?? '',
+    color_hex: v.color_hex ?? null,
+    sku: v.sku ?? `${row.slug}-${v.size}`,
+    stock_status: v.stock_status,
+  }))
+
+  // Map highlights from JSONB column
+  const highlights: ProductHighlight[] = Array.isArray(row.highlights)
+    ? row.highlights.map((h) => ({
+        label: h.key ?? '',
+        value: h.value ?? '',
+      })).filter((h) => h.label)
+    : []
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    category: row.categories?.slug ?? 't-shirts',
+
+    price: `₹${row.price_inr.toLocaleString('en-IN')}`,
+    priceINR: row.price_inr,
+    priceUSD: row.price_usd,
+
+    image,
+    gallery: gallery.length > 0 ? gallery : ['/placeholder.png'],
+    images: gallery.length > 0 ? gallery : ['/placeholder.png'],
+
+    sizes,
+    defaultSize,
+    variants,
+
+    description: row.description ?? '',
+    sizeChart: sizeChartText,
+    washCare: row.wash_care ?? '',
+    returnPolicy: DEFAULT_RETURN_POLICY,
+    highlights,
+
+    is_new_arrival: row.is_new_arrival,
+    is_best_seller: row.is_best_seller,
+  }
 }
+
+// ── Shared select string ──────────────────────────────────────────────────────
+const PRODUCT_SELECT = `
+  id, name, slug, description,
+  price_inr, price_usd, status,
+  is_new_arrival, is_best_seller,
+  wash_care, size_chart, highlights, tags,
+  meta_title, meta_description,
+  categories (id, name, slug),
+  product_images (url, is_primary, sort_order, alt_text),
+  product_variants (id, color, color_hex, size, sku, stock_status, sort_order)
+`
+
+// ── getProducts ───────────────────────────────────────────────────────────────
+export async function getProducts({
+  categorySlug,
+  sort = 'newest',
+  limit = 24,
+  page = 1,
+  colors = [],
+  minPrice,
+  maxPrice,
+}: {
+  categorySlug?: string
+  sort?: 'newest' | 'price_asc' | 'price_desc' | 'name_asc' | 'best_seller'
+  limit?: number
+  page?: number
+  colors?: string[]
+  minPrice?: number
+  maxPrice?: number
+} = {}) {
+  const supabase = await createClient()
+  const offset = (page - 1) * limit
+
+  let query = supabase
+    .from('products')
+    .select(PRODUCT_SELECT, { count: 'exact' })
+    .eq('status', 'active')
+
+  if (categorySlug) {
+    const { data: cat } = await supabase
+      .from('categories')
+      .select('id')
+      .eq('slug', categorySlug)
+      .single()
+    if (cat) query = query.eq('category_id', cat.id)
+  }
+
+  if (minPrice !== undefined) query = query.gte('price_inr', minPrice)
+  if (maxPrice !== undefined) query = query.lte('price_inr', maxPrice)
+
+  if (sort === 'best_seller') {
+    query = query.eq('is_best_seller', true)
+  }
+
+  switch (sort) {
+    case 'price_asc':
+      query = query.order('price_inr', { ascending: true }); break
+    case 'price_desc':
+      query = query.order('price_inr', { ascending: false }); break
+    case 'name_asc':
+      query = query.order('name', { ascending: true }); break
+    case 'best_seller':
+      query = query.order('sort_order', { ascending: true }); break
+    default:
+      query = query.order('created_at', { ascending: false })
+  }
+
+  const { data, count, error } = await query.range(offset, offset + limit - 1)
+
+  let products = (data ?? []).map((row) => mapProduct(row as ProductRow))
+
+  if (colors.length > 0) {
+    products = products.filter((p) =>
+      p.variants.some((v) =>
+        colors.some((c) => v.color.toLowerCase() === c.toLowerCase())
+      )
+    )
+  }
+
+  return { products, total: count ?? 0, error }
+}
+
+// ── getProductBySlug ──────────────────────────────────────────────────────────
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      id, name, slug,
+      price_inr, price_usd,
+      description, wash_care, size_chart, highlights,
+      is_new_arrival, is_best_seller,
+      meta_title, meta_description,
+      categories (name, slug),
+      product_images (id, url, alt_text, is_primary, sort_order),
+      product_variants (id, color, color_hex, size, sku, stock_status, sort_order)
+    `)
+    .eq('slug', slug)
+    .eq('status', 'active')
+    .single()
+
+  if (error || !data) return null
+
+  return mapProduct(data as ProductRow)
+}
+
+// ── getRelatedProducts ────────────────────────────────────────────────────────
+export async function getRelatedProducts(
+  categorySlug: string,
+  excludeSlug: string
+): Promise<Product[]> {
+  const supabase = await createClient()
+
+  const { data: cat } = await supabase
+    .from('categories')
+    .select('id')
+    .eq('slug', categorySlug)
+    .single()
+
+  if (!cat) return []
+
+  const { data } = await supabase
+    .from('products')
+    .select(PRODUCT_SELECT)
+    .eq('status', 'active')
+    .eq('category_id', cat.id)
+    .neq('slug', excludeSlug)
+    .limit(4)
+
+  return (data ?? []).map((row) => mapProduct(row as ProductRow))
+}
+
+// ── getCategories ─────────────────────────────────────────────────────────────
+export async function getCategories() {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('categories')
+    .select('id, name, slug, image_url')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  return data ?? []
+}
+
+// ── getCategoryBySlug ─────────────────────────────────────────────────────────
+export async function getCategoryBySlug(slug: string) {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('categories')
+    .select('id, name, slug, image_url')
+    .eq('slug', slug)
+    .eq('is_active', true)
+    .single()
+
+  return data ?? null
+}
+
+// ── collectionProducts — backwards compat ─────────────────────────────────────
+export const collectionProducts: Product[] = []

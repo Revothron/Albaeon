@@ -1,27 +1,57 @@
-import { AdminAnalyticsPage } from "@/components/admin/AdminAnalytics";
-import { adminAnalyticsScreens } from "@/lib/admin/analytics";
+'use client'
 
-export default function AnalyticsRevenuePage() {
-    const baseScreen = adminAnalyticsScreens.revenue;
-    const filteredSeries = baseScreen.series.filter((item) => item.label !== "Coupons");
-    const filteredColumns = baseScreen.table.columns.filter((column) => column.key !== "coupons");
-    const filteredRows = baseScreen.table.rows.map((row) => {
-        const { coupons, ...rest } = row.cells;
-        return { ...row, cells: rest };
-    });
+import { useState, useEffect } from 'react'
+import { AdminAnalyticsPage } from '@/components/admin/AdminAnalytics'
+import { analyticsRanges } from '@/lib/admin/analytics'
+import type { AdminAnalyticsScreen } from '@/components/admin/AdminAnalytics'
 
-    return (
-        <AdminAnalyticsPage
-            screen={{
-                ...baseScreen,
-                series: filteredSeries,
-                table: {
-                    ...baseScreen.table,
-                    columns: filteredColumns,
-                    rows: filteredRows,
-                    gridTemplateColumns: "minmax(0,1fr) 90px 150px 150px 150px",
-                },
-            }}
-        />
-    );
+export default function RevenueAnalyticsPage() {
+  const [range, setRange] = useState('30D')
+  const [data, setData] = useState<AdminAnalyticsScreen | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/admin/analytics?type=revenue&range=${range}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setData({
+          eyebrow: 'ANALYTICS',
+          title: 'Revenue',
+          subtitle: `Revenue breakdown · ${range}`,
+          activeRange: range,
+          ranges: analyticsRanges,
+          chartTitle: 'GROSS vs NET REVENUE',
+          chartLabels: d.chartLabels,
+          series: [
+            { label: 'Gross', color: 'var(--gold)', active: true, values: d.grossValues, format: 'currency' },
+            { label: 'Net', color: 'var(--status-success)', active: true, values: d.netValues, format: 'currency' },
+            { label: 'Discount', color: 'var(--status-error)', active: false, values: d.discountValues, format: 'currency' },
+          ],
+          table: {
+            title: 'REVENUE BREAKDOWN',
+            searchPlaceholder: 'Search by date...',
+            reportOptions: ['Export CSV', 'Export PDF'],
+            columns: [
+              { key: 'date', label: 'DATE', font: 'raleway', tone: 'muted' },
+              { key: 'gross', label: 'GROSS', font: 'cinzel', tone: 'primary', align: 'right' },
+              { key: 'discount', label: 'DISCOUNT', font: 'raleway', tone: 'muted', align: 'right' },
+              { key: 'shipping', label: 'SHIPPING', font: 'raleway', tone: 'muted', align: 'right' },
+              { key: 'net', label: 'NET', font: 'cinzel', tone: 'primary', align: 'right' },
+              { key: 'orders', label: 'ORDERS', font: 'cinzel', tone: 'primary', align: 'right' },
+            ],
+            rows: d.tableRows,
+          },
+        })
+      })
+  }, [range])
+
+  if (!data) return <div className="animate-pulse h-[400px] border border-gold/10 bg-[#1E1A2E]" />
+
+  return (
+    <div onClick={(e) => {
+      const btn = (e.target as HTMLElement).closest('[data-range]')
+      if (btn) setRange(btn.getAttribute('data-range') ?? range)
+    }}>
+      <AdminAnalyticsPage screen={{ ...data, activeRange: range }} />
+    </div>
+  )
 }

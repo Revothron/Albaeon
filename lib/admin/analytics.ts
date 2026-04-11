@@ -1,201 +1,422 @@
-import type { AdminAnalyticsScreen } from "@/components/admin/AdminAnalytics";
+import { createAdminClient } from '@/lib/supabase/admin'
 
-export const analyticsRanges = [
-    "TODAY",
-    "YESTERDAY",
-    "LAST WEEK",
-    "LAST MONTH",
-    "LAST QUARTER",
-    "LAST YEAR",
-];
+export const analyticsRanges = ['7D', '30D', '90D', '6M', '1Y', 'ALL']
 
-const reportOptions = [
-    "Monthly Report",
-    "3-Month Report",
-    "6-Month Report",
-    "Yearly Report",
-];
+function getFromDate(range: string): string | null {
+  const now = new Date()
+  switch (range) {
+    case '7D': { const d = new Date(now); d.setDate(d.getDate() - 7); return d.toISOString() }
+    case '30D': { const d = new Date(now); d.setDate(d.getDate() - 30); return d.toISOString() }
+    case '90D': { const d = new Date(now); d.setDate(d.getDate() - 90); return d.toISOString() }
+    case '6M': { const d = new Date(now); d.setMonth(d.getMonth() - 6); return d.toISOString() }
+    case '1Y': { const d = new Date(now); d.setFullYear(d.getFullYear() - 1); return d.toISOString() }
+    default: return null
+  }
+}
 
-const performanceLabels = [
-    "26 Feb",
-    "27 Feb",
-    "28 Feb",
-    "1 Mar",
-    "2 Mar",
-    "3 Mar",
-    "4 Mar",
-];
+function getChartDates(range: string): Date[] {
+  const now = new Date()
+  const days =
+    range === '7D' ? 7
+    : range === '30D' ? 30
+    : range === '90D' ? 30
+    : range === '6M' ? 24
+    : range === '1Y' ? 12
+    : 12
 
-export const adminAnalyticsScreens = {
-    products: {
-        eyebrow: "ANALYTICS",
-        title: "Products",
-        subtitle: "Track sell-through, category mix, and the strongest performing SKUs.",
-        activeRange: "TODAY",
-        ranges: analyticsRanges,
-        chartTitle: "PRODUCT PERFORMANCE",
-        chartLabels: performanceLabels,
-        tooltipLabel: "4 Mar 2026",
-        series: [
-            { label: "Items Sold", color: "#E6C979", active: true, values: [21, 23, 44, 27, 29, 24, 31], format: "number" },
-            { label: "Net Sales", color: "#4A90C4", values: [18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
-            { label: "Orders", color: "#E6A817", values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
-        ],
-        table: {
-            title: "PRODUCTS",
-            gridTemplateColumns: "minmax(0,1fr) 100px 90px 90px 120px 80px 90px 100px 90px",
-            searchPlaceholder: "Search product...",
-            searchWidthClassName: "w-full sm:w-[240px]",
-            searchInputClassName: "h-9",
-            topBarPaddingClassName: "px-6 py-[18px]",
-            headerPaddingClassName: "px-6 py-3",
-            rowPaddingClassName: "px-6 py-3",
-            columns: [
-                { key: "productTitle", label: "PRODUCT TITLE", align: "left", font: "raleway", tone: "primary", weightClassName: "font-medium" },
-                { key: "sku", label: "SKU", align: "center", font: "raleway", tone: "muted" },
-                { key: "itemsSold", label: "ITEMS SOLD", align: "center", font: "cinzel", tone: "primary" },
-                { key: "netSold", label: "NET SOLD", align: "center", font: "cinzel", tone: "primary" },
-                { key: "netSales", label: "NET SALES", align: "center", font: "cinzel", tone: "primary" },
-                { key: "orders", label: "ORDERS", align: "center", font: "cinzel", tone: "primary" },
-                { key: "category", label: "CATEGORY", align: "center", font: "raleway", tone: "muted" },
-                { key: "variations", label: "VARIATIONS", align: "center", font: "cinzel", tone: "primary" },
-                { key: "price", label: "PRICE", align: "center", font: "cinzel", tone: "primary" },
-            ],
-            rows: [
-                { id: "empire-oversized-tee", cells: { productTitle: "Empire Oversized Tee", sku: "ALB-EMT", itemsSold: "312", netSold: "312", netSales: "\u20B94,05,588", orders: "186", category: "T-Shirts", variations: "6", price: "\u20B91,299" } },
-                { id: "pantheon-hoodie", cells: { productTitle: "Pantheon Hoodie", sku: "ALB-PHH", itemsSold: "248", netSold: "248", netSales: "\u20B95,45,352", orders: "162", category: "Hoodies", variations: "5", price: "\u20B92,199" } },
-                { id: "medusa-crop-tee", cells: { productTitle: "Medusa Crop Tee", sku: "ALB-MCT", itemsSold: "186", netSold: "186", netSales: "\u20B92,23,014", orders: "126", category: "T-Shirts", variations: "4", price: "\u20B91,199" } },
-                { id: "atlas-drop-shoulder", cells: { productTitle: "Atlas Drop Shoulder", sku: "ALB-ADS", itemsSold: "142", netSold: "142", netSales: "\u20B92,12,858", orders: "98", category: "T-Shirts", variations: "4", price: "\u20B91,499" } },
-                { id: "olympus-oversized-hoodie", cells: { productTitle: "Olympus Oversized Hoodie", sku: "ALB-OOH", itemsSold: "108", netSold: "108", netSales: "\u20B92,69,892", orders: "74", category: "Hoodies", variations: "3", price: "\u20B92,499" } },
-                { id: "cerberus-raglan", cells: { productTitle: "Cerberus Raglan", sku: "ALB-CRG", itemsSold: "92", netSold: "92", netSales: "\u20B91,28,708", orders: "58", category: "T-Shirts", variations: "3", price: "\u20B91,399" } },
-                { id: "product-total", isTotal: true, cells: { productTitle: "TOTAL", sku: "", itemsSold: "2,108", netSold: "2,108", netSales: "\u20B918,42,300", orders: "1,284", category: "\u2014", variations: "\u2014", price: "\u2014" } },
-            ],
-        },
+  return Array.from({ length: days }, (_, i) => {
+    const d = new Date(now)
+    if (range === '6M') {
+      d.setDate(d.getDate() - (days - 1 - i) * 7)
+    } else if (range === '1Y' || range === 'ALL') {
+      d.setMonth(d.getMonth() - (days - 1 - i))
+    } else {
+      d.setDate(d.getDate() - (days - 1 - i))
+    }
+    return d
+  })
+}
+
+function formatChartLabel(d: Date, range: string): string {
+  if (range === '1Y' || range === 'ALL' || range === '6M') {
+    return d.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' })
+  }
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+}
+
+// ── Overview analytics ────────────────────────────────
+export async function getAnalyticsOverview(range = '30D') {
+  const supabase = createAdminClient()
+  const from = getFromDate(range)
+
+  let query = supabase
+    .from('orders')
+    .select('total_amount, subtotal, discount_amount, created_at, payment_status')
+    .eq('payment_status', 'paid')
+
+  if (from) query = query.gte('created_at', from)
+  const { data: orders } = await query
+
+  const totalSales = (orders ?? []).reduce((s, o) => s + (o.total_amount ?? 0), 0)
+  const totalDiscount = (orders ?? []).reduce((s, o) => s + (o.discount_amount ?? 0), 0)
+  const netSales = totalSales - totalDiscount
+  const totalOrders = orders?.length ?? 0
+
+  // Products sold
+  let itemsQuery = supabase
+    .from('order_items')
+    .select('quantity, orders!inner(payment_status, created_at)')
+    .eq('orders.payment_status', 'paid')
+
+  if (from) itemsQuery = itemsQuery.gte('orders.created_at', from)
+  const { data: items } = await itemsQuery
+
+  const productsSold = (items ?? []).reduce((s, i) => s + (i.quantity ?? 0), 0)
+
+  // Previous period for trend
+  const periodMs = from ? Date.now() - new Date(from).getTime() : 0
+  const prevFrom = from ? new Date(new Date(from).getTime() - periodMs).toISOString() : null
+
+  let prevQuery = supabase
+    .from('orders')
+    .select('total_amount')
+    .eq('payment_status', 'paid')
+
+  if (prevFrom && from) {
+    prevQuery = prevQuery.gte('created_at', prevFrom).lt('created_at', from)
+  }
+  const { data: prevOrders } = await prevQuery
+  const prevSales = (prevOrders ?? []).reduce((s, o) => s + (o.total_amount ?? 0), 0)
+  const salesTrend = prevSales > 0 ? ((totalSales - prevSales) / prevSales * 100).toFixed(1) : '0'
+
+  // Chart data
+  const chartDates = getChartDates(range)
+  const chartLabels = chartDates.map((d) => formatChartLabel(d, range))
+
+  const netSalesValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+
+    return (orders ?? [])
+      .filter((o) => {
+        const d = new Date(o.created_at)
+        return d >= day && d < nextDay
+      })
+      .reduce((s, o) => s + (o.total_amount ?? 0) - (o.discount_amount ?? 0), 0)
+  })
+
+  const orderValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+
+    return (orders ?? []).filter((o) => {
+      const d = new Date(o.created_at)
+      return d >= day && d < nextDay
+    }).length
+  })
+
+  return {
+    totalSales,
+    netSales,
+    totalOrders,
+    productsSold,
+    salesTrend: Number(salesTrend),
+    chartLabels,
+    netSalesValues,
+    orderValues,
+  }
+}
+
+// ── Revenue analytics ─────────────────────────────────
+export async function getRevenueAnalytics(range = '30D') {
+  const supabase = createAdminClient()
+  const from = getFromDate(range)
+
+  let query = supabase
+    .from('orders')
+    .select('total_amount, subtotal, discount_amount, shipping_amount, created_at, payment_status, currency')
+    .eq('payment_status', 'paid')
+
+  if (from) query = query.gte('created_at', from)
+  const { data: orders } = await query
+
+  const chartDates = getChartDates(range)
+  const chartLabels = chartDates.map((d) => formatChartLabel(d, range))
+
+  const grossValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+    return (orders ?? []).filter((o) => new Date(o.created_at) >= day && new Date(o.created_at) < nextDay)
+      .reduce((s, o) => s + (o.subtotal ?? 0), 0)
+  })
+
+  const netValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+    return (orders ?? []).filter((o) => new Date(o.created_at) >= day && new Date(o.created_at) < nextDay)
+      .reduce((s, o) => s + (o.total_amount ?? 0) - (o.discount_amount ?? 0), 0)
+  })
+
+  const discountValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+    return (orders ?? []).filter((o) => new Date(o.created_at) >= day && new Date(o.created_at) < nextDay)
+      .reduce((s, o) => s + (o.discount_amount ?? 0), 0)
+  })
+
+  // Table rows per period
+  const tableRows = chartDates.map((day, i) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+
+    const periodOrders = (orders ?? []).filter((o) => new Date(o.created_at) >= day && new Date(o.created_at) < nextDay)
+    const gross = periodOrders.reduce((s, o) => s + (o.subtotal ?? 0), 0)
+    const discount = periodOrders.reduce((s, o) => s + (o.discount_amount ?? 0), 0)
+    const net = periodOrders.reduce((s, o) => s + (o.total_amount ?? 0) - (o.discount_amount ?? 0), 0)
+    const shipping = periodOrders.reduce((s, o) => s + (o.shipping_amount ?? 0), 0)
+
+    return {
+      id: `rev-${i}`,
+      cells: {
+        date: chartLabels[i],
+        gross: gross > 0 ? `₹${gross.toLocaleString('en-IN')}` : '—',
+        discount: discount > 0 ? `₹${discount.toLocaleString('en-IN')}` : '—',
+        shipping: shipping > 0 ? `₹${shipping.toLocaleString('en-IN')}` : 'Free',
+        net: net > 0 ? `₹${net.toLocaleString('en-IN')}` : '—',
+        orders: periodOrders.length > 0 ? String(periodOrders.length) : '—',
+      },
+    }
+  }).filter((r) => r.cells.orders !== '—')
+
+  const totalGross = (orders ?? []).reduce((s, o) => s + (o.subtotal ?? 0), 0)
+  const totalDiscount = (orders ?? []).reduce((s, o) => s + (o.discount_amount ?? 0), 0)
+  const totalNet = (orders ?? []).reduce((s, o) => s + (o.total_amount ?? 0) - (o.discount_amount ?? 0), 0)
+  const totalShipping = (orders ?? []).reduce((s, o) => s + (o.shipping_amount ?? 0), 0)
+
+  tableRows.push({
+    id: 'total',
+    cells: {
+      date: 'TOTAL',
+      gross: `₹${totalGross.toLocaleString('en-IN')}`,
+      discount: totalDiscount > 0 ? `₹${totalDiscount.toLocaleString('en-IN')}` : '—',
+      shipping: totalShipping > 0 ? `₹${totalShipping.toLocaleString('en-IN')}` : 'Free',
+      net: `₹${totalNet.toLocaleString('en-IN')}`,
+      orders: String(orders?.length ?? 0),
     },
-    revenue: {
-        eyebrow: "ANALYTICS",
-        title: "Revenue",
-        subtitle: "Review gross sales, coupon impact, and net revenue movement over time.",
-        activeRange: "TODAY",
-        ranges: analyticsRanges,
-        chartTitle: "REVENUE BREAKDOWN",
-        chartLabels: ["25 Feb", "26 Feb", "27 Feb", "28 Feb", "1 Mar", "2 Mar", "3 Mar", "4 Mar"],
-        tooltipLabel: "4 Mar 2026",
-        series: [
-            { label: "Gross Sales", color: "#E6C979", active: true, values: [14289, 18186, 20784, 40269, 24681, 27279, 23382, 29877], format: "currency" },
-            { label: "Coupons", color: "#C0392B", values: [300, 0, 400, 2100, 900, 650, 0, 1200], format: "currency" },
-            { label: "Net Sales", color: "#4A90C4", active: true, values: [13989, 18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
-            { label: "Total Sales", color: "#4CAF7D", values: [15240, 19450, 22460, 41860, 25740, 28490, 24620, 31720], format: "currency" },
-        ],
-        table: {
-            title: "REVENUE",
-            gridTemplateColumns: "minmax(0,1fr) 90px 150px 130px 150px 150px",
-            reportOptions,
-            topBarPaddingClassName: "px-6 py-3.5",
-            headerPaddingClassName: "px-6 py-2.5",
-            rowPaddingClassName: "px-6 py-2",
-            columns: [
-                { key: "date", label: "DATE", align: "left", font: "raleway", tone: "primary" },
-                { key: "orders", label: "ORDERS", align: "center", font: "cinzel", tone: "primary" },
-                { key: "grossSales", label: "GROSS SALES", align: "center", font: "cinzel", tone: "primary" },
-                { key: "coupons", label: "COUPONS", align: "center", font: "cinzel", tone: "primary" },
-                { key: "netSales", label: "NET SALES", align: "center", font: "cinzel", tone: "primary" },
-                { key: "totalSales", label: "TOTAL SALES", align: "center", font: "cinzel", tone: "primary" },
-            ],
-            rows: [
-                { id: "rev-4-mar", cells: { date: "4 Mar 2026", orders: "23", grossSales: "\u20B929,877", coupons: "\u20B91,200", netSales: "\u20B928,677", totalSales: "\u20B928,677" } },
-                { id: "rev-3-mar", cells: { date: "3 Mar 2026", orders: "18", grossSales: "\u20B923,382", coupons: "\u20B90", netSales: "\u20B923,382", totalSales: "\u20B923,382" } },
-                { id: "rev-2-mar", cells: { date: "2 Mar 2026", orders: "21", grossSales: "\u20B927,279", coupons: "\u20B9650", netSales: "\u20B926,629", totalSales: "\u20B926,629" } },
-                { id: "rev-1-mar", cells: { date: "1 Mar 2026", orders: "19", grossSales: "\u20B924,681", coupons: "\u20B9900", netSales: "\u20B923,781", totalSales: "\u20B923,781" } },
-                { id: "rev-28-feb", cells: { date: "28 Feb 2026", orders: "31", grossSales: "\u20B940,269", coupons: "\u20B92,100", netSales: "\u20B938,169", totalSales: "\u20B938,169" } },
-                { id: "rev-27-feb", cells: { date: "27 Feb 2026", orders: "16", grossSales: "\u20B920,784", coupons: "\u20B9400", netSales: "\u20B920,384", totalSales: "\u20B920,384" } },
-                { id: "rev-26-feb", cells: { date: "26 Feb 2026", orders: "14", grossSales: "\u20B918,186", coupons: "\u20B90", netSales: "\u20B918,186", totalSales: "\u20B918,186" } },
-                { id: "rev-25-feb", cells: { date: "25 Feb 2026", orders: "11", grossSales: "\u20B914,289", coupons: "\u20B9300", netSales: "\u20B913,989", totalSales: "\u20B913,989" } },
-                { id: "rev-total", isTotal: true, cells: { date: "TOTAL", orders: "1,284", grossSales: "\u20B916,68,516", coupons: "\u20B947,480", netSales: "\u20B916,21,036", totalSales: "\u20B918,42,300" } },
-            ],
-        },
-    },
-    orders: {
-        eyebrow: "ANALYTICS",
-        title: "Order",
-        subtitle: "Monitor daily order volume, customer throughput, and basket performance.",
-        activeRange: "TODAY",
-        ranges: analyticsRanges,
-        chartTitle: "ORDER ANALYTICS",
-        chartLabels: performanceLabels,
-        tooltipLabel: "4 Mar 2026",
-        series: [
-            { label: "Orders", color: "#E6C979", active: true, values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
-            { label: "Net Sales", color: "#4A90C4", values: [18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
-            { label: "Average Order Value", color: "#4CAF7D", values: [1299, 1274, 1231, 1252, 1268, 1299, 1247], format: "currency" },
-            { label: "Average Items Per Order", color: "#E6A817", values: [1.5, 1.4, 1.4, 1.4, 1.4, 1.3, 1.3], format: "decimal" },
-        ],
-        table: {
-            title: "ORDERS",
-            gridTemplateColumns: "minmax(0,1fr) 120px 140px 140px 120px 130px 150px",
-            reportOptions,
-            topBarPaddingClassName: "px-6 py-3.5",
-            headerPaddingClassName: "px-6 py-2.5",
-            rowPaddingClassName: "px-6 py-2",
-            columns: [
-                { key: "date", label: "DATE", align: "left", font: "raleway", tone: "primary" },
-                { key: "orders", label: "ORDERS", align: "center", font: "cinzel", tone: "primary" },
-                { key: "customers", label: "CUSTOMERS", align: "center", font: "raleway", tone: "muted" },
-                { key: "products", label: "PRODUCT(S)", align: "center", font: "raleway", tone: "muted" },
-                { key: "itemsSold", label: "ITEMS SOLD", align: "center", font: "cinzel", tone: "primary" },
-                { key: "coupons", label: "COUPON(S)", align: "center", font: "raleway", tone: "muted" },
-                { key: "netSales", label: "NET SALES", align: "center", font: "cinzel", tone: "primary" },
-            ],
-            rows: [
-                { id: "orders-4-mar", cells: { date: "4 Mar 2026", orders: "23", customers: "23 customers", products: "28 products", itemsSold: "31 items", coupons: "2 coupons", netSales: "\u20B928,677" } },
-                { id: "orders-3-mar", cells: { date: "3 Mar 2026", orders: "18", customers: "18 customers", products: "22 products", itemsSold: "24 items", coupons: "0", netSales: "\u20B923,382" } },
-                { id: "orders-2-mar", cells: { date: "2 Mar 2026", orders: "21", customers: "21 customers", products: "25 products", itemsSold: "29 items", coupons: "1 coupon", netSales: "\u20B926,629" } },
-                { id: "orders-1-mar", cells: { date: "1 Mar 2026", orders: "19", customers: "19 customers", products: "24 products", itemsSold: "27 items", coupons: "2 coupons", netSales: "\u20B923,781" } },
-                { id: "orders-28-feb", cells: { date: "28 Feb 2026", orders: "31", customers: "31 customers", products: "37 products", itemsSold: "44 items", coupons: "4 coupons", netSales: "\u20B938,169" } },
-                { id: "orders-27-feb", cells: { date: "27 Feb 2026", orders: "16", customers: "16 customers", products: "20 products", itemsSold: "23 items", coupons: "1 coupon", netSales: "\u20B920,384" } },
-                { id: "orders-26-feb", cells: { date: "26 Feb 2026", orders: "14", customers: "14 customers", products: "18 products", itemsSold: "21 items", coupons: "0", netSales: "\u20B918,186" } },
-                { id: "orders-total", isTotal: true, cells: { date: "TOTAL", orders: "1,284 orders", customers: "\u2014", products: "\u2014", itemsSold: "2,108", coupons: "84 coupons", netSales: "\u20B916,21,036" } },
-            ],
-        },
-    },
-    categories: {
-        eyebrow: "ANALYTICS",
-        title: "Category",
-        subtitle: "Compare category demand, sales contribution, and order concentration.",
-        activeRange: "TODAY",
-        ranges: analyticsRanges,
-        chartTitle: "CATEGORY PERFORMANCE",
-        chartLabels: performanceLabels,
-        tooltipLabel: "4 Mar 2026",
-        series: [
-            { label: "Items Sold", color: "#E6C979", active: true, values: [21, 23, 44, 27, 29, 24, 31], format: "number" },
-            { label: "Net Sales", color: "#4A90C4", values: [18186, 20384, 38169, 23781, 26629, 23382, 28677], format: "currency" },
-            { label: "Orders", color: "#E6A817", values: [14, 16, 31, 19, 21, 18, 23], format: "number" },
-        ],
-        table: {
-            title: "CATEGORIES",
-            gridTemplateColumns: "minmax(0,1fr) 160px 180px 140px 120px",
-            searchPlaceholder: "Search category...",
-            searchWidthClassName: "w-full sm:w-[240px]",
-            searchInputClassName: "h-9",
-            reportOptions,
-            topBarPaddingClassName: "px-6 py-3.5",
-            headerPaddingClassName: "px-6 py-2.5",
-            rowPaddingClassName: "px-6 py-3",
-            columns: [
-                { key: "category", label: "CATEGORY", align: "left", font: "raleway", tone: "primary", weightClassName: "font-medium" },
-                { key: "itemsSold", label: "ITEMS SOLD", align: "center", font: "cinzel", tone: "primary" },
-                { key: "netSales", label: "NET SALES", align: "center", font: "cinzel", tone: "primary" },
-                { key: "products", label: "PRODUCTS", align: "center", font: "cinzel", tone: "primary" },
-                { key: "orders", label: "ORDERS", align: "center", font: "cinzel", tone: "primary" },
-            ],
-            rows: [
-                { id: "category-tshirts", cells: { category: "T-Shirts", itemsSold: "1,204", netSales: "\u20B915,64,796", products: "14", orders: "724" } },
-                { id: "category-hoodies", cells: { category: "Hoodies", itemsSold: "904", netSales: "\u20B919,85,796", products: "10", orders: "560" } },
-                { id: "category-empty", cells: { category: "\u2014", itemsSold: "0", netSales: "\u20B90", products: "0", orders: "0" } },
-                { id: "category-total", isTotal: true, cells: { category: "TOTAL", itemsSold: "2,108", netSales: "\u20B935,50,592", products: "24", orders: "1,284" } },
-            ],
-        },
-    },
-} satisfies Record<string, AdminAnalyticsScreen>;
+  })
 
+  return { chartLabels, grossValues, netValues, discountValues, tableRows, totalGross, totalNet, totalDiscount }
+}
+
+// ── Orders analytics ──────────────────────────────────
+export async function getOrdersAnalytics(range = '30D') {
+  const supabase = createAdminClient()
+  const from = getFromDate(range)
+
+  let query = supabase
+    .from('orders')
+    .select('id, order_number, total_amount, status, payment_status, provider, created_at')
+
+  if (from) query = query.gte('created_at', from)
+  const { data: orders } = await query
+
+  const chartDates = getChartDates(range)
+  const chartLabels = chartDates.map((d) => formatChartLabel(d, range))
+
+  const orderValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+    return (orders ?? []).filter((o) => new Date(o.created_at) >= day && new Date(o.created_at) < nextDay).length
+  })
+
+  const aovValues = chartDates.map((day) => {
+    const nextDay = new Date(day)
+    if (range === '1Y' || range === 'ALL') nextDay.setMonth(nextDay.getMonth() + 1)
+    else if (range === '6M') nextDay.setDate(nextDay.getDate() + 7)
+    else nextDay.setDate(nextDay.getDate() + 1)
+    const periodOrders = (orders ?? []).filter((o) =>
+      new Date(o.created_at) >= day && new Date(o.created_at) < nextDay && o.payment_status === 'paid'
+    )
+    if (periodOrders.length === 0) return 0
+    return periodOrders.reduce((s, o) => s + (o.total_amount ?? 0), 0) / periodOrders.length
+  })
+
+  // Recent orders table
+  const tableRows = (orders ?? [])
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 20)
+    .map((o) => ({
+      id: o.id,
+      cells: {
+        order: o.order_number,
+        date: new Date(o.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+        amount: o.payment_status === 'paid' ? `₹${(o.total_amount ?? 0).toLocaleString('en-IN')}` : '—',
+        status: o.status.charAt(0).toUpperCase() + o.status.slice(1),
+        provider: o.provider === 'banian' ? 'Banian City' : 'Gelato',
+      },
+    }))
+
+  return { chartLabels, orderValues, aovValues, tableRows, totalOrders: orders?.length ?? 0 }
+}
+
+// ── Products analytics ────────────────────────────────
+export async function getProductsAnalytics(range = '30D') {
+  const supabase = createAdminClient()
+  const from = getFromDate(range)
+
+  let query = supabase
+    .from('order_items')
+    .select(`
+      product_id, product_name, variant_sku,
+      quantity, subtotal,
+      orders!inner(payment_status, created_at)
+    `)
+    .eq('orders.payment_status', 'paid')
+
+  if (from) query = query.gte('orders.created_at', from)
+  const { data: items } = await query
+
+  // Aggregate by product
+  const productMap = new Map<string, { name: string; qty: number; revenue: number }>()
+  for (const item of items ?? []) {
+    const existing = productMap.get(item.product_id) ?? { name: item.product_name, qty: 0, revenue: 0 }
+    productMap.set(item.product_id, {
+      name: item.product_name,
+      qty: existing.qty + (item.quantity ?? 0),
+      revenue: existing.revenue + (item.subtotal ?? 0),
+    })
+  }
+
+  const totalQty = [...productMap.values()].reduce((s, p) => s + p.qty, 0)
+
+  const tableRows = [...productMap.entries()]
+    .sort((a, b) => b[1].qty - a[1].qty)
+    .slice(0, 20)
+    .map(([id, p], i) => ({
+      id,
+      cells: {
+        rank: String(i + 1).padStart(2, '0'),
+        name: p.name,
+        qty: String(p.qty),
+        revenue: `₹${p.revenue.toLocaleString('en-IN')}`,
+        share: totalQty > 0 ? `${((p.qty / totalQty) * 100).toFixed(1)}%` : '0%',
+      },
+    }))
+
+  // Chart — top 7 products qty
+  const top7 = tableRows.slice(0, 7)
+  const chartLabels = top7.map((r) => r.cells.name.split(' ').slice(0, 2).join(' '))
+  const qtyValues = top7.map((r) => Number(r.cells.qty))
+
+  return { chartLabels, qtyValues, tableRows, totalQty }
+}
+
+// ── Category analytics ────────────────────────────────
+export async function getCategoryAnalytics(range = '30D') {
+  const supabase = createAdminClient()
+  const from = getFromDate(range)
+
+  let query = supabase
+    .from('order_items')
+    .select(`
+      quantity, subtotal, product_id,
+      orders!inner(payment_status, created_at),
+      products!inner(categories(name))
+    `)
+    .eq('orders.payment_status', 'paid')
+
+  if (from) query = query.gte('orders.created_at', from)
+  const { data: items } = await query
+
+  const catMap = new Map<string, { qty: number; revenue: number }>()
+  for (const item of items ?? []) {
+    const cats = (item.products as { categories?: { name: string } | null })?.categories
+    const catName = (Array.isArray(cats) ? cats[0]?.name : cats?.name) ?? 'Uncategorised'
+    const existing = catMap.get(catName) ?? { qty: 0, revenue: 0 }
+    catMap.set(catName, {
+      qty: existing.qty + (item.quantity ?? 0),
+      revenue: existing.revenue + (item.subtotal ?? 0),
+    })
+  }
+
+  const totalQty = [...catMap.values()].reduce((s, c) => s + c.qty, 0)
+
+  const tableRows = [...catMap.entries()]
+    .sort((a, b) => b[1].qty - a[1].qty)
+    .map(([name, c], i) => ({
+      id: name,
+      cells: {
+        rank: String(i + 1).padStart(2, '0'),
+        name,
+        qty: String(c.qty),
+        revenue: `₹${c.revenue.toLocaleString('en-IN')}`,
+        share: totalQty > 0 ? `${((c.qty / totalQty) * 100).toFixed(1)}%` : '0%',
+      },
+    }))
+
+  const chartLabels = tableRows.slice(0, 6).map((r) => r.cells.name)
+  const qtyValues = tableRows.slice(0, 6).map((r) => Number(r.cells.qty))
+
+  return { chartLabels, qtyValues, tableRows, totalQty }
+}
+
+// ── Coupons analytics ─────────────────────────────────
+export async function getCouponsAnalytics(range = '30D') {
+  const supabase = createAdminClient()
+  const from = getFromDate(range)
+
+  let query = supabase
+    .from('orders')
+    .select('discount_amount, total_amount, created_at, payment_status, coupons(code, type, value)')
+    .eq('payment_status', 'paid')
+    .not('coupon_id', 'is', null)
+
+  if (from) query = query.gte('created_at', from)
+  const { data: orders } = await query
+
+  const couponMap = new Map<string, { uses: number; discount: number; revenue: number }>()
+  for (const o of orders ?? []) {
+    const coupon = Array.isArray(o.coupons) ? o.coupons[0] : o.coupons
+    const code = (coupon as { code?: string } | null)?.code ?? 'Unknown'
+    const existing = couponMap.get(code) ?? { uses: 0, discount: 0, revenue: 0 }
+    couponMap.set(code, {
+      uses: existing.uses + 1,
+      discount: existing.discount + (o.discount_amount ?? 0),
+      revenue: existing.revenue + (o.total_amount ?? 0),
+    })
+  }
+
+  const tableRows = [...couponMap.entries()]
+    .sort((a, b) => b[1].uses - a[1].uses)
+    .map(([code, c]) => ({
+      id: code,
+      cells: {
+        code,
+        uses: String(c.uses),
+        discount: `₹${c.discount.toLocaleString('en-IN')}`,
+        revenue: `₹${c.revenue.toLocaleString('en-IN')}`,
+      },
+    }))
+
+  const chartLabels = tableRows.slice(0, 7).map((r) => r.cells.code)
+  const usesValues = tableRows.slice(0, 7).map((r) => Number(r.cells.uses))
+  const discountValues = tableRows.slice(0, 7).map((r) =>
+    Number(r.cells.discount.replace(/[₹,]/g, ''))
+  )
+
+  return { chartLabels, usesValues, discountValues, tableRows }
+}

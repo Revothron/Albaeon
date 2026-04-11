@@ -1,24 +1,47 @@
-import { AdminAnalyticsPage } from "@/components/admin/AdminAnalytics";
-import { adminAnalyticsScreens } from "@/lib/admin/analytics";
+'use client'
 
-export default function AnalyticsProductsPage() {
-    const baseScreen = adminAnalyticsScreens.products;
-    const reportOptions = [
-        "Monthly Report",
-        "3-Month Report",
-        "6-Month Report",
-        "Yearly Report",
-    ];
+import { useState, useEffect } from 'react'
+import { AdminAnalyticsPage } from '@/components/admin/AdminAnalytics'
+import { analyticsRanges } from '@/lib/admin/analytics'
+import type { AdminAnalyticsScreen } from '@/components/admin/AdminAnalytics'
 
-    return (
-        <AdminAnalyticsPage
-            screen={{
-                ...baseScreen,
-                table: {
-                    ...baseScreen.table,
-                    reportOptions,
-                },
-            }}
-        />
-    );
+export default function ProductsAnalyticsPage() {
+  const [range, setRange] = useState('30D')
+  const [data, setData] = useState<AdminAnalyticsScreen | null>(null)
+
+  useEffect(() => {
+    fetch(`/api/admin/analytics?type=products&range=${range}`)
+      .then((r) => r.json())
+      .then((d) => {
+        setData({
+          eyebrow: 'ANALYTICS',
+          title: 'Products',
+          subtitle: `Product performance · ${range}`,
+          activeRange: range,
+          ranges: analyticsRanges,
+          chartTitle: 'TOP PRODUCTS — UNITS SOLD',
+          chartLabels: d.chartLabels,
+          series: [
+            { label: 'Units Sold', color: 'var(--gold)', active: true, values: d.qtyValues, format: 'number' },
+          ],
+          table: {
+            title: 'PRODUCT LEADERBOARD',
+            searchPlaceholder: 'Search products...',
+            reportOptions: ['Export CSV'],
+            gridTemplateColumns: '60px minmax(0,1fr) 100px 140px 100px',
+            columns: [
+              { key: 'rank', label: 'RANK', font: 'cinzel', tone: 'primary' },
+              { key: 'name', label: 'PRODUCT', font: 'raleway', tone: 'primary' },
+              { key: 'qty', label: 'QTY SOLD', font: 'cinzel', tone: 'primary', align: 'right' },
+              { key: 'revenue', label: 'REVENUE', font: 'cinzel', tone: 'primary', align: 'right' },
+              { key: 'share', label: 'SHARE', font: 'raleway', tone: 'muted', align: 'right' },
+            ],
+            rows: d.tableRows,
+          },
+        })
+      })
+  }, [range])
+
+  if (!data) return <div className="animate-pulse h-[400px] border border-gold/10 bg-[#1E1A2E]" />
+  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} />
 }

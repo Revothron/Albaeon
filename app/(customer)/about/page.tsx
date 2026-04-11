@@ -39,7 +39,7 @@ function ValueCard({
 
 export default function AboutPage() {
     return (
-        <section className="min-h-screen bg-primary">
+        <section className="min-h-screen bg-primary animate-fadeInUp">
             <div className="desktop-frame flex flex-col gap-6 py-5 sm:py-8 lg:gap-7 lg:py-12">
                 <div className="space-y-2.5">
                     <h1 className={`${cinzel.className} text-[34px] text-gold sm:text-[46px] lg:text-[56px]`}>

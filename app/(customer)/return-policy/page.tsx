@@ -1,6 +1,6 @@
 export default function ReturnPolicyPage() {
     return (
-        <div className="bg-primary min-h-screen">
+        <div className="bg-primary min-h-screen animate-fadeInUp">
             <div className="max-w-3xl mx-auto px-10 py-16 md:px-10 px-5 py-10">
                 <h1 className="text-gold text-3xl font-bold tracking-wider uppercase mb-8 text-center">
                     Return &amp; Refund Policy
