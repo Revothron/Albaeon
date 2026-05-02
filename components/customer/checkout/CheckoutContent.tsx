@@ -155,11 +155,10 @@ function DeliveryContent() {
                 key={addr.id}
                 type="button"
                 onClick={() => setSelectedId(addr.id)}
-                className={`flex flex-col gap-2.5 bg-surface p-5 text-left ${
-                  selectedId === addr.id
-                    ? 'border border-gold border-l-[3px]'
-                    : 'border border-gold/10'
-                }`}
+                className={`flex flex-col gap-2.5 bg-surface p-5 text-left ${selectedId === addr.id
+                  ? 'border border-gold border-l-[3px]'
+                  : 'border border-gold/10'
+                  }`}
               >
                 <div className="flex items-center justify-between">
                   <span className={`${cinzel.className} text-[9px] font-bold tracking-[0.3em] ${selectedId === addr.id ? 'text-gold' : 'text-text-muted'}`}>
@@ -310,25 +309,41 @@ function PaymentContent() {
   const subtotal = useCartStore((s) => s.subtotal())
   const clearCart = useCartStore((s) => s.clearCart)
   const shippingAddress = useCheckoutStore((s) => s.shippingAddress)
+  const coupon = useCheckoutStore((s) => s.coupon)
   const setPaymentComplete = useCheckoutStore((s) => s.setPaymentComplete)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  const discountAmount = coupon?.discount_amount ?? 0
+  const total = subtotal - discountAmount
 
   async function handlePayWithRazorpay() {
     setLoading(true)
     setError('')
 
     try {
-      // Step 1 — Create Razorpay order via API
+      // Get current user
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        setError('Please login to complete your purchase.')
+        setLoading(false)
+        return
+      }
+
+      const discountAmount = coupon?.discount_amount ?? 0
+      const total = subtotal - discountAmount
+
+      // Step 1 — Create Razorpay order
       const res = await fetch('/api/payments/razorpay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: subtotal, currency: 'INR' }),
+        body: JSON.stringify({ amount: total, currency: 'INR' }),
       })
       const { data, error: apiError } = await res.json()
 
       if (apiError || !data) {
-        setError('Failed to create payment. Please try again.')
+        setError(apiError ?? 'Failed to create payment. Please try again.')
         setLoading(false)
         return
       }
@@ -346,7 +361,7 @@ function PaymentContent() {
           razorpay_payment_id: string
           razorpay_signature: string
         }) {
-          // Step 3 — Verify payment + create order in DB
+          // Step 3 — Verify + create order in DB
           const verifyRes = await fetch('/api/webhooks/razorpay', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -357,8 +372,13 @@ function PaymentContent() {
               items,
               shipping_address: shippingAddress,
               subtotal,
+              discount_amount: discountAmount,
+              coupon_id: coupon?.id ?? null,
+              total,
+              user_id: user.id,
             }),
           })
+
           const verifyData = await verifyRes.json()
 
           if (verifyData.data?.order_number) {
@@ -370,7 +390,7 @@ function PaymentContent() {
             clearCart()
             router.push('/checkout/confirmation')
           } else {
-            setError('Payment verification failed. Contact support.')
+            setError(verifyData.error ?? 'Payment verification failed. Contact support.')
           }
         },
         prefill: {
@@ -378,19 +398,36 @@ function PaymentContent() {
           contact: shippingAddress?.phone ?? '',
         },
         theme: { color: '#E6C979' },
+        modal: {
+          ondismiss: () => {
+            setLoading(false)
+          },
+        },
       }
 
-      // Load Razorpay script and open modal
+      // Load Razorpay script
       if (typeof window !== 'undefined') {
-        const script = document.createElement('script')
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-        script.onload = () => {
-          // @ts-expect-error Razorpay is loaded globally
+        if ((window as { Razorpay?: unknown }).Razorpay) {
+          // Already loaded
+          // @ts-expect-error Razorpay global
           const rzp = new window.Razorpay(options)
           rzp.open()
           setLoading(false)
+        } else {
+          const script = document.createElement('script')
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+          script.onload = () => {
+            // @ts-expect-error Razorpay global
+            const rzp = new window.Razorpay(options)
+            rzp.open()
+            setLoading(false)
+          }
+          script.onerror = () => {
+            setError('Failed to load payment gateway. Check your internet connection.')
+            setLoading(false)
+          }
+          document.body.appendChild(script)
         }
-        document.body.appendChild(script)
       }
     } catch {
       setError('Something went wrong. Please try again.')
@@ -499,7 +536,7 @@ function PaymentContent() {
           disabled={loading || items.length === 0}
           className="flex h-[58px] items-center justify-center bg-gold text-[12px] font-semibold tracking-[0.3em] text-nav disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gold-hover transition-colors"
         >
-          {loading ? 'PREPARING PAYMENT...' : `Pay ₹${subtotal.toLocaleString('en-IN')} Securely via Razorpay →`}
+          {loading ? 'PREPARING PAYMENT...' : `Pay ₹${total.toLocaleString('en-IN')} Securely via Razorpay →`}
         </button>
 
         <div className="flex flex-wrap justify-center gap-7 text-text-muted">

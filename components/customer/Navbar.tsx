@@ -9,6 +9,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useUiStore } from "@/store/uiStore";
 import { usePathname } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import {
   Heart,
   Menu,
@@ -40,7 +41,6 @@ const iconLinks = [
   { href: "/search", label: "Search", Icon: Search },
   { href: "/wishlist", label: "Wishlist", Icon: Heart },
   { href: "/cart", label: "Cart", Icon: ShoppingCart },
-  { href: "/login", label: "My Account", Icon: User },
 ];
 
 export default function Navbar() {
@@ -56,11 +56,28 @@ export default function Navbar() {
   const [shopOpen, setShopOpen] = useState(false)
   const shopMenuRef = useRef<HTMLElement>(null)
 
-  // ── Hydration fix — defer counts to client only ──────
+  // ── Hydration fix ──────────────────────────────────
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
   const displayCartCount = mounted ? cartCount : 0
   const displayWishlistCount = mounted ? wishlistCount : 0
+
+  // ── Auth state ─────────────────────────────────────
+  const [userHref, setUserHref] = useState('/login')
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUserHref(user ? '/account' : '/login')
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUserHref(session?.user ? '/account' : '/login')
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
 
   const closeMobileMenu = () => closeMobileNav()
   const openShopMenu = () => setShopOpen(true)
@@ -87,7 +104,7 @@ export default function Navbar() {
 
   return (
     <nav ref={shopMenuRef} className="sticky top-0 z-50 bg-nav/95 text-text-primary backdrop-blur-sm">
-      {/* ── Desktop Nav ──────────────────────────────── */}
+      {/* ── Desktop Nav ────────────────────────────────── */}
       <div className="desktop-frame hidden h-[50px] w-full grid-cols-[1fr_auto_1fr] items-center md:grid">
         <div className="flex items-center gap-7">
           <div
@@ -220,10 +237,19 @@ export default function Navbar() {
               </Link>
             )
           })}
+
+          {/* User icon — dynamic based on auth state */}
+          <Link
+            href={mounted ? userHref : '/login'}
+            aria-label="My Account"
+            className="text-text-primary transition-all duration-300 hover:text-gold"
+          >
+            <User className="h-[18px] w-[18px]" strokeWidth={1.8} />
+          </Link>
         </div>
       </div>
 
-      {/* ── Mega Menu ────────────────────────────────── */}
+      {/* ── Mega Menu ──────────────────────────────────── */}
       <div
         className={`absolute inset-x-0 top-full hidden transition-all duration-200 lg:block ${
           shopOpen
@@ -289,7 +315,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile Nav ───────────────────────────────── */}
+      {/* ── Mobile Nav ─────────────────────────────────── */}
       <div className="mx-auto flex h-[72px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 md:hidden">
         <div className="w-10" aria-hidden="true" />
 
@@ -379,6 +405,16 @@ export default function Navbar() {
                   <Icon className="h-5 w-5" strokeWidth={1.8} />
                 </Link>
               ))}
+
+              {/* User icon — dynamic based on auth state */}
+              <Link
+                href={mounted ? userHref : '/login'}
+                aria-label="My Account"
+                className="text-text-primary transition-all duration-300 hover:text-gold"
+                onClick={closeMobileMenu}
+              >
+                <User className="h-5 w-5" strokeWidth={1.8} />
+              </Link>
             </div>
           </div>
         </div>

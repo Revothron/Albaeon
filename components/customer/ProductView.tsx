@@ -117,6 +117,26 @@ export default function ProductView({ product }: { product: Product }) {
     });
   };
 
+  const handleBuyNow = () => {
+    const variant = product.variants?.find((v) => v.size === selectedSize)
+
+    addItem({
+      id: Date.now().toString(),
+      variantId: variant?.id ?? `${product.slug}-${selectedSize}`,
+      productId: product.id,
+      name: product.name,
+      sku: variant?.sku ?? `${product.slug}-${selectedSize}`,
+      color: variant?.color ?? '',
+      size: selectedSize ?? '',
+      price: product.priceINR,
+      currency: 'INR',
+      image: product.images[0] ?? product.image,
+      quantity,
+    })
+
+    window.location.href = '/checkout/delivery'
+  }
+
   return (
     <section className="min-h-screen bg-primary">
       <div className="desktop-frame flex flex-col gap-8 py-5 sm:py-8 lg:gap-8 lg:py-12">
@@ -149,11 +169,10 @@ export default function ProductView({ product }: { product: Product }) {
                   type="button"
                   onClick={() => setActiveImageIndex(index)}
                   aria-label={`View image ${index + 1}`}
-                  className={`relative aspect-[1/1] overflow-hidden border bg-surface transition-colors duration-200 ${
-                    activeImageIndex === index
-                      ? "border-gold"
-                      : "border-gold/60 hover:border-gold"
-                  }`}
+                  className={`relative aspect-[1/1] overflow-hidden border bg-surface transition-colors duration-200 ${activeImageIndex === index
+                    ? "border-gold"
+                    : "border-gold/60 hover:border-gold"
+                    }`}
                 >
                   <Image
                     src={image}
@@ -193,11 +212,10 @@ export default function ProductView({ product }: { product: Product }) {
                       key={size}
                       type="button"
                       onClick={() => setSelectedSize(size)}
-                      className={`h-11 min-w-[64px] rounded-full border px-4 font-sans text-[13px] transition-colors duration-200 sm:min-w-[70px] sm:text-[14px] ${
-                        isSelected
-                          ? "border-gold bg-gold font-semibold text-nav"
-                          : "border-gold bg-surface text-text-primary hover:text-gold"
-                      }`}
+                      className={`h-11 min-w-[64px] rounded-full border px-4 font-sans text-[13px] transition-colors duration-200 sm:min-w-[70px] sm:text-[14px] ${isSelected
+                        ? "border-gold bg-gold font-semibold text-nav"
+                        : "border-gold bg-surface text-text-primary hover:text-gold"
+                        }`}
                     >
                       {size}
                     </button>
@@ -243,21 +261,24 @@ export default function ProductView({ product }: { product: Product }) {
                 >
                   Add to Cart
                 </button>
-                <Link
-                  href="/checkout/delivery"
+
+                <button
+                  type="button"
+                  onClick={handleBuyNow}
                   className="flex h-[46px] items-center justify-center border border-gold bg-surface font-sans text-[13px] font-semibold text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav"
                 >
                   Buy Now
-                </Link>
+                </button>
               </div>
             </div>
 
-            <Link
-              href="/checkout/delivery"
+            <button
+              type="button"
+              onClick={handleBuyNow}
               className="hidden h-[52px] w-full rounded-full border border-gold bg-surface font-sans text-[14px] font-semibold text-text-primary transition-colors duration-200 hover:bg-gold hover:text-nav lg:flex lg:items-center lg:justify-center"
             >
               Buy Now
-            </Link>
+            </button>
 
             {/* Key Highlights */}
             <div className="border border-gold bg-surface p-4 sm:p-5 lg:p-6">

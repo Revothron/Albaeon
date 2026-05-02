@@ -25,15 +25,8 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.')
-      return
-    }
-
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.')
-      return
-    }
+    if (password !== confirmPassword) { setError('Passwords do not match.'); return }
+    if (password.length < 8) { setError('Password must be at least 8 characters.'); return }
 
     setLoading(true)
 
@@ -58,6 +51,16 @@ export default function RegisterPage() {
       setLoading(false)
       return
     }
+
+    // Send welcome email
+    await fetch('/api/auth/welcome', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: email.trim().toLowerCase(),
+        customerName: firstName || fullName.trim(),
+      }),
+    }).catch(console.error)
 
     setSuccess(true)
     setLoading(false)
@@ -95,12 +98,9 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-primary flex items-center justify-center p-4 md:p-6 lg:p-8">
       <div className="w-full max-w-5xl xl:max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-8 border border-white/5 lg:border-none shadow-2xl lg:shadow-none min-h-[600px] lg:h-[85vh] max-h-[900px]">
 
-        {/* Left Panel */}
         <div className="border border-gold/20 p-6 lg:p-8 xl:p-12 bg-primary-deep flex flex-col h-full">
           <div className="mb-4 lg:mb-8">
-            <h2 className={`${cinzel.className} text-gold text-xl lg:text-2xl font-bold tracking-[0.15em] mb-4`}>
-              ALBAEON
-            </h2>
+            <h2 className={`${cinzel.className} text-gold text-xl lg:text-2xl font-bold tracking-[0.15em] mb-4`}>ALBAEON</h2>
             <h1 className={`${cinzel.className} text-text-primary text-3xl lg:text-4xl xl:text-5xl tracking-[0.1em] uppercase mb-4 leading-[1.1]`}>
               Create Your<br />Global Account
             </h1>
@@ -116,7 +116,6 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        {/* Right Panel */}
         <div className="border border-gold/20 p-6 lg:p-8 xl:p-12 bg-primary flex flex-col justify-center h-full">
           <h1 className={`${cinzel.className} text-gold text-2xl xl:text-3xl tracking-[0.1em] uppercase mb-6`}>
             Create Account
@@ -165,14 +164,12 @@ export default function RegisterPage() {
               disabled={loading}
               className="w-full bg-nav border border-transparent focus:border-gold/40 text-text-primary px-4 py-3 text-sm transition-colors outline-none disabled:opacity-50"
             />
-
             <p className="text-text-muted text-[10px] pt-1 leading-snug">
               By creating an account, you agree to the{' '}
               <Link href="/terms" className="text-gold hover:text-gold-hover">Terms</Link>
               {' '}&amp;{' '}
               <Link href="/privacy-policy" className="text-gold hover:text-gold-hover">Privacy Policy</Link>.
             </p>
-
             <button
               type="submit"
               disabled={loading}

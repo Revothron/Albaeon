@@ -78,10 +78,38 @@ export default function AdminOrderActions({
   }
 
   const statusActions = [
-    { label: 'MARK AS PROCESSING', value: 'processing', border: 'var(--status-warning)', color: 'var(--status-warning)', bg: 'transparent', hoverBg: 'var(--status-warning)', hoverColor: 'var(--nav-bg)' },
-    { label: 'MARK AS SHIPPED', value: 'shipped', border: 'var(--status-info)', color: 'var(--status-info)', bg: 'transparent', hoverBg: 'var(--status-info)', hoverColor: 'var(--nav-bg)' },
-    { label: 'MARK AS DELIVERED', value: 'delivered', border: 'var(--gold)', color: 'var(--nav-bg)', bg: 'var(--gold)', hoverBg: 'var(--gold-hover)', hoverColor: 'var(--nav-bg)' },
-    { label: 'CANCEL ORDER', value: 'cancelled', border: 'var(--status-error)', color: 'var(--status-error)', bg: 'transparent', hoverBg: 'var(--status-error)', hoverColor: 'white' },
+    {
+      label: 'MARK AS PROCESSING',
+      value: 'processing',
+      borderColor: '#E6A817',
+      textColor: '#E6A817',
+      activeBg: '#E6A817',
+      activeText: '#130F18',
+    },
+    {
+      label: 'MARK AS SHIPPED',
+      value: 'shipped',
+      borderColor: '#4A90C4',
+      textColor: '#4A90C4',
+      activeBg: '#4A90C4',
+      activeText: '#130F18',
+    },
+    {
+      label: 'MARK AS DELIVERED',
+      value: 'delivered',
+      borderColor: '#E6C979',
+      textColor: '#E6C979',
+      activeBg: '#E6C979',
+      activeText: '#130F18',
+    },
+    {
+      label: 'CANCEL ORDER',
+      value: 'cancelled',
+      borderColor: '#C0392B',
+      textColor: '#C0392B',
+      activeBg: '#C0392B',
+      activeText: '#ffffff',
+    },
   ]
 
   return (
@@ -98,7 +126,7 @@ export default function AdminOrderActions({
         )}
 
         <div className="mt-4 space-y-3">
-          {statusActions.map((action) => (
+          {/* {statusActions.map((action) => (
             <button
               key={action.value}
               type="button"
@@ -108,14 +136,38 @@ export default function AdminOrderActions({
               style={{
                 borderColor: action.border,
                 color: status === action.value ? action.hoverColor : action.color,
-                backgroundColor: status === action.value ? action.bg === 'transparent' ? action.hoverBg : action.bg : action.bg,
+                backgroundColor: status === action.value
+                  ? action.hoverBg
+                  : action.bg,
               }}
             >
               {status === action.value
                 ? `✓ ${action.label.replace('MARK AS ', '')}`
                 : updatingStatus ? '...' : action.label}
             </button>
-          ))}
+          ))} */}
+          {statusActions.map((action) => {
+            const isActive = status === action.value
+            return (
+              <button
+                key={action.value}
+                type="button"
+                disabled={updatingStatus || isActive}
+                onClick={() => handleStatusChange(action.value)}
+                className={`${adminCinzel.className} w-full border px-4 py-2 text-[10px] font-semibold tracking-[0.2em] transition-colors duration-200 disabled:cursor-not-allowed`}
+                style={{
+                  borderColor: action.borderColor,
+                  color: isActive ? action.activeText : action.textColor,
+                  backgroundColor: isActive ? action.activeBg : 'transparent',
+                  opacity: updatingStatus && !isActive ? 0.4 : 1,
+                }}
+              >
+                {isActive
+                  ? `✓ ${action.label.replace('MARK AS ', '')}`
+                  : updatingStatus ? '...' : action.label}
+              </button>
+            )
+          })}
         </div>
 
         <div className="my-4 h-px w-full bg-gold/10" />

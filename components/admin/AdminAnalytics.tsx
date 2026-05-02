@@ -124,11 +124,10 @@ function AnalyticsMetricChips({
                         key={item.label}
                         type="button"
                         onClick={() => onToggle(item.label)}
-                        className={`${adminCinzel.className} inline-flex border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
-                            item.active
-                                ? ""
-                                : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
-                        }`}
+                        className={`${adminCinzel.className} inline-flex border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${item.active
+                            ? ""
+                            : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
+                            }`}
                         style={chipStyle}
                     >
                         {item.label}
@@ -191,65 +190,85 @@ function AnalyticsChartCard({
             <div className="mt-4 border border-gold/10 bg-footer px-4 py-3.5">
                 <div className="mx-auto w-full max-w-[760px]">
                     <div className="relative h-[220px]">
-                    <div className="pointer-events-none absolute inset-0">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                            <div
-                                key={`grid-line-${index}`}
-                                className="absolute left-0 right-0 border-t border-gold/6"
-                                style={{ top: `${index * 25}%` }}
-                            />
-                        ))}
-                    </div>
+                        <div className="pointer-events-none absolute inset-0">
+                            {Array.from({ length: 5 }).map((_, index) => (
+                                <div
+                                    key={`grid-line-${index}`}
+                                    className="absolute left-0 right-0 border-t border-gold/6"
+                                    style={{ top: `${index * 25}%` }}
+                                />
+                            ))}
+                        </div>
 
-                    <svg
-                        viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                        className="absolute inset-x-0 top-4 h-[160px] w-full"
-                        preserveAspectRatio="none"
-                        aria-label={`${screen.title} analytics chart`}
-                    >
-                        {visibleSeries.map((item) => (
-                            <polyline
-                                key={`${screen.title}-${item.label}-line`}
-                                fill="none"
-                                stroke={item.color}
-                                strokeWidth={item.color === "var(--status-info)" ? "1.8" : "2.4"}
-                                points={getSeriesPoints(item.values, chartWidth, chartHeight, maxValue)}
-                            />
-                        ))}
-
-                        {visibleSeries.map((item) =>
-                            item.values.map((value, index) => {
-                                const step = item.values.length > 1 ? chartWidth / (item.values.length - 1) : chartWidth;
-                                const x = index * step;
-                                const y = chartHeight - (value / maxValue) * chartHeight;
-
+                        <svg
+                            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                            className="absolute inset-x-0 top-4 h-[160px] w-full"
+                            preserveAspectRatio="none"
+                            aria-label={`${screen.title} analytics chart`}
+                        >
+                            {visibleSeries.map((item) => {
+                                const hexColor = item.color
+                                    .replace('var(--gold)', '#E6C979')
+                                    .replace('var(--status-info)', '#4A90C4')
+                                    .replace('var(--status-success)', '#4CAF7D')
+                                    .replace('var(--status-warning)', '#E6A817')
+                                    .replace('var(--status-error)', '#C0392B')
                                 return (
-                                    <circle
-                                        key={`${screen.title}-${item.label}-${screen.chartLabels[index]}`}
-                                        cx={x}
-                                        cy={y}
-                                        r={item.color === "var(--status-info)" ? "2.6" : "3"}
-                                        fill={item.color}
+                                    <polyline
+                                        key={`${screen.title}-${item.label}-line`}
+                                        fill="none"
+                                        stroke={hexColor}
+                                        strokeWidth={item.color === 'var(--status-info)' ? '1.8' : '2.4'}
+                                        points={getSeriesPoints(item.values, chartWidth, chartHeight, maxValue)}
                                     />
-                                );
-                            })
-                        )}
-                    </svg>
+                                )
+                            })}
 
-                    <div className="absolute right-3 top-3 w-[190px] border border-gold/20 bg-nav px-3 py-2">
-                        <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
-                            {screen.tooltipLabel ?? screen.chartLabels[tooltipIndex]}
-                        </p>
-                        {visibleSeries.map((item) => (
-                            <p
-                                key={`${screen.title}-${item.label}-tooltip`}
-                                className={`${adminCinzel.className} mt-1 text-[12px]`}
-                                style={{ color: item.color }}
-                            >
-                                {item.label}: {formatAnalyticsValue(item.values[tooltipIndex], item.format)}
+                            {visibleSeries.map((item) =>
+                                item.values.map((value, index) => {
+                                    const step = item.values.length > 1 ? chartWidth / (item.values.length - 1) : chartWidth
+                                    const x = index * step
+                                    const y = chartHeight - (value / maxValue) * chartHeight
+                                    const hexColor = item.color
+                                        .replace('var(--gold)', '#E6C979')
+                                        .replace('var(--status-info)', '#4A90C4')
+                                        .replace('var(--status-success)', '#4CAF7D')
+                                        .replace('var(--status-warning)', '#E6A817')
+                                        .replace('var(--status-error)', '#C0392B')
+                                    return (
+                                        <circle
+                                            key={`${screen.title}-${item.label}-${screen.chartLabels[index]}`}
+                                            cx={x}
+                                            cy={y}
+                                            r={item.color === 'var(--status-info)' ? '2.6' : '3'}
+                                            fill={hexColor}
+                                        />
+                                    )
+                                })
+                            )}
+                        </svg>
+
+                        <div className="absolute right-3 top-3 w-[190px] border border-gold/20 bg-nav px-3 py-2">
+                            <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
+                                {screen.tooltipLabel ?? screen.chartLabels[tooltipIndex]}
                             </p>
-                        ))}
-                    </div>
+                            {visibleSeries.map((item) => (
+                                <p
+                                    key={`${screen.title}-${item.label}-tooltip`}
+                                    className={`${adminCinzel.className} mt-1 text-[12px]`}
+                                    style={{
+                                        color: item.color
+                                            .replace('var(--gold)', '#E6C979')
+                                            .replace('var(--status-info)', '#4A90C4')
+                                            .replace('var(--status-success)', '#4CAF7D')
+                                            .replace('var(--status-warning)', '#E6A817')
+                                            .replace('var(--status-error)', '#C0392B')
+                                    }}
+                                >
+                                    {item.label}: {formatAnalyticsValue(item.values[tooltipIndex], item.format)}
+                                </p>
+                            ))}
+                        </div>
                     </div>
 
                     <div
@@ -442,11 +461,10 @@ export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen })
                             key={range}
                             type="button"
                             onClick={() => setActiveRange(range)}
-                            className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${
-                                active
-                                    ? "border-gold bg-gold/12 text-gold"
-                                    : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
-                            }`}
+                            className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${active
+                                ? "border-gold bg-gold/12 text-gold"
+                                : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
+                                }`}
                         >
                             {range}
                         </button>

@@ -46,16 +46,27 @@ function getStatusProgress(status: string) {
   }
 }
 
+function formatOrderAmount(amount: number, prefix: '₹' | 'Rs' | 'INR') {
+  return `${prefix}${amount.toLocaleString('en-IN')}`
+}
+
+function getOrderListMeta(o: CustomerOrder) {
+  const date = new Date(o.date).toLocaleDateString('en-IN', {
+    day: 'numeric', month: 'short', year: 'numeric',
+  })
+  return `${date} · ${o.items.length} item${o.items.length !== 1 ? 's' : ''} · ₹${o.payment.amountCharged.toLocaleString('en-IN')}`
+}
+
 export default function OrdersPageClient({
   orders,
   metrics,
-  getOrderListMeta,
-  formatOrderAmount,
+  displayName = 'Account',
+  email = '',
 }: {
   orders: CustomerOrder[]
   metrics: { label: string; value: string }[]
-  getOrderListMeta: (o: CustomerOrder) => string
-  formatOrderAmount: (amount: number, prefix: '₹' | 'Rs' | 'INR') => string
+  displayName?: string
+  email?: string
 }) {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('all-orders')
@@ -80,6 +91,8 @@ export default function OrdersPageClient({
           activeTab="orders"
           title="My Orders"
           subtitle="View and track all your Albaeon orders from one place."
+          displayName={displayName}
+          email={email}
         >
           <div className="flex flex-col items-center py-16 text-center">
             <p className="font-sans text-[24px] font-light text-text-muted mb-3">No orders yet.</p>
@@ -102,6 +115,8 @@ export default function OrdersPageClient({
         activeTab="orders"
         title="My Orders"
         subtitle="View and track all your Albaeon orders from one place."
+        displayName={displayName}
+        email={email}
       >
         <div className="space-y-4">
           <div className="grid gap-3.5 lg:grid-cols-2 2xl:grid-cols-3">

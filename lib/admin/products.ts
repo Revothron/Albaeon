@@ -433,9 +433,11 @@ export async function getAdminProductForEdit(id: string) {
     is_new_arrival, is_best_seller,
     wash_care, size_chart, highlights, tags,
     meta_title, meta_description,
+    gelato_template_id,
     categories (id, name),
     product_images (id, url, cloudinary_id, is_primary, sort_order, alt_text),
-    product_variants (id, color, color_hex, size, sku, stock_status, sort_order)
+    product_variants (id, color, color_hex, size, sku, stock_status,
+    gelato_product_uid, gelato_print_file_front, gelato_print_file_back, sort_order)
   `)
     .eq('id', id)
     .single()
@@ -480,6 +482,7 @@ export async function saveAdminProduct({
     tags: string[]
     meta_title: string
     meta_description: string
+    gelato_template_id?: string | null   // ← add
   }
   variants: {
     id?: string
@@ -532,19 +535,19 @@ export async function saveAdminProduct({
       .delete()
       .eq('product_id', productId!)
 
-    await supabase
-      .from('product_variants')
-      .insert(
-        variants.map((v, i) => ({
-          product_id: productId,
-          color: v.color,
-          color_hex: v.color_hex,
-          size: v.size,
-          sku: v.sku,
-          stock_status: v.stock_status,
-          sort_order: i,
-        }))
-      )
+    await supabase.from('product_variants').insert(
+      variants.map((v, i) => ({
+        product_id: productId,
+        color: v.color,
+        color_hex: v.color_hex,
+        size: v.size,
+        sku: v.sku,
+        stock_status: v.stock_status,
+        gelato_template_variant_id: v.gelato_template_variant_id ?? null,
+        banian_sku: v.banian_sku ?? null,
+        sort_order: i,
+      }))
+    )
   }
 
   // Upsert images

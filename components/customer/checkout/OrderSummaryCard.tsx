@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Cinzel, Raleway } from 'next/font/google'
 import { Lock, RefreshCw, ShieldCheck, Truck } from 'lucide-react'
 import { useCartStore } from '@/store/cartStore'
+import { useCheckoutStore } from '@/store/checkoutStore'
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '600', '700'] })
 const raleway = Raleway({ subsets: ['latin'], weight: ['300', '400', '500', '600'] })
@@ -14,14 +15,24 @@ type OrderSummaryVariant = 'delivery' | 'payment'
 export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVariant }) {
   const items = useCartStore((s) => s.items)
   const subtotal = useCartStore((s) => s.subtotal())
-  const [couponCode, setCouponCode] = useState('')
-  const [couponApplied, setCouponApplied] = useState(false)
-  const [couponDiscount, setCouponDiscount] = useState(0)
-  const [couponLabel, setCouponLabel] = useState('')
+  const setCoupon = useCheckoutStore((s) => s.setCoupon)
+  const savedCoupon = useCheckoutStore((s) => s.coupon)
+
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  const [couponCode, setCouponCode] = useState(savedCoupon?.code ?? '')
+  const [couponApplied, setCouponApplied] = useState(!!savedCoupon)
+  const [couponDiscount, setCouponDiscount] = useState(savedCoupon?.discount_amount ?? 0)
+  const [couponLabel, setCouponLabel] = useState(
+    savedCoupon ? `${savedCoupon.code} — ₹${savedCoupon.discount_amount} off` : ''
+  )
   const [couponError, setCouponError] = useState('')
   const [applying, setApplying] = useState(false)
 
-  const total = subtotal - couponDiscount
+  const displaySubtotal = mounted ? subtotal : 0
+  const displayItems = mounted ? items : []
+  const total = displaySubtotal - couponDiscount
 
   async function handleApplyCoupon() {
     if (!couponCode.trim()) return
@@ -39,11 +50,20 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
       if (!res.ok || json.error) {
         setCouponError(json.error ?? 'Invalid coupon code')
         setCouponApplied(false)
+        setCoupon(null)
       } else {
         setCouponApplied(true)
         setCouponDiscount(json.data.discount_amount)
         setCouponLabel(`${json.data.code} — ₹${json.data.discount_amount} off`)
         setCouponError('')
+        // ── Save to checkout store ─────────────────
+        setCoupon({
+          id: json.data.id,
+          code: json.data.code,
+          type: json.data.type,
+          value: json.data.value,
+          discount_amount: json.data.discount_amount,
+        })
       }
     } catch {
       setCouponError('Failed to validate coupon')
@@ -58,6 +78,7 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
     setCouponLabel('')
     setCouponCode('')
     setCouponError('')
+    setCoupon(null)
   }
 
   return (

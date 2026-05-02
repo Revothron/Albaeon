@@ -207,7 +207,7 @@ export default function AnalyticsOverviewPage() {
                     <>
                       {activeSeries.netSales && (
                         <>
-                          <polyline fill="none" stroke="var(--gold)" strokeWidth="2" points={salesPoints} />
+                          <polyline fill="none" stroke="#E6C979" strokeWidth="2" points={salesPoints} />
                           {netSalesValues.map((v, i) => (
                             <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxSales) * chartHeight} r="3" fill="var(--gold)" />
                           ))}

@@ -34,6 +34,35 @@ export async function POST(req: Request) {
       courier: body.courier,
       courier_url: body.courier_url,
     })
+
+    // Send shipped email if tracking number provided
+    if (!result.error && body.tracking_number) {
+      const supabaseAdmin = (await import('@/lib/supabase/admin')).createAdminClient()
+      const { data: order } = await supabaseAdmin
+        .from('orders')
+        .select('order_number, profiles(email, first_name, last_name)')
+        .eq('id', orderId)
+        .single()
+
+      if (order) {
+        const profile = order.profiles as { email?: string; first_name?: string; last_name?: string } | null
+        const customerEmail = profile?.email
+        const customerName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') || 'Customer'
+
+        if (customerEmail) {
+          const { sendOrderShipped } = await import('@/lib/emails')
+          await sendOrderShipped({
+            to: customerEmail,
+            customerName,
+            orderNumber: order.order_number,
+            trackingNumber: body.tracking_number,
+            courier: body.courier,
+            courierUrl: body.courier_url,
+          }).catch(console.error)
+        }
+      }
+    }
+
     return NextResponse.json(result)
   }
 

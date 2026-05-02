@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { Cinzel } from 'next/font/google'
-import { createClient } from '@/lib/supabase/server'
 import SignOutButton from '@/components/customer/account/SignOutButton'
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
@@ -70,39 +69,24 @@ function Sidebar({
   )
 }
 
-export default async function AccountShell({
+// ── Pure layout component — no server imports ─────────────────
+export default function AccountShell({
   activeTab,
   title,
   subtitle,
   actions = [],
+  displayName = 'Account',
+  email = '',
   children,
 }: {
   activeTab: AccountTabKey
   title: string
   subtitle: string
   actions?: AccountAction[]
+  displayName?: string
+  email?: string
   children: React.ReactNode
 }) {
-  // Fetch real user from Supabase
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  const { data: profile } = user
-    ? await supabase
-        .from('profiles')
-        .select('first_name, last_name, display_name, email')
-        .eq('id', user.id)
-        .single()
-    : { data: null }
-
-  const displayName =
-    profile?.display_name ??
-    [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') ??
-    user?.email?.split('@')[0] ??
-    'Account'
-
-  const email = profile?.email ?? user?.email ?? ''
-
   return (
     <section className="min-h-screen bg-primary">
       <div className="desktop-frame flex flex-col gap-6 py-5 sm:py-8 lg:gap-6 lg:py-10">

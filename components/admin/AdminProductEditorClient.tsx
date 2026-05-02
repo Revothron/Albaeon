@@ -22,6 +22,8 @@ type ProductVariant = {
     size: string
     sku: string
     stock_status: string
+    gelato_template_variant_id?: string | null
+    banian_sku?: string | null
 }
 
 type ProductImage = {
@@ -310,6 +312,7 @@ export default function AdminProductEditorClient({
                     tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
                     meta_title: metaTitle.trim(),
                     meta_description: metaDescription.trim(),
+                    gelato_template_id: gelatoTemplateId.trim() || null,
                 },
                 variants,
                 images,
@@ -354,8 +357,83 @@ export default function AdminProductEditorClient({
         router.refresh()
     }
 
+    async function handleFetchGelatoVariants() {
+        if (!gelatoTemplateId.trim()) {
+            setTemplateFetchError('Enter a Gelato template ID first.')
+            return
+        }
+        setFetchingTemplate(true)
+        setTemplateFetchError('')
+
+        try {
+            const res = await fetch(
+                `/api/admin/gelato/template?templateId=${encodeURIComponent(gelatoTemplateId.trim())}`
+            )
+            const data = await res.json()
+
+            if (data.error || !data.variants?.length) {
+                setTemplateFetchError(data.error ?? 'No variants found for this template ID.')
+                setFetchingTemplate(false)
+                return
+            }
+
+            // Match Gelato variants to existing local variants by color+size
+            // Gelato variant titles are like "Black - S", "White - M" etc.
+            const updated = variants.map((v) => {
+                const match = data.variants.find((gv: { title: string; id: string }) => {
+                    // Title format: "White - S - DTG (Direct-to-garment)"
+                    const parts = gv.title.split(' - ')
+                    const gelatoColor = parts[0]?.trim().toLowerCase() ?? ''
+                    const gelatoSize = parts[1]?.trim().toLowerCase() ?? ''
+
+                    const colorMatch = gelatoColor === v.color.toLowerCase()
+
+                    // Map Albaeon sizes to Gelato sizes
+                    const sizeMap: Record<string, string> = {
+                        'xs': 'xs',
+                        's': 's',
+                        'm': 'm',
+                        'l': 'l',
+                        'xl': 'xl',
+                        'xxl': '2xl',
+                        '3xl': '3xl',
+                        '4xl': '4xl',
+                    }
+                    const mappedSize = sizeMap[v.size.toLowerCase()] ?? v.size.toLowerCase()
+                    const sizeMatch = gelatoSize === mappedSize
+
+                    return colorMatch && sizeMatch
+                })
+                return {
+                    ...v,
+                    gelato_template_variant_id: match?.id ?? v.gelato_template_variant_id ?? null,
+                }
+            })
+
+            setVariants(updated)
+
+            const matched = updated.filter((v) => v.gelato_template_variant_id).length
+            const total = variants.length
+            setTemplateFetchError(
+                matched === total
+                    ? ''
+                    : `Matched ${matched}/${total} variants. Unmatched ones need manual entry.`
+            )
+        } catch {
+            setTemplateFetchError('Failed to fetch template. Check the ID and try again.')
+        } finally {
+            setFetchingTemplate(false)
+        }
+    }
+
     const primaryImage = images.find((img) => img.is_primary)
     const galleryImages = images.filter((img) => !img.is_primary)
+
+    const [gelatoTemplateId, setGelatoTemplateId] = useState(
+        (product as { gelato_template_id?: string | null } | null)?.gelato_template_id ?? ''
+    )
+    const [fetchingTemplate, setFetchingTemplate] = useState(false)
+    const [templateFetchError, setTemplateFetchError] = useState('')
 
     return (
         <div className="space-y-7">
@@ -536,60 +614,88 @@ export default function AdminProductEditorClient({
                             </div>
                         )}
 
-                        {/* Variant matrix */}
-                        {variants.length > 0 && (
-                            <div className="space-y-2">
-                                <FieldLabel>VARIANT MATRIX</FieldLabel>
-                                <div className="overflow-hidden border border-gold/10">
-                                    <div className={`grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_130px_40px] bg-nav px-4 py-3 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}>
-                                        <span>VARIANT</span>
-                                        <span>SKU</span>
-                                        <span>STOCK STATUS</span>
-                                        <span></span>
-                                    </div>
-                                    {variants.map((variant, index) => (
-                                        <div
-                                            key={`${variant.color}-${variant.size}-${index}`}
-                                            className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)_130px_40px] items-center gap-3 border-t border-gold/6 px-4 py-3"
-                                        >
-                                            <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
-                                                {variant.color} / {variant.size}
-                                            </span>
-                                            <input
-                                                type="text"
-                                                value={variant.sku}
-                                                onChange={(e) => {
-                                                    const updated = [...variants]
-                                                    updated[index] = { ...updated[index], sku: e.target.value }
-                                                    setVariants(updated)
-                                                }}
-                                                className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[12px] font-light text-text-muted outline-none`}
-                                            />
-                                            <select
-                                                value={variant.stock_status}
-                                                onChange={(e) => {
-                                                    const updated = [...variants]
-                                                    updated[index] = { ...updated[index], stock_status: e.target.value }
-                                                    setVariants(updated)
-                                                }}
-                                                className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[12px] font-light text-text-primary outline-none`}
-                                            >
-                                                <option value="in_stock">In Stock</option>
-                                                <option value="out_of_stock">Out of Stock</option>
-                                                <option value="discontinued">Discontinued</option>
-                                            </select>
-                                            <button
-                                                type="button"
-                                                onClick={() => removeVariant(index)}
-                                                className="flex items-center justify-center text-text-muted hover:text-[var(--status-error)] transition-colors"
-                                            >
-                                                <X className="h-3.5 w-3.5" strokeWidth={1.8} />
-                                            </button>
-                                        </div>
-                                    ))}
+                        {/* Variant matrix header */}
+                        <div
+                            className={`grid bg-nav px-4 py-3 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}
+                            style={{ gridTemplateColumns: 'minmax(0,0.8fr) minmax(0,1fr) minmax(0,1.2fr) minmax(0,1fr) 120px 36px' }}
+                        >
+                            <span>VARIANT</span>
+                            <span>SKU</span>
+                            <span>GELATO VARIANT ID</span>
+                            <span>BANIAN SKU</span>
+                            <span>STOCK</span>
+                            <span></span>
+                        </div>
+
+                        {variants.map((variant, index) => (
+                            <div
+                                key={`${variant.color}-${variant.size}-${index}`}
+                                className="border-t border-gold/6 px-4 py-3"
+                                style={{ display: 'grid', gridTemplateColumns: 'minmax(0,0.8fr) minmax(0,1fr) minmax(0,1.2fr) minmax(0,1fr) 120px 36px', alignItems: 'center', gap: '8px' }}
+                            >
+                                <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
+                                    {variant.color} / {variant.size}
+                                </span>
+                                <input
+                                    type="text"
+                                    value={variant.sku}
+                                    onChange={(e) => {
+                                        const updated = [...variants]
+                                        updated[index] = { ...updated[index], sku: e.target.value }
+                                        setVariants(updated)
+                                    }}
+                                    className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
+                                />
+                                <div className="flex items-center gap-1">
+                                    <input
+                                        type="text"
+                                        value={variant.gelato_template_variant_id ?? ''}
+                                        onChange={(e) => {
+                                            const updated = [...variants]
+                                            updated[index] = { ...updated[index], gelato_template_variant_id: e.target.value || null }
+                                            setVariants(updated)
+                                        }}
+                                        placeholder="Auto-filled from template"
+                                        className={`${adminRaleway.className} h-[32px] flex-1 border ${variant.gelato_template_variant_id ? 'border-[var(--status-success)]/30' : 'border-gold/12'
+                                            } bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
+                                    />
+                                    {variant.gelato_template_variant_id && (
+                                        <span className="text-[var(--status-success)] text-[10px]">✓</span>
+                                    )}
                                 </div>
+                                <input
+                                    type="text"
+                                    value={variant.banian_sku ?? ''}
+                                    onChange={(e) => {
+                                        const updated = [...variants]
+                                        updated[index] = { ...updated[index], banian_sku: e.target.value || null }
+                                        setVariants(updated)
+                                    }}
+                                    placeholder="e.g. ALB-BLK-S"
+                                    className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
+                                />
+                                <select
+                                    value={variant.stock_status}
+                                    onChange={(e) => {
+                                        const updated = [...variants]
+                                        updated[index] = { ...updated[index], stock_status: e.target.value }
+                                        setVariants(updated)
+                                    }}
+                                    className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-primary outline-none`}
+                                >
+                                    <option value="in_stock">In Stock</option>
+                                    <option value="out_of_stock">Out of Stock</option>
+                                    <option value="discontinued">Discontinued</option>
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={() => removeVariant(index)}
+                                    className="flex items-center justify-center text-text-muted hover:text-[var(--status-error)] transition-colors"
+                                >
+                                    <X className="h-3.5 w-3.5" strokeWidth={1.8} />
+                                </button>
                             </div>
-                        )}
+                        ))}
                     </Card>
 
                     {/* Key Highlights */}
@@ -832,6 +938,41 @@ export default function AdminProductEditorClient({
                         </div>
                     </Card>
 
+                    {/* Gelato + Banian */}
+                    <Card title="FULFILLMENT" className="p-6 md:p-6" contentClassName="space-y-4">
+                        <div className="space-y-2">
+                            <FieldLabel>GELATO TEMPLATE ID</FieldLabel>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={gelatoTemplateId}
+                                    onChange={(e) => setGelatoTemplateId(e.target.value)}
+                                    placeholder="c12a363e-0d4e-..."
+                                    className={`${adminRaleway.className} h-[38px] flex-1 border border-gold/12 bg-footer px-3 text-[12px] font-light text-text-primary outline-none focus:border-gold/30`}
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleFetchGelatoVariants}
+                                    disabled={fetchingTemplate || !gelatoTemplateId.trim()}
+                                    className={`${adminCinzel.className} h-[38px] border border-gold/20 px-3 text-[9px] font-semibold tracking-[0.18em] text-gold hover:border-gold/40 disabled:opacity-40 transition-colors whitespace-nowrap`}
+                                >
+                                    {fetchingTemplate ? 'FETCHING...' : 'AUTO-FILL'}
+                                </button>
+                            </div>
+                            {templateFetchError && (
+                                <p className={`${adminRaleway.className} text-[11px] ${templateFetchError.startsWith('Matched')
+                                    ? 'text-[var(--status-warning)]'
+                                    : 'text-[var(--status-error)]'
+                                    }`}>
+                                    {templateFetchError}
+                                </p>
+                            )}
+                            <p className={`${adminRaleway.className} text-[11px] font-light text-text-muted`}>
+                                Copy from Gelato Dashboard → Templates. Click AUTO-FILL to match variants automatically.
+                            </p>
+                        </div>
+                    </Card>
+
                     {/* Actions */}
                     <div className="space-y-2.5">
                         <button
@@ -842,6 +983,7 @@ export default function AdminProductEditorClient({
                         >
                             {saving ? 'SAVING...' : isCreate ? 'SAVE & PUBLISH' : 'SAVE CHANGES'}
                         </button>
+
                         <button
                             type="button"
                             disabled={saving}
@@ -858,6 +1000,34 @@ export default function AdminProductEditorClient({
                                 className={`${adminCinzel.className} flex h-11 w-full items-center justify-center border border-[var(--status-error)]/35 text-[10px] font-semibold tracking-[0.18em] text-[var(--status-error)] transition-colors duration-200 hover:bg-[var(--status-error)]/8 disabled:opacity-50`}
                             >
                                 {deleting ? 'DELETING...' : 'DELETE PRODUCT'}
+                            </button>
+                        )}
+
+                        {/* Notify customers button — only for published products in edit mode */}
+                        {!isCreate && status === 'active' && images.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={async () => {
+                                    const confirmed = window.confirm(`Notify all customers about "${name}"?`)
+                                    if (!confirmed) return
+                                    const res = await fetch('/api/admin/notify-product', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({
+                                            productName: name,
+                                            productDescription: description.slice(0, 120),
+                                            productPrice: `₹${Number(priceInr).toLocaleString('en-IN')}`,
+                                            productImage: images.find((img) => img.is_primary)?.url ?? images[0]?.url ?? '',
+                                            productSlug: slug,
+                                        }),
+                                    })
+                                    const data = await res.json()
+                                    if (data.ok) alert(`Notified ${data.sent} customers successfully.`)
+                                    else alert('Failed to send notifications.')
+                                }}
+                                className={`${adminCinzel.className} flex h-11 w-full items-center justify-center border border-[var(--status-info)]/40 text-[10px] font-semibold tracking-[0.18em] text-[var(--status-info)] transition-colors duration-200 hover:bg-[var(--status-info)]/8`}
+                            >
+                                NOTIFY ALL CUSTOMERS
                             </button>
                         )}
                     </div>

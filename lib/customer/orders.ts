@@ -108,14 +108,43 @@ function mapStatus(status: string): CustomerOrderStatus {
   }
 }
 
-function buildTrackingSteps(status: CustomerOrderStatus): CustomerOrderTrackingStep[] {
+function buildTrackingSteps(status: CustomerOrderStatus, paymentStatus?: string): CustomerOrderTrackingStep[] {
+  if (status === 'Cancelled') {
+    return [
+      {
+        title: 'ORDER PLACED',
+        time: '—',
+        description: 'Your order was placed and payment received.',
+        state: 'complete',
+      },
+      {
+        title: 'ORDER CANCELLED',
+        time: '—',
+        description: 'Your order has been cancelled as requested.',
+        state: 'current',
+      },
+      {
+        title: paymentStatus === 'refunded' ? 'REFUND PROCESSED' : 'REFUND INITIATED',
+        time: '—',
+        description: paymentStatus === 'refunded'
+          ? 'Your refund has been processed successfully.'
+          : paymentStatus === 'refund_pending'
+          ? 'Refund initiated. Will reflect in 5-7 business days to your original payment method.'
+          : paymentStatus === 'refund_failed'
+          ? 'Refund initiation failed. Our team will process it manually within 48 hours.'
+          : 'No payment was charged for this order.',
+        state: paymentStatus === 'refunded' ? 'complete' : 'current',
+      },
+    ]
+  }
+
   const progress =
     status === 'Processing' ? 2
     : status === 'Shipped' ? 3
     : status === 'Delivered' ? 5
     : 1
 
-  const steps: CustomerOrderTrackingStep[] = [
+  return [
     {
       title: 'ORDER PLACED',
       time: '—',
@@ -147,7 +176,6 @@ function buildTrackingSteps(status: CustomerOrderStatus): CustomerOrderTrackingS
       state: progress >= 5 ? 'current' : 'upcoming',
     },
   ]
-  return steps
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -205,7 +233,7 @@ function mapOrder(row: any): CustomerOrder {
       carrier: tracking.courier ?? 'Delhivery',
       trackingNumber: tracking.tracking_number ?? '',
       trackLabel: `TRACK ON ${(tracking.courier ?? 'COURIER').toUpperCase()}`,
-      steps: buildTrackingSteps(status),
+      steps: buildTrackingSteps(status, row.payment_status),
     },
     payment: {
       provider: row.payment_gateway === 'razorpay' ? 'Razorpay' : 'Stripe',
@@ -230,9 +258,8 @@ function mapOrder(row: any): CustomerOrder {
 }
 
 // ── Supabase query — get all orders for current user ──
-export async function getCustomerOrders(): Promise<CustomerOrder[]> {
+export async function getCustomerOrders(userId?: string): Promise<CustomerOrder[]> {
   const supabase = await createClient()
-
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return []
 

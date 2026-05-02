@@ -18,25 +18,18 @@ import {
     getOrderSubtotal,
     getOrderTotalItems,
 } from "@/lib/customer/orders";
+import CancelOrderButton from '@/components/customer/account/CancelOrderButton'
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"] });
 
 function getStatusTone(status: CustomerOrderStatus) {
-    switch (status) {
-        case "Shipped":
-            return {
-                badge: "badge-info",
-            };
-        case "Delivered":
-            return {
-                badge: "badge-success",
-            };
-        default:
-            return {
-                badge: "badge-warning",
-            };
-    }
+  switch (status) {
+    case 'Shipped': return { badge: 'badge-info' }
+    case 'Delivered': return { badge: 'badge-success' }
+    case 'Cancelled': return { badge: 'badge-error' }
+    default: return { badge: 'badge-warning' }
+  }
 }
 
 function DetailCard({
@@ -93,9 +86,8 @@ function TimelineStep({
                     </span>
                 ) : (
                     <span
-                        className={`h-3 w-3 rounded-full border ${
-                            isComplete ? "border-gold bg-gold" : "border-text-muted/35 bg-transparent"
-                        }`}
+                        className={`h-3 w-3 rounded-full border ${isComplete ? "border-gold bg-gold" : "border-text-muted/35 bg-transparent"
+                            }`}
                     />
                 )}
                 {!isLast ? (
@@ -106,9 +98,8 @@ function TimelineStep({
             <div className="min-w-0 flex-1 pb-1">
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                     <p
-                        className={`${cinzel.className} text-[12px] font-semibold tracking-[0.2em] ${
-                            isCurrent ? "text-gold" : isComplete ? "text-text-primary" : "text-text-muted"
-                        }`}
+                        className={`${cinzel.className} text-[12px] font-semibold tracking-[0.2em] ${isCurrent ? "text-gold" : isComplete ? "text-text-primary" : "text-text-muted"
+                            }`}
                     >
                         {step.title}
                     </p>
@@ -117,9 +108,8 @@ function TimelineStep({
                     </p>
                 </div>
                 <p
-                    className={`mt-1 font-sans text-[13px] leading-6 ${
-                        isCurrent ? "text-text-primary" : "text-text-muted"
-                    }`}
+                    className={`mt-1 font-sans text-[13px] leading-6 ${isCurrent ? "text-text-primary" : "text-text-muted"
+                        }`}
                 >
                     {step.description}
                 </p>
@@ -216,7 +206,7 @@ export default function OrderDetailsView({
 
                         <div className="flex flex-wrap items-center gap-4">
                             <span
-                                className={`badge ${statusTone.badge}`}`
+                                className={`badge ${statusTone.badge}`}
                             >
                                 {order.status}
                             </span>
@@ -417,7 +407,33 @@ export default function OrderDetailsView({
                             </div>
                         </DetailCard>
 
+                        {(order.status === 'Processing') && (
+                            <DetailCard>
+                                <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.35em] text-[#C0392B] mb-4`}>
+                                    CANCEL ORDER
+                                </p>
+                                <p className="font-sans text-[13px] text-text-muted mb-4 leading-[1.7]">
+                                    You can cancel this order while it is still being processed. Once shipped, cancellation is no longer available.
+                                </p>
+                                {order.status === 'Processing' && (
+                                    <DetailCard>
+                                        <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.35em] text-[#C0392B] mb-4`}>
+                                            CANCEL ORDER
+                                        </p>
+                                        <p className="font-sans text-[13px] text-text-muted mb-4 leading-[1.7]">
+                                            You can cancel this order while it is still being processed. Once shipped cancellation is not available.
+                                        </p>
+                                        <CancelOrderButton
+                                            orderNumber={order.id}
+                                            totalAmount={order.payment.amountCharged}
+                                        />
+                                    </DetailCard>
+                                )}
+                            </DetailCard>
+                        )}
+
                         <IssueReportModal order={order} />
+
                     </div>
 
                     <div className="space-y-4">

@@ -313,6 +313,18 @@ export default function AdminSupportInbox() {
         .update({ status: 'pending', updated_at: new Date().toISOString() })
         .eq('id', selectedTicket.id)
 
+      // Send reply email
+      await fetch('/api/support/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: selectedTicket.email,
+          customerName: selectedTicket.name,
+          replyMessage: reply.trim(),
+          originalSubject: selectedTicket.subject,
+        }),
+      })
+
       setReply('')
       await loadTickets()
     }

@@ -9,6 +9,19 @@ const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700']
 
 type FormState = 'idle' | 'loading' | 'success' | 'error'
 
+const quickLinks = [
+  { label: 'Track Your Order', href: '/track-order' },
+  { label: 'Return & Refund Policy', href: '/return-policy' },
+  { label: 'Shipping Policy', href: '/shipping-policy' },
+  { label: 'My Orders', href: '/account/orders' },
+]
+
+const responseTimes = [
+  { label: 'India Orders', time: '< 12 hrs' },
+  { label: 'International', time: '< 24 hrs' },
+  { label: 'Returns', time: '< 48 hrs' },
+]
+
 export default function ContactPage() {
   const supabase = createClient()
 
@@ -20,21 +33,9 @@ export default function ContactPage() {
   const [errorMsg, setErrorMsg] = useState('')
 
   async function handleSubmit() {
-    if (!name.trim()) {
-      setErrorMsg('Please enter your name.')
-      setFormState('error')
-      return
-    }
-    if (!email.trim() || !email.includes('@')) {
-      setErrorMsg('Please enter a valid email.')
-      setFormState('error')
-      return
-    }
-    if (!message.trim()) {
-      setErrorMsg('Please enter a message.')
-      setFormState('error')
-      return
-    }
+    if (!name.trim()) { setErrorMsg('Please enter your name.'); setFormState('error'); return }
+    if (!email.trim() || !email.includes('@')) { setErrorMsg('Please enter a valid email.'); setFormState('error'); return }
+    if (!message.trim()) { setErrorMsg('Please enter a message.'); setFormState('error'); return }
 
     setFormState('loading')
     setErrorMsg('')
@@ -42,7 +43,7 @@ export default function ContactPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
 
-      const { error } = await supabase
+      const { data: ticket, error } = await supabase
         .from('support_tickets')
         .insert({
           user_id: user?.id ?? null,
@@ -53,8 +54,22 @@ export default function ContactPage() {
           status: 'unread',
           priority: 'normal',
         })
+        .select('id')
+        .single()
 
       if (error) throw error
+
+      // Send auto-reply email
+      await fetch('/api/support/autoreply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: email.trim().toLowerCase(),
+          customerName: name.trim(),
+          subject: subject.trim() || 'General Enquiry',
+          ticketId: ticket?.id ?? '',
+        }),
+      }).catch(console.error)
 
       setFormState('success')
       setName('')
@@ -83,24 +98,21 @@ export default function ContactPage() {
 
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,400px)] lg:gap-5">
 
+          {/* Form */}
           <div className="space-y-3.5 rounded-[10px] border border-gold bg-surface p-3 sm:p-5">
 
             {formState === 'success' && (
               <div className="space-y-1 border-l-[3px] border-[var(--status-success)] bg-[#4CAF7D10] px-4 py-4">
-                <p className={`${cinzel.className} text-[14px] text-[var(--status-success)]`}>
-                  Message Sent
-                </p>
+                <p className={`${cinzel.className} text-[14px] text-[var(--status-success)]`}>Message Sent</p>
                 <p className="font-sans text-[13px] leading-[1.6] text-text-muted">
-                  We received your message and will reply within 24 hours.
+                  We received your message and will reply within 24 hours. Check your inbox for a confirmation.
                 </p>
               </div>
             )}
 
             {formState === 'error' && errorMsg && (
               <div className="border-l-[3px] border-[var(--status-error)] bg-[#C0392B10] px-4 py-3">
-                <p className="font-sans text-[13px] text-[var(--status-error)]">
-                  {errorMsg}
-                </p>
+                <p className="font-sans text-[13px] text-[var(--status-error)]">{errorMsg}</p>
               </div>
             )}
 
@@ -188,6 +200,7 @@ export default function ContactPage() {
             )}
           </div>
 
+          {/* Support Info */}
           <div className="space-y-4 border border-gold bg-surface p-3 sm:p-5">
             <div className="space-y-2">
               <h2 className={`${cinzel.className} text-[24px] text-gold sm:text-[28px] lg:text-[34px]`}>
@@ -199,21 +212,10 @@ export default function ContactPage() {
             </div>
 
             <div className="flex flex-wrap gap-2">
-              {[
-                { label: 'India Orders', time: '< 12 hrs' },
-                { label: 'International', time: '< 24 hrs' },
-                { label: 'Returns', time: '< 48 hrs' },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="space-y-0.5 border border-gold/20 bg-primary-deep px-3 py-2"
-                >
-                  <p className="font-sans text-[10px] uppercase tracking-[0.15em] text-text-muted">
-                    {item.label}
-                  </p>
-                  <p className={`${cinzel.className} text-[14px] text-gold`}>
-                    {item.time}
-                  </p>
+              {responseTimes.map((item) => (
+                <div key={item.label} className="space-y-0.5 border border-gold/20 bg-primary-deep px-3 py-2">
+                  <p className="font-sans text-[10px] uppercase tracking-[0.15em] text-text-muted">{item.label}</p>
+                  <p className={`${cinzel.className} text-[14px] text-gold`}>{item.time}</p>
                 </div>
               ))}
             </div>
@@ -233,18 +235,15 @@ export default function ContactPage() {
                 QUICK LINKS
               </p>
               <div className="flex flex-col gap-1.5">
-                <a href="/track-order" className="font-sans text-[13px] text-text-muted transition-colors hover:text-gold">
-                  Track Your Order
-                </a>
-                <a href="/return-policy" className="font-sans text-[13px] text-text-muted transition-colors hover:text-gold">
-                  Return and Refund Policy
-                </a>
-                <a href="/shipping-policy" className="font-sans text-[13px] text-text-muted transition-colors hover:text-gold">
-                  Shipping Policy
-                </a>
-                <a href="/account/orders" className="font-sans text-[13px] text-text-muted transition-colors hover:text-gold">
-                  My Orders
-                </a>
+                {quickLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="font-sans text-[13px] text-text-muted transition-colors hover:text-gold"
+                  >
+                    {`→ ${link.label}`}
+                  </a>
+                ))}
               </div>
             </div>
           </div>

@@ -1,15 +1,25 @@
 import { redirect } from 'next/navigation'
-import { Cinzel } from 'next/font/google'
 import { createClient } from '@/lib/supabase/server'
 import AccountShell from '@/components/customer/account/AccountShell'
 import AddressesClient from '@/components/customer/account/AddressesClient'
-
-const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
 export default async function AddressesPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('first_name, last_name, display_name, email')
+    .eq('id', user.id)
+    .single()
+
+  const displayName =
+    profile?.display_name ??
+    [profile?.first_name, profile?.last_name].filter(Boolean).join(' ') ??
+    user.email?.split('@')[0] ?? 'Account'
+
+  const email = profile?.email ?? user.email ?? ''
 
   const { data: addresses } = await supabase
     .from('addresses')
@@ -23,6 +33,8 @@ export default async function AddressesPage() {
         activeTab="addresses"
         title="My Addresses"
         subtitle="Manage your shipping and billing addresses."
+        displayName={displayName}
+        email={email}
       >
         <AddressesClient addresses={addresses ?? []} userId={user.id} />
       </AccountShell>

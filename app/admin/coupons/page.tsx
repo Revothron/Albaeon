@@ -1,48 +1,31 @@
-import { Search, Plus } from "lucide-react";
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import { getAdminCoupons } from '@/lib/admin/coupons'
+import AdminCouponsClient from '@/components/admin/AdminCouponsClient'
 
-export default function AdminCouponsPage() {
-    return (
-        <div className="animate-fadeInUp">
-            <div className="flex items-center justify-between mb-8">
-                <h1 className="text-text-primary text-2xl font-bold">Coupons</h1>
-                <button className="btn-primary text-xs py-2 px-4 flex items-center gap-1.5">
-                    <Plus className="w-3.5 h-3.5" />
-                    Create Coupon
-                </button>
-            </div>
+export default async function AdminCouponsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; page?: string }>
+}) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/admin/login')
 
-            <div className="relative w-80 mb-8">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
-                <input
-                    type="text"
-                    placeholder="Search coupons..."
-                    className="w-full bg-surface border border-white/10 text-text-primary pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-gold/40"
-                />
-            </div>
+  const sp = await searchParams
+  const page = Number(sp.page ?? 1)
 
-            <div className="card-surface overflow-x-auto">
-                <table className="w-full text-sm">
-                    <thead>
-                        <tr className="border-b border-white/5">
-                            <th className="text-left text-text-muted font-medium py-3 px-4">Code</th>
-                            <th className="text-left text-text-muted font-medium py-3 px-4">Discount</th>
-                            <th className="text-left text-text-muted font-medium py-3 px-4">Type</th>
-                            <th className="text-left text-text-muted font-medium py-3 px-4">Validity</th>
-                            <th className="text-left text-text-muted font-medium py-3 px-4">Usage Limit</th>
-                            <th className="text-left text-text-muted font-medium py-3 px-4">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td className="py-8 px-4 text-center text-text-muted" colSpan={6}>
-                                No coupons yet
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    );
+  const { coupons, total } = await getAdminCoupons({
+    search: sp.search ?? '',
+    page,
+    limit: 20,
+  })
+
+  return (
+    <AdminCouponsClient
+      coupons={coupons}
+      total={total}
+      currentPage={page}
+    />
+  )
 }
-
-

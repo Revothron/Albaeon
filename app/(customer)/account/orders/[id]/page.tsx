@@ -1,18 +1,21 @@
-import { notFound } from "next/navigation";
-import OrderDetailsView from "@/components/customer/account/OrderDetailsView";
-import { getOrderById } from "@/lib/customer/orders";
+import { notFound, redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+import OrderDetailsView from '@/components/customer/account/OrderDetailsView'
+import { getCustomerOrderById } from '@/lib/customer/orders'
 
 export default async function OrderDetailsPage({
-    params,
+  params,
 }: {
-    params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>
 }) {
-    const { id } = await params;
-    const order = getOrderById(decodeURIComponent(id));
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
 
-    if (!order) {
-        notFound();
-    }
+  const { id } = await params
+  const order = await getCustomerOrderById(decodeURIComponent(id))
 
-    return <OrderDetailsView order={order} />;
+  if (!order) notFound()
+
+  return <OrderDetailsView order={order} />
 }

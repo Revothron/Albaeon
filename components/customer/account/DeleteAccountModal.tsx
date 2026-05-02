@@ -1,5 +1,8 @@
 "use client";
 
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+
 import { Cormorant_Garamond } from "next/font/google";
 import { useEffect, useState } from "react";
 
@@ -14,6 +17,23 @@ export default function DeleteAccountModal({
     const [confirmEmail, setConfirmEmail] = useState("");
 
     const isMatch = confirmEmail.trim().toLowerCase() === email.toLowerCase();
+
+    const router = useRouter()
+    const supabase = createClient()
+
+    async function handleDelete() {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        // Mark account as inactive
+        await supabase
+            .from('profiles')
+            .update({ is_active: false })
+            .eq('id', user.id)
+
+        await supabase.auth.signOut()
+        router.push('/')
+    }
 
     useEffect(() => {
         if (!open) {
@@ -106,7 +126,8 @@ export default function DeleteAccountModal({
                             <button
                                 type="button"
                                 disabled={!isMatch}
-                                className="btn-danger"
+                                onClick={handleDelete}
+                                className="btn-danger disabled:opacity-40 disabled:cursor-not-allowed"
                             >
                                 Delete My Account
                             </button>
