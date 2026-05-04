@@ -51,7 +51,7 @@ export type Product = {
 const DEFAULT_RETURN_POLICY =
   'Returns and exchanges accepted within 14 days on unworn items with original tags. Refunds are processed after inspection.'
 
-const SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+const SIZE_ORDER = ['S', 'M', 'L', 'XL', '2XL']
 
 // ── Supabase row type ─────────────────────────────────────────────────────────
 type ProductRow = {

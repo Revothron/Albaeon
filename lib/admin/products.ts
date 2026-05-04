@@ -545,6 +545,7 @@ export async function saveAdminProduct({
         stock_status: v.stock_status,
         gelato_template_variant_id: v.gelato_template_variant_id ?? null,
         banian_sku: v.banian_sku ?? null,
+        gelato_price_usd: v.gelato_price_usd ?? null,
         sort_order: i,
       }))
     )

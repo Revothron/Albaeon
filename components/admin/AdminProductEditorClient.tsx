@@ -105,7 +105,7 @@ function TextArea({ value, onChange, rows = 4 }: {
     )
 }
 
-const ALL_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+const ALL_SIZES = ['S', 'M', 'L', 'XL', '2XL']
 
 // ── Main Component ────────────────────────────────────
 export default function AdminProductEditorClient({
@@ -377,36 +377,30 @@ export default function AdminProductEditorClient({
                 return
             }
 
-            // Match Gelato variants to existing local variants by color+size
-            // Gelato variant titles are like "Black - S", "White - M" etc.
             const updated = variants.map((v) => {
-                const match = data.variants.find((gv: { title: string; id: string }) => {
-                    // Title format: "White - S - DTG (Direct-to-garment)"
+                const match = data.variants.find((gv: {
+                    title: string; id: string; priceUsd: number | null
+                }) => {
                     const parts = gv.title.split(' - ')
                     const gelatoColor = parts[0]?.trim().toLowerCase() ?? ''
                     const gelatoSize = parts[1]?.trim().toLowerCase() ?? ''
 
                     const colorMatch = gelatoColor === v.color.toLowerCase()
 
-                    // Map Albaeon sizes to Gelato sizes
                     const sizeMap: Record<string, string> = {
-                        'xs': 'xs',
-                        's': 's',
-                        'm': 'm',
-                        'l': 'l',
-                        'xl': 'xl',
-                        'xxl': '2xl',
-                        '3xl': '3xl',
-                        '4xl': '4xl',
+                        's': 's', 'm': 'm', 'l': 'l', 'xl': 'xl',
+                        'xxl': '2xl', '2xl': '2xl',
                     }
                     const mappedSize = sizeMap[v.size.toLowerCase()] ?? v.size.toLowerCase()
                     const sizeMatch = gelatoSize === mappedSize
 
                     return colorMatch && sizeMatch
                 })
+
                 return {
                     ...v,
                     gelato_template_variant_id: match?.id ?? v.gelato_template_variant_id ?? null,
+                    gelato_price_usd: match?.priceUsd ?? v.gelato_price_usd ?? null,
                 }
             })
 
@@ -414,13 +408,16 @@ export default function AdminProductEditorClient({
 
             const matched = updated.filter((v) => v.gelato_template_variant_id).length
             const total = variants.length
-            setTemplateFetchError(
-                matched === total
-                    ? ''
-                    : `Matched ${matched}/${total} variants. Unmatched ones need manual entry.`
-            )
+
+            if (matched === total) {
+                setTemplateFetchError('')
+            } else {
+                setTemplateFetchError(
+                    `Matched ${matched}/${total} variants. Unmatched ones need manual entry.`
+                )
+            }
         } catch {
-            setTemplateFetchError('Failed to fetch template. Check the ID and try again.')
+            setTemplateFetchError('Failed to fetch. Check template ID and try again.')
         } finally {
             setFetchingTemplate(false)
         }
@@ -616,8 +613,8 @@ export default function AdminProductEditorClient({
 
                         {/* Variant matrix header */}
                         <div
-                            className={`grid bg-nav px-4 py-3 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}
-                            style={{ gridTemplateColumns: 'minmax(0,0.8fr) minmax(0,1fr) minmax(0,1.2fr) minmax(0,1fr) 120px 36px' }}
+                            className={`grid items-center bg-nav px-4 py-3 text-[9px] tracking-[0.16em] text-text-muted ${adminCinzel.className}`}
+                            style={{ gridTemplateColumns: '120px 1fr 1fr 1fr 100px 36px' }}
                         >
                             <span>VARIANT</span>
                             <span>SKU</span>
@@ -630,12 +627,15 @@ export default function AdminProductEditorClient({
                         {variants.map((variant, index) => (
                             <div
                                 key={`${variant.color}-${variant.size}-${index}`}
-                                className="border-t border-gold/6 px-4 py-3"
-                                style={{ display: 'grid', gridTemplateColumns: 'minmax(0,0.8fr) minmax(0,1fr) minmax(0,1.2fr) minmax(0,1fr) 120px 36px', alignItems: 'center', gap: '8px' }}
+                                className="grid items-center gap-2 border-t border-gold/6 px-4 py-2.5"
+                                style={{ gridTemplateColumns: '120px 1fr 1fr 1fr 100px 36px' }}
                             >
-                                <span className={`${adminRaleway.className} text-[13px] text-text-primary`}>
+                                {/* Variant label */}
+                                <span className={`${adminRaleway.className} text-[12px] text-text-primary truncate`}>
                                     {variant.color} / {variant.size}
                                 </span>
+
+                                {/* SKU */}
                                 <input
                                     type="text"
                                     value={variant.sku}
@@ -644,9 +644,11 @@ export default function AdminProductEditorClient({
                                         updated[index] = { ...updated[index], sku: e.target.value }
                                         setVariants(updated)
                                     }}
-                                    className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
+                                    className={`${adminRaleway.className} h-[32px] w-full border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
                                 />
-                                <div className="flex items-center gap-1">
+
+                                {/* Gelato variant ID */}
+                                <div className="flex items-center gap-1 min-w-0">
                                     <input
                                         type="text"
                                         value={variant.gelato_template_variant_id ?? ''}
@@ -655,14 +657,16 @@ export default function AdminProductEditorClient({
                                             updated[index] = { ...updated[index], gelato_template_variant_id: e.target.value || null }
                                             setVariants(updated)
                                         }}
-                                        placeholder="Auto-filled from template"
-                                        className={`${adminRaleway.className} h-[32px] flex-1 border ${variant.gelato_template_variant_id ? 'border-[var(--status-success)]/30' : 'border-gold/12'
+                                        placeholder="Auto-filled"
+                                        className={`${adminRaleway.className} h-[32px] w-full min-w-0 border ${variant.gelato_template_variant_id ? 'border-[var(--status-success)]/40' : 'border-gold/12'
                                             } bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
                                     />
                                     {variant.gelato_template_variant_id && (
-                                        <span className="text-[var(--status-success)] text-[10px]">✓</span>
+                                        <span className="text-[var(--status-success)] text-[10px] flex-shrink-0">✓</span>
                                     )}
                                 </div>
+
+                                {/* Banian SKU */}
                                 <input
                                     type="text"
                                     value={variant.banian_sku ?? ''}
@@ -672,8 +676,10 @@ export default function AdminProductEditorClient({
                                         setVariants(updated)
                                     }}
                                     placeholder="e.g. ALB-BLK-S"
-                                    className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
+                                    className={`${adminRaleway.className} h-[32px] w-full border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-muted outline-none`}
                                 />
+
+                                {/* Stock */}
                                 <select
                                     value={variant.stock_status}
                                     onChange={(e) => {
@@ -681,16 +687,18 @@ export default function AdminProductEditorClient({
                                         updated[index] = { ...updated[index], stock_status: e.target.value }
                                         setVariants(updated)
                                     }}
-                                    className={`${adminRaleway.className} h-[32px] border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-primary outline-none`}
+                                    className={`${adminRaleway.className} h-[32px] w-full border border-gold/12 bg-footer px-2 text-[11px] font-light text-text-primary outline-none`}
                                 >
                                     <option value="in_stock">In Stock</option>
                                     <option value="out_of_stock">Out of Stock</option>
                                     <option value="discontinued">Discontinued</option>
                                 </select>
+
+                                {/* Delete */}
                                 <button
                                     type="button"
                                     onClick={() => removeVariant(index)}
-                                    className="flex items-center justify-center text-text-muted hover:text-[var(--status-error)] transition-colors"
+                                    className="flex h-[32px] w-[32px] items-center justify-center text-text-muted hover:text-[var(--status-error)] transition-colors flex-shrink-0"
                                 >
                                     <X className="h-3.5 w-3.5" strokeWidth={1.8} />
                                 </button>

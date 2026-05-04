@@ -9,10 +9,7 @@ export async function GET(req: Request) {
 
   const { searchParams } = new URL(req.url)
   const templateId = searchParams.get('templateId')
-
-  if (!templateId) {
-    return NextResponse.json({ error: 'templateId required' }, { status: 400 })
-  }
+  if (!templateId) return NextResponse.json({ error: 'templateId required' }, { status: 400 })
 
   try {
     const variants = await getGelatoTemplateVariants(templateId)

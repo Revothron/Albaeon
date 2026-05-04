@@ -19,7 +19,7 @@ export async function getGelatoTemplateVariants(templateId: string) {
   const data = await res.json()
   if (!res.ok) throw new Error(data?.message ?? 'Failed to fetch template')
 
-    console.log("Gelato variants:", data?.variants)
+console.log("Gelato variants:", data?.variants) //Display variants size id
 
   // Returns variants with templateVariantId + title like "Black - S"
   return data?.variants ?? []
@@ -69,6 +69,30 @@ export async function createGelatoOrder(params: {
     throw new Error(data?.message ?? `Gelato API error ${res.status}`)
   }
   return data
+}
+
+// ── order price using template variant IDs ───────────
+export async function getGelatoVariantPrice(
+  productUid: string,
+  currency = 'USD',
+  country = 'US'
+): Promise<number | null> {
+  try {
+    const res = await fetch(
+      `https://product.gelatoapis.com/v3/products/${encodeURIComponent(productUid)}/prices?country=${country}&currency=${currency}`,
+      { headers: headers() }
+    )
+    const data = await res.json()
+    if (!res.ok || !Array.isArray(data)) return null
+
+    // Find price for quantity 1
+    const priceEntry = data.find((p: { quantity: number }) => p.quantity === 1)
+      ?? data[0]
+
+    return priceEntry?.price ?? null
+  } catch {
+    return null
+  }
 }
 
 // ── Cancel order ──────────────────────────────────────
