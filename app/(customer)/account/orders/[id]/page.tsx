@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import OrderDetailsView from '@/components/customer/account/OrderDetailsView'
 import { getCustomerOrderById } from '@/lib/customer/orders'
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrderDetailsPage({
   params,
 }: {

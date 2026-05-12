@@ -2,8 +2,7 @@ import Link from 'next/link'
 import { ChevronRight, CalendarDays, ClipboardList, Hourglass, Wallet } from 'lucide-react'
 import { adminCinzel, adminCormorant, adminRaleway } from '@/components/admin/adminFonts'
 import { getDashboardStats } from '@/lib/admin/dashboard'
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdminPage } from '@/lib/auth/require-admin-page'
 
 const statusClassNames: Record<string, string> = {
   Accepted: 'border-[var(--status-info)]/35 bg-[var(--status-info)]/12 text-[var(--status-info)]',
@@ -12,19 +11,10 @@ const statusClassNames: Record<string, string> = {
   Draft: 'border-white/15 bg-white/6 text-text-muted',
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
-  // Auth check
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/admin/login')
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if (profile?.role !== 'admin') redirect('/')
+  await requireAdminPage()
 
   const stats = await getDashboardStats()
 

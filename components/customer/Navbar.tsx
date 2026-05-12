@@ -21,21 +21,8 @@ import {
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
-const shopCategories = [
-  { name: "T-Shirts", href: "/shop/t-shirts" },
-  { name: "Hoodies", href: "/shop/hoodies" },
-  { name: "Oversized Tees", href: "/shop/oversized-tees" },
-  { name: "Drop Shoulder Fits", href: "/shop/drop-shoulder-fits" },
-  { name: "Crop Tees", href: "/shop/crop-tees" },
-  { name: "Future Categories", href: "/shop/future-categories" },
-];
-
-const shopHighlights = [
-  { name: "New Arrivals", href: "/shop?view=new-arrivals" },
-  { name: "Best Sellers", href: "/shop?view=best-sellers" },
-  { name: "Limited Drops", href: "/shop?view=limited-drops" },
-  { name: "Collections", href: "/shop" },
-];
+type NavCategory = { name: string; href: string }
+type NavCollection = { name: string; href: string; filter_rule: string }
 
 const iconLinks = [
   { href: "/search", label: "Search", Icon: Search },
@@ -56,14 +43,12 @@ export default function Navbar() {
   const [shopOpen, setShopOpen] = useState(false)
   const shopMenuRef = useRef<HTMLElement>(null)
 
-  // ── Hydration fix ──────────────────────────────────
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
-  const displayCartCount = mounted ? cartCount : 0
-  const displayWishlistCount = mounted ? wishlistCount : 0
-
   // ── Auth state ─────────────────────────────────────
   const [userHref, setUserHref] = useState('/login')
+  const [navCategories, setNavCategories] = useState<NavCategory[]>([])
+  const [navCollections, setNavCollections] = useState<NavCollection[]>([
+    { name: "New Arrivals", href: "/shop?view=new-arrivals", filter_rule: "new_arrivals" },
+  ])
 
   useEffect(() => {
     const supabase = createClient()
@@ -77,6 +62,33 @@ export default function Navbar() {
     })
 
     return () => subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    supabase
+      .from('categories')
+      .select('name, slug')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+      .then(({ data: cats }) => {
+        if (cats) {
+          setNavCategories(cats.map((c) => ({ name: c.name, href: `/shop/${c.slug}` })))
+        }
+      })
+
+    fetch('/api/collections')
+      .then((res) => res.json())
+      .then((cols: { name: string; slug: string; filter_rule: string }[]) => {
+        if (cols) {
+          const dynamic = cols
+            .filter((c) => c.slug !== 'new-arrivals')
+            .map((c) => ({ name: c.name, href: `/shop${c.slug === 'all' ? '' : `?view=${c.slug}`}`, filter_rule: c.filter_rule }))
+          setNavCollections((prev) => [...prev, ...dynamic])
+        }
+      })
+      .catch(() => {})
   }, [])
 
   const closeMobileMenu = () => closeMobileNav()
@@ -133,7 +145,7 @@ export default function Navbar() {
               }`}
             >
               <div className="min-w-[220px] border border-gold/15 bg-[#130F18] p-2 shadow-[0_18px_40px_rgba(0,0,0,0.35)]">
-                {shopCategories.map((category) => (
+                {navCategories.map((category) => (
                   <Link
                     key={category.href}
                     href={category.href}
@@ -185,7 +197,7 @@ export default function Navbar() {
               >
                 <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
 
-                {isCart && displayCartCount > 0 && (
+                {isCart && cartCount > 0 && (
                   <span
                     className="animate-scaleIn"
                     style={{
@@ -206,11 +218,11 @@ export default function Navbar() {
                       padding: '0 3px',
                     }}
                   >
-                    {displayCartCount > 9 ? '9+' : displayCartCount}
+                    {cartCount > 9 ? '9+' : cartCount}
                   </span>
                 )}
 
-                {isWishlist && displayWishlistCount > 0 && (
+                {isWishlist && wishlistCount > 0 && (
                   <span
                     className="animate-scaleIn"
                     style={{
@@ -231,7 +243,7 @@ export default function Navbar() {
                       padding: '0 3px',
                     }}
                   >
-                    {displayWishlistCount > 9 ? '9+' : displayWishlistCount}
+                    {wishlistCount > 9 ? '9+' : wishlistCount}
                   </span>
                 )}
               </Link>
@@ -240,7 +252,7 @@ export default function Navbar() {
 
           {/* User icon — dynamic based on auth state */}
           <Link
-            href={mounted ? userHref : '/login'}
+            href={userHref}
             aria-label="My Account"
             className="text-text-primary transition-all duration-300 hover:text-gold"
           >
@@ -265,7 +277,7 @@ export default function Navbar() {
               <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.3em] text-gold`}>
                 CATEGORIES
               </p>
-              {shopCategories.map((category) => (
+              {navCategories.map((category) => (
                 <Link
                   key={category.href}
                   href={category.href}
@@ -281,7 +293,7 @@ export default function Navbar() {
               <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.3em] text-gold`}>
                 SHOP
               </p>
-              {shopHighlights.map((item) => (
+              {navCollections.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
@@ -366,7 +378,7 @@ export default function Navbar() {
               </Link>
 
               <div className="space-y-3 border-l border-white/10 pl-4">
-                {shopCategories.map((category) => (
+                {navCategories.map((category) => (
                   <Link
                     key={category.href}
                     href={category.href}
@@ -408,7 +420,7 @@ export default function Navbar() {
 
               {/* User icon — dynamic based on auth state */}
               <Link
-                href={mounted ? userHref : '/login'}
+                href={userHref}
                 aria-label="My Account"
                 className="text-text-primary transition-all duration-300 hover:text-gold"
                 onClick={closeMobileMenu}

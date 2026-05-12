@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ChevronDown } from "lucide-react";
 import { AdminPageHeading, AdminTextInput } from "@/components/admin/AdminUi";
 import { adminCinzel, adminRaleway } from "@/components/admin/adminFonts";
+import { exportCSV } from "@/lib/admin/csv-export";
 
 export type AnalyticsValueFormat = "number" | "currency" | "decimal";
 
@@ -138,7 +139,7 @@ function AnalyticsMetricChips({
     );
 }
 
-function AnalyticsReportMenu({ options }: { options: string[] }) {
+function AnalyticsReportMenu({ options, onExport }: { options: string[]; onExport?: (option: string) => void }) {
     return (
         <details className="group relative">
             <summary
@@ -153,6 +154,7 @@ function AnalyticsReportMenu({ options }: { options: string[] }) {
                     <button
                         key={option}
                         type="button"
+                        onClick={() => onExport?.(option)}
                         className={`${adminRaleway.className} flex w-full items-center px-3 py-2 text-left text-[12px] font-light text-text-primary transition-colors duration-200 hover:bg-gold/8 hover:text-gold`}
                     >
                         {option}
@@ -173,7 +175,12 @@ function AnalyticsChartCard({
     onToggleSeries: (label: string) => void;
 }) {
     const visibleSeries = series.filter((item) => item.active);
-    const maxValue = Math.max(...visibleSeries.flatMap((item) => item.values), 1);
+    const hasData = visibleSeries.some(
+        (item) => item.values.length > 0 && item.values.some((v) => v > 0)
+    );
+    const maxValue = hasData
+        ? Math.max(...visibleSeries.flatMap((item) => item.values))
+        : 0;
     const chartWidth = 920;
     const chartHeight = 160;
     const tooltipIndex = screen.chartLabels.length - 1;
@@ -200,75 +207,85 @@ function AnalyticsChartCard({
                             ))}
                         </div>
 
-                        <svg
-                            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-                            className="absolute inset-x-0 top-4 h-[160px] w-full"
-                            preserveAspectRatio="none"
-                            aria-label={`${screen.title} analytics chart`}
-                        >
-                            {visibleSeries.map((item) => {
-                                const hexColor = item.color
-                                    .replace('var(--gold)', '#E6C979')
-                                    .replace('var(--status-info)', '#4A90C4')
-                                    .replace('var(--status-success)', '#4CAF7D')
-                                    .replace('var(--status-warning)', '#E6A817')
-                                    .replace('var(--status-error)', '#C0392B')
-                                return (
-                                    <polyline
-                                        key={`${screen.title}-${item.label}-line`}
-                                        fill="none"
-                                        stroke={hexColor}
-                                        strokeWidth={item.color === 'var(--status-info)' ? '1.8' : '2.4'}
-                                        points={getSeriesPoints(item.values, chartWidth, chartHeight, maxValue)}
-                                    />
-                                )
-                            })}
-
-                            {visibleSeries.map((item) =>
-                                item.values.map((value, index) => {
-                                    const step = item.values.length > 1 ? chartWidth / (item.values.length - 1) : chartWidth
-                                    const x = index * step
-                                    const y = chartHeight - (value / maxValue) * chartHeight
-                                    const hexColor = item.color
-                                        .replace('var(--gold)', '#E6C979')
-                                        .replace('var(--status-info)', '#4A90C4')
-                                        .replace('var(--status-success)', '#4CAF7D')
-                                        .replace('var(--status-warning)', '#E6A817')
-                                        .replace('var(--status-error)', '#C0392B')
-                                    return (
-                                        <circle
-                                            key={`${screen.title}-${item.label}-${screen.chartLabels[index]}`}
-                                            cx={x}
-                                            cy={y}
-                                            r={item.color === 'var(--status-info)' ? '2.6' : '3'}
-                                            fill={hexColor}
-                                        />
-                                    )
-                                })
-                            )}
-                        </svg>
-
-                        <div className="absolute right-3 top-3 w-[190px] border border-gold/20 bg-nav px-3 py-2">
-                            <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
-                                {screen.tooltipLabel ?? screen.chartLabels[tooltipIndex]}
-                            </p>
-                            {visibleSeries.map((item) => (
-                                <p
-                                    key={`${screen.title}-${item.label}-tooltip`}
-                                    className={`${adminCinzel.className} mt-1 text-[12px]`}
-                                    style={{
-                                        color: item.color
+                        {hasData ? (
+                            <>
+                                <svg
+                                    viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+                                    className="absolute inset-x-0 top-4 h-[160px] w-full"
+                                    preserveAspectRatio="none"
+                                    aria-label={`${screen.title} analytics chart`}
+                                >
+                                    {visibleSeries.map((item) => {
+                                        const hexColor = item.color
                                             .replace('var(--gold)', '#E6C979')
                                             .replace('var(--status-info)', '#4A90C4')
                                             .replace('var(--status-success)', '#4CAF7D')
                                             .replace('var(--status-warning)', '#E6A817')
                                             .replace('var(--status-error)', '#C0392B')
-                                    }}
-                                >
-                                    {item.label}: {formatAnalyticsValue(item.values[tooltipIndex], item.format)}
+                                        return (
+                                            <polyline
+                                                key={`${screen.title}-${item.label}-line`}
+                                                fill="none"
+                                                stroke={hexColor}
+                                                strokeWidth={item.color === 'var(--status-info)' ? '1.8' : '2.4'}
+                                                points={getSeriesPoints(item.values, chartWidth, chartHeight, maxValue)}
+                                            />
+                                        )
+                                    })}
+
+                                    {visibleSeries.map((item) =>
+                                        item.values.map((value, index) => {
+                                            const step = item.values.length > 1 ? chartWidth / (item.values.length - 1) : chartWidth
+                                            const x = index * step
+                                            const y = chartHeight - (value / maxValue) * chartHeight
+                                            const hexColor = item.color
+                                                .replace('var(--gold)', '#E6C979')
+                                                .replace('var(--status-info)', '#4A90C4')
+                                                .replace('var(--status-success)', '#4CAF7D')
+                                                .replace('var(--status-warning)', '#E6A817')
+                                                .replace('var(--status-error)', '#C0392B')
+                                            return (
+                                                <circle
+                                                    key={`${screen.title}-${item.label}-${screen.chartLabels[index]}`}
+                                                    cx={x}
+                                                    cy={y}
+                                                    r={item.color === 'var(--status-info)' ? '2.6' : '3'}
+                                                    fill={hexColor}
+                                                />
+                                            )
+                                        })
+                                    )}
+                                </svg>
+
+                                <div className="absolute right-3 top-3 w-[190px] border border-gold/20 bg-nav px-3 py-2">
+                                    <p className={`${adminRaleway.className} text-[10px] font-light text-text-muted`}>
+                                        {screen.tooltipLabel ?? screen.chartLabels[tooltipIndex]}
+                                    </p>
+                                    {visibleSeries.map((item) => (
+                                        <p
+                                            key={`${screen.title}-${item.label}-tooltip`}
+                                            className={`${adminCinzel.className} mt-1 text-[12px]`}
+                                            style={{
+                                                color: item.color
+                                                    .replace('var(--gold)', '#E6C979')
+                                                    .replace('var(--status-info)', '#4A90C4')
+                                                    .replace('var(--status-success)', '#4CAF7D')
+                                                    .replace('var(--status-warning)', '#E6A817')
+                                                    .replace('var(--status-error)', '#C0392B')
+                                            }}
+                                        >
+                                            {item.label}: {formatAnalyticsValue(item.values[tooltipIndex], item.format)}
+                                        </p>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <p className={`${adminRaleway.className} text-[13px] font-light text-text-muted`}>
+                                    No data available for this period
                                 </p>
-                            ))}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     <div
@@ -285,7 +302,7 @@ function AnalyticsChartCard({
     );
 }
 
-function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
+function AnalyticsTableCard({ screen, onExport }: { screen: AdminAnalyticsScreen; onExport?: (option: string) => void }) {
     const topBarPaddingClassName = screen.table.topBarPaddingClassName ?? "px-6 py-4";
     const headerPaddingClassName = screen.table.headerPaddingClassName ?? "px-6 py-3";
     const rowPaddingClassName = screen.table.rowPaddingClassName ?? "px-6 py-3";
@@ -309,7 +326,7 @@ function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
                         ) : null}
 
                         {screen.table.reportOptions ? (
-                            <AnalyticsReportMenu options={screen.table.reportOptions} />
+                            <AnalyticsReportMenu options={screen.table.reportOptions} onExport={onExport} />
                         ) : null}
                     </div>
                 ) : null}
@@ -421,7 +438,7 @@ function AnalyticsTableCard({ screen }: { screen: AdminAnalyticsScreen }) {
     );
 }
 
-export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen }) {
+export function AdminAnalyticsPage({ screen, onExport, onRangeChange }: { screen: AdminAnalyticsScreen; onExport?: (option: string) => void; onRangeChange?: (range: string) => void }) {
     const [activeRange, setActiveRange] = useState(screen.activeRange);
     const [activeSeries, setActiveSeries] = useState(() => {
         const initial = screen.series.filter((item) => item.active).map((item) => item.label);
@@ -439,6 +456,17 @@ export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen })
             return [...current, label];
         });
     };
+
+    const handleRangeClick = useCallback((range: string) => {
+        setActiveRange(range);
+        onRangeChange?.(range);
+    }, [onRangeChange]);
+
+    const handleExport = useCallback((option: string) => {
+        if (option === 'Export CSV') {
+            exportCSV(`${screen.title} Analytics`, screen.table.columns, screen.table.rows);
+        }
+    }, [screen]);
 
     const seriesWithState = screen.series.map((item) => ({
         ...item,
@@ -460,7 +488,7 @@ export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen })
                         <button
                             key={range}
                             type="button"
-                            onClick={() => setActiveRange(range)}
+                            onClick={() => handleRangeClick(range)}
                             className={`${adminCinzel.className} border px-4 py-2 text-[10px] font-semibold tracking-[0.16em] transition-colors duration-200 ${active
                                 ? "border-gold bg-gold/12 text-gold"
                                 : "border-gold/12 text-text-muted hover:border-gold/30 hover:text-text-primary"
@@ -473,7 +501,7 @@ export function AdminAnalyticsPage({ screen }: { screen: AdminAnalyticsScreen })
             </div>
 
             <AnalyticsChartCard screen={screen} series={seriesWithState} onToggleSeries={handleToggleSeries} />
-            <AnalyticsTableCard screen={screen} />
+            <AnalyticsTableCard screen={screen} onExport={onExport ?? handleExport} />
         </div>
     );
 }

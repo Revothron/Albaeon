@@ -6,6 +6,7 @@ import { Cinzel } from 'next/font/google'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { sendWelcomeEmail } from '@/app/actions/send-welcome'
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
@@ -53,14 +54,7 @@ export default function RegisterPage() {
     }
 
     // Send welcome email
-    await fetch('/api/auth/welcome', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: email.trim().toLowerCase(),
-        customerName: firstName || fullName.trim(),
-      }),
-    }).catch(console.error)
+    await sendWelcomeEmail(email.trim().toLowerCase(), firstName || fullName.trim())
 
     setSuccess(true)
     setLoading(false)

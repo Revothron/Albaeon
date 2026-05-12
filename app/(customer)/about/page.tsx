@@ -1,5 +1,22 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { Cinzel } from "next/font/google";
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'Learn the story behind Albaeon — a brand rooted in mythology, ancient iconography, and the architecture of forgotten worlds.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/about`,
+  },
+  openGraph: {
+    title: 'About Albaeon',
+    description: 'Learn the story behind Albaeon — a brand rooted in mythology and ancient iconography.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/about`,
+    images: [{ url: '/og-default.jpg', width: 1200, height: 630, alt: 'About Albaeon' }],
+  },
+};
+
+export const revalidate = 3600;
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 

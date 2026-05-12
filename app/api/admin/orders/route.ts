@@ -25,6 +25,39 @@ export async function POST(req: Request) {
 
   if (action === 'update_status') {
     const result = await updateOrderStatus(orderId, body.status)
+
+    const supabaseAdmin = (await import('@/lib/supabase/admin')).createAdminClient()
+    const { data: order } = await supabaseAdmin
+      .from('orders')
+      .select('order_number, profiles(email, first_name, last_name), order_items(product_name, color, size, quantity)')
+      .eq('id', orderId)
+      .single()
+
+    if (body.status === 'delivered' && order) {
+      const profile = order.profiles as { email?: string; first_name?: string; last_name?: string } | null
+      if (profile?.email) {
+        const { sendOrderDelivered } = await import('@/lib/emails')
+        const customerName = [profile.first_name, profile.last_name]
+          .filter(Boolean).join(' ') || 'Customer'
+
+        const orderItems = (order.order_items ?? []).map((item: {
+          product_name: string; color: string; size: string; quantity: number
+        }) => ({
+          name: item.product_name,
+          color: item.color,
+          size: item.size,
+          quantity: item.quantity,
+        }))
+
+        await sendOrderDelivered({
+          to: profile.email,
+          customerName,
+          orderNumber: order.order_number,
+          items: orderItems,
+        }).catch(console.error)
+      }
+    }
+
     return NextResponse.json(result)
   }
 

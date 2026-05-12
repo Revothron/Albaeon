@@ -8,11 +8,11 @@ import {
   getCategoryAnalytics,
   getCouponsAnalytics,
 } from '@/lib/admin/analytics'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 export async function GET(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const authError = await requireAdmin()
+  if (authError) return authError
 
   const { searchParams } = new URL(req.url)
   const type = searchParams.get('type') ?? 'overview'
@@ -30,6 +30,11 @@ export async function GET(req: Request) {
   const fn = map[type]
   if (!fn) return NextResponse.json({ error: 'Unknown type' }, { status: 400 })
 
-  const data = await fn(range)
-  return NextResponse.json(data)
+  try {
+    const data = await fn(range)
+    return NextResponse.json(data)
+  } catch (error) {
+    console.error(`Analytics API error for type=${type} range=${range}:`, error)
+    return NextResponse.json({ error: 'Failed to fetch analytics data' }, { status: 500 })
+  }
 }

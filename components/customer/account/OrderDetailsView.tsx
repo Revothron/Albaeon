@@ -19,6 +19,7 @@ import {
     getOrderTotalItems,
 } from "@/lib/customer/orders";
 import CancelOrderButton from '@/components/customer/account/CancelOrderButton'
+import InvoiceDownloadButton from '@/components/customer/account/InvoiceDownloadButton'
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"] });
@@ -407,28 +408,30 @@ export default function OrderDetailsView({
                             </div>
                         </DetailCard>
 
-                        {(order.status === 'Processing') && (
+                        {order.status === 'Processing' && (
                             <DetailCard>
                                 <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.35em] text-[#C0392B] mb-4`}>
                                     CANCEL ORDER
                                 </p>
                                 <p className="font-sans text-[13px] text-text-muted mb-4 leading-[1.7]">
-                                    You can cancel this order while it is still being processed. Once shipped, cancellation is no longer available.
+                                    You can cancel this order while it is still being processed. Once shipped, cancellation is not available.
                                 </p>
-                                {order.status === 'Processing' && (
-                                    <DetailCard>
-                                        <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.35em] text-[#C0392B] mb-4`}>
-                                            CANCEL ORDER
-                                        </p>
-                                        <p className="font-sans text-[13px] text-text-muted mb-4 leading-[1.7]">
-                                            You can cancel this order while it is still being processed. Once shipped cancellation is not available.
-                                        </p>
-                                        <CancelOrderButton
-                                            orderNumber={order.id}
-                                            totalAmount={order.payment.amountCharged}
-                                        />
-                                    </DetailCard>
-                                )}
+                                <CancelOrderButton
+                                    orderNumber={order.id}
+                                    totalAmount={order.payment.amountCharged}
+                                />
+                            </DetailCard>
+                        )}
+
+                        {order.status === 'Delivered' && (
+                            <DetailCard>
+                                <p className={`${cinzel.className} text-[10px] font-bold tracking-[0.35em] text-gold mb-4`}>
+                                    INVOICE
+                                </p>
+                                <p className="font-sans text-[13px] text-text-muted mb-4 leading-[1.7]">
+                                    Your order has been delivered. Download your invoice for records or reimbursement.
+                                </p>
+                                <InvoiceDownloadButton orderNumber={order.id} />
                             </DetailCard>
                         )}
 

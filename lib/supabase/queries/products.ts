@@ -1,6 +1,8 @@
+import { cacheGet, cacheSet, CACHE_KEYS, TTL } from '@/lib/redis'
 import { createClient } from '@/lib/supabase/server'
 
 // ── Fetch all active products (with optional category filter) ──
+// Not cached — parameterised query.
 export async function getProducts({
   categorySlug,
   sort = 'newest',
@@ -66,6 +68,30 @@ export async function getProducts({
 
 // ── Fetch single product by slug ──
 export async function getProductBySlug(slug: string) {
+  const key = CACHE_KEYS.product(slug)
+
+  const cached = await cacheGet<{
+    id: string
+    name: string
+    slug: string
+    sku: string
+    description: string | null
+    price_inr: number
+    price_usd: number | null
+    is_new_arrival: boolean
+    is_best_seller: boolean
+    wash_care: string | null
+    size_chart: string | null
+    tags: string[] | null
+    meta_title: string | null
+    meta_description: string | null
+    category_id: string
+    product_images: { id: string; url: string; alt_text: string | null; is_primary: boolean; sort_order: number }[]
+    product_variants: { id: string; color: string; color_hex: string | null; size: string; sku: string; stock_status: string; sort_order: number }[]
+    categories: { name: string; slug: string } | null
+  }>(key)
+  if (cached) return { product: cached, error: null }
+
   const supabase = await createClient()
 
   const { data, error } = await supabase
@@ -94,10 +120,15 @@ export async function getProductBySlug(slug: string) {
     .eq('status', 'active')
     .single()
 
+  if (!error && data) {
+    await cacheSet(key, data, TTL.PRODUCT)
+  }
+
   return { product: data, error }
 }
 
 // ── Fetch related products (same category, exclude current) ──
+// Not cached — parameterised query.
 export async function getRelatedProducts(categoryId: string, excludeSlug: string) {
   const supabase = await createClient()
 

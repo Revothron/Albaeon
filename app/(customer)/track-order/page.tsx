@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Cinzel, Cormorant_Garamond } from "next/font/google";
+
+export const metadata: Metadata = {
+  title: 'Track Your Order',
+  description: 'Track your Albaeon order in real time. Enter your order number and email to see the latest status and shipping updates.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/track-order`,
+  },
+  robots: { index: true, follow: false },
+};
 import {
     CircleAlert,
     Truck,
@@ -11,6 +21,8 @@ import {
     type CustomerOrder,
     type CustomerOrderTrackingStep,
 } from "@/lib/customer/orders";
+
+export const dynamic = 'force-dynamic';
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"] });

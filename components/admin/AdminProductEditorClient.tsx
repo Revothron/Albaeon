@@ -24,6 +24,7 @@ type ProductVariant = {
     stock_status: string
     gelato_template_variant_id?: string | null
     banian_sku?: string | null
+    gelato_price_usd?: number | null
 }
 
 type ProductImage = {
@@ -46,6 +47,7 @@ type ProductData = {
     status: string
     is_new_arrival: boolean
     is_best_seller: boolean
+    is_limited_drop: boolean
     wash_care: string | null
     size_chart: string | null
     tags: string[] | null
@@ -137,6 +139,7 @@ export default function AdminProductEditorClient({
     )
     const [isNewArrival, setIsNewArrival] = useState(product?.is_new_arrival ?? false)
     const [isBestSeller, setIsBestSeller] = useState(product?.is_best_seller ?? false)
+    const [isLimitedDrop, setIsLimitedDrop] = useState(product?.is_limited_drop ?? false)
     const [washCare, setWashCare] = useState(product?.wash_care ?? '')
     const [sizeChart, setSizeChart] = useState(product?.size_chart ?? '')
     const [tags, setTags] = useState((product?.tags ?? []).join(', '))
@@ -306,6 +309,7 @@ export default function AdminProductEditorClient({
                     status: saveStatus,
                     is_new_arrival: mode === 'create' ? true : isNewArrival,
                     is_best_seller: isBestSeller,
+                    is_limited_drop: isLimitedDrop,
                     wash_care: washCare.trim(),
                     size_chart: sizeChart.trim(),
                     highlights: highlights.filter((h) => h.key.trim()), // ← must be here
@@ -808,6 +812,7 @@ export default function AdminProductEditorClient({
                         {/* Toggles */}
                         {[
                             { label: 'Best Seller', sub: 'Shows in best sellers section', active: isBestSeller, toggle: () => setIsBestSeller((v) => !v) },
+                            { label: 'Limited Drop', sub: 'Shows in limited drops section', active: isLimitedDrop, toggle: () => setIsLimitedDrop((v) => !v) },
                         ].map((flag) => (
                             <div key={flag.label} className="flex items-center justify-between border-t border-gold/8 py-3">
                                 <div>

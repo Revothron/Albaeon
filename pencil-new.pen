@@ -1,0 +1,64 @@
+{
+  "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "YrMlb",
+      "x": 820,
+      "y": 0,
+      "name": "ogFrame",
+      "width": 1200,
+      "height": 630,
+      "fill": "#241A33",
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        0,
+        0,
+        40,
+        0
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "H0zLa",
+          "name": "logoText",
+          "fill": "#E6C979",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "ALBAEON",
+          "textAlign": "center",
+          "fontFamily": "Cinzel",
+          "fontSize": 80,
+          "fontWeight": "700",
+          "letterSpacing": 14
+        },
+        {
+          "type": "rectangle",
+          "id": "F1Smg",
+          "name": "divider",
+          "opacity": 0.5,
+          "fill": "#E6C979",
+          "width": 80,
+          "height": 1
+        },
+        {
+          "type": "text",
+          "id": "cFvkX",
+          "name": "tagline",
+          "opacity": 0.85,
+          "fill": "#E6C979",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Mythology Meets Modern Streetwear",
+          "textAlign": "center",
+          "fontFamily": "Cormorant Garamond",
+          "fontSize": 22,
+          "letterSpacing": 5
+        }
+      ]
+    }
+  ]
+}

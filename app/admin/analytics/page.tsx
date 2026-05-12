@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { AdminPageHeading } from '@/components/admin/AdminUi'
 import { adminCinzel, adminCormorant, adminRaleway } from '@/components/admin/adminFonts'
@@ -100,11 +102,12 @@ export default function AnalyticsOverviewPage() {
   const trendSign = trend >= 0 ? '↑' : '↓'
   const trendClass = trend >= 0 ? 'text-[var(--status-success)]' : 'text-[var(--status-error)]'
 
+  const safeVal = (v: number | null | undefined) => v ?? 0
   const metricCards = data ? [
-    { label: 'TOTAL SALES', value: `₹${data.totalSales.toLocaleString('en-IN')}`, trend: `${trendSign} ${Math.abs(trend)}% vs last period`, trendClassName: trendClass, valueClassName: 'text-gold' },
-    { label: 'NET SALES', value: `₹${data.netSales.toLocaleString('en-IN')}`, trend: `${trendSign} ${Math.abs(trend)}%`, trendClassName: trendClass, valueClassName: 'text-text-primary' },
-    { label: 'ORDERS', value: data.totalOrders.toLocaleString('en-IN'), trend: `${data.totalOrders} total`, trendClassName: 'text-text-muted', valueClassName: 'text-text-primary' },
-    { label: 'PRODUCTS SOLD', value: `${data.productsSold.toLocaleString('en-IN')} items`, trend: 'units ordered', trendClassName: 'text-text-muted', valueClassName: 'text-text-primary' },
+    { label: 'TOTAL SALES', value: `₹${safeVal(data.totalSales).toLocaleString('en-IN')}`, trend: `${trendSign} ${Math.abs(trend)}% vs last period`, trendClassName: trendClass, valueClassName: 'text-gold' },
+    { label: 'NET SALES', value: `₹${safeVal(data.netSales).toLocaleString('en-IN')}`, trend: `${trendSign} ${Math.abs(trend)}%`, trendClassName: trendClass, valueClassName: 'text-text-primary' },
+    { label: 'ORDERS', value: safeVal(data.totalOrders).toLocaleString('en-IN'), trend: `${safeVal(data.totalOrders)} total`, trendClassName: 'text-text-muted', valueClassName: 'text-text-primary' },
+    { label: 'PRODUCTS SOLD', value: `${safeVal(data.productsSold).toLocaleString('en-IN')} items`, trend: 'units ordered', trendClassName: 'text-text-muted', valueClassName: 'text-text-primary' },
   ] : []
 
   // Top chart index for tooltip
@@ -167,8 +170,8 @@ export default function AnalyticsOverviewPage() {
 
         <div className={`mt-4 flex flex-wrap items-center gap-3 text-[12px] ${adminRaleway.className}`}>
           {[
-            { key: 'netSales', label: 'Net Sales', color: 'bg-gold', active: activeSeries.netSales },
-            { key: 'orders', label: 'Orders', color: 'bg-[var(--status-info)]', active: activeSeries.orders },
+            { key: 'netSales', label: 'Net Sales', color: 'bg-[#E6C979]', active: activeSeries.netSales },
+            { key: 'orders', label: 'Orders', color: 'bg-[#4A90C4]', active: activeSeries.orders },
           ].map((s) => (
             <button
               key={s.key}
@@ -209,15 +212,15 @@ export default function AnalyticsOverviewPage() {
                         <>
                           <polyline fill="none" stroke="#E6C979" strokeWidth="2" points={salesPoints} />
                           {netSalesValues.map((v, i) => (
-                            <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxSales) * chartHeight} r="3" fill="var(--gold)" />
+                            <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxSales) * chartHeight} r="3" fill="#E6C979" />
                           ))}
                         </>
                       )}
                       {activeSeries.orders && (
                         <>
-                          <polyline fill="none" stroke="var(--status-info)" strokeWidth="1.5" points={ordersPoints} />
+                          <polyline fill="none" stroke="#4A90C4" strokeWidth="1.5" points={ordersPoints} />
                           {orderValues.map((v, i) => (
-                            <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxOrders) * chartHeight} r="2.5" fill="var(--status-info)" />
+                            <circle key={i} cx={i * chartStep} cy={chartHeight - (v / maxOrders) * chartHeight} r="2.5" fill="#4A90C4" />
                           ))}
                         </>
                       )}
@@ -228,14 +231,14 @@ export default function AnalyticsOverviewPage() {
                         const groupStart = i * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2
                         const bh = (v / maxSales) * chartHeight
                         return activeSeries.netSales ? (
-                          <rect key={i} x={groupStart} y={chartHeight - bh} width={barWidth} height={bh} fill="var(--gold)" opacity={0.85} />
+                          <rect key={i} x={groupStart} y={chartHeight - bh} width={barWidth} height={bh} fill="#E6C979" opacity={0.85} />
                         ) : null
                       })}
                       {orderValues.map((v, i) => {
                         const groupStart = i * barSlot + (barSlot - (barWidth * 2 + barGap)) / 2
                         const bh = (v / maxOrders) * chartHeight
                         return activeSeries.orders ? (
-                          <rect key={i} x={groupStart + barWidth + barGap} y={chartHeight - bh} width={barWidth} height={bh} fill="var(--status-info)" opacity={0.75} />
+                          <rect key={i} x={groupStart + barWidth + barGap} y={chartHeight - bh} width={barWidth} height={bh} fill="#4A90C4" opacity={0.75} />
                         ) : null
                       })}
                     </>
@@ -254,7 +257,7 @@ export default function AnalyticsOverviewPage() {
                     </p>
                   )}
                   {activeSeries.orders && (
-                    <p className={`${adminCinzel.className} mt-1 text-[12px] text-[var(--status-info)]`}>
+                    <p className={`${adminCinzel.className} mt-1 text-[12px] text-[#4A90C4]`}>
                       Orders: {orderValues[peakIndex]}
                     </p>
                   )}

@@ -55,6 +55,18 @@
   /* ── Semantic Aliases ── */
   --background: var(--albaeon-bg-primary);
   --foreground: var(--albaeon-text-primary);
+
+  /* ── Canonical aliases — required by components ─────────── */
+  --bg-main: var(--albaeon-bg-primary, #241A33);
+  --bg-secondary: var(--albaeon-bg-secondary, #1A1426);
+  --surface-card: var(--albaeon-surface, #2C2040);
+  --gold: var(--albaeon-gold, #E6C979);
+  --gold-hover: var(--albaeon-gold-hover, #D4B25F);
+  --nav-bg: var(--albaeon-nav, #130F18);
+  --footer-bg: var(--albaeon-footer, #0F0C14);
+  --text-primary: var(--albaeon-text-primary, #E8E2D6);
+  --text-muted: var(--albaeon-text-muted, #B7AFC3);
+  --btn-secondary-hover: #3A2952;
 }
 
 /* ── Tailwind v4 Theme Tokens ──────────────────────────────── */

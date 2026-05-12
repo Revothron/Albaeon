@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { AdminAnalyticsPage } from '@/components/admin/AdminAnalytics'
 import { analyticsRanges } from '@/lib/admin/analytics'
@@ -22,8 +24,8 @@ export default function CouponsAnalyticsPage() {
           chartTitle: 'COUPON USAGE',
           chartLabels: d.chartLabels,
           series: [
-            { label: 'Uses', color: 'var(--gold)', active: true, values: d.usesValues, format: 'number' },
-            { label: 'Discount Given', color: 'var(--status-error)', active: true, values: d.discountValues, format: 'currency' },
+            { label: 'Uses', color: '#E6C979', active: true, values: d.usesValues, format: 'number' },
+            { label: 'Discount Given', color: '#C0392B', active: true, values: d.discountValues, format: 'currency' },
           ],
           table: {
             title: 'COUPON BREAKDOWN',
@@ -41,5 +43,5 @@ export default function CouponsAnalyticsPage() {
   }, [range])
 
   if (!data) return <div className="animate-pulse h-[400px] border border-gold/10 bg-[#1E1A2E]" />
-  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} />
+  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} onRangeChange={setRange} />
 }

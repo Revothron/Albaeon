@@ -3,24 +3,45 @@ import crypto from 'crypto'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendOrderConfirmation } from '@/lib/emails'
 
-function generateOrderNumber(): string {
-  const num = Math.floor(10000 + Math.random() * 90000)
-  return `ALB-${num}`
-}
-
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
-    const supabase = createAdminClient()
+    // ── Razorpay webhook signature verification ──────────────
+    const rawBody = await req.text()
+    const razorpaySignature = req.headers.get('x-razorpay-signature')
 
-    // ── Two modes ─────────────────────────────────────────
-    // Mode 1: Called from frontend after payment (client-side verification)
-    // Mode 2: Called from Razorpay webhook server (server-side verification)
+    if (razorpaySignature && process.env.RAZORPAY_WEBHOOK_SECRET) {
+      const expectedSignature = crypto
+        .createHmac('sha256', process.env.RAZORPAY_WEBHOOK_SECRET)
+        .update(rawBody)
+        .digest('hex')
+
+      try {
+        const signaturesMatch = crypto.timingSafeEqual(
+          Buffer.from(razorpaySignature),
+          Buffer.from(expectedSignature)
+        )
+        if (!signaturesMatch) {
+          console.warn('[Razorpay Webhook] Invalid signature — possible forgery attempt')
+          return NextResponse.json(
+            { data: null, error: 'Invalid signature.' },
+            { status: 400 }
+          )
+        }
+      } catch {
+        console.warn('[Razorpay Webhook] Signature comparison error')
+        return NextResponse.json(
+          { data: null, error: 'Invalid signature.' },
+          { status: 400 }
+        )
+      }
+    }
+
+    const body = JSON.parse(rawBody)
+    const supabase = createAdminClient()
 
     const {
       razorpay_order_id,
       razorpay_payment_id,
-      razorpay_signature,
       items,
       shipping_address,
       subtotal,
@@ -29,21 +50,6 @@ export async function POST(req: Request) {
       total,
       user_id,
     } = body
-
-    // ── Verify signature ──────────────────────────────────
-    if (razorpay_order_id && razorpay_payment_id && razorpay_signature) {
-      const expectedSignature = crypto
-        .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
-        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
-        .digest('hex')
-
-      if (expectedSignature !== razorpay_signature) {
-        return NextResponse.json(
-          { data: null, error: 'Invalid payment signature' },
-          { status: 400 }
-        )
-      }
-    }
 
     // ── Check if order already processed (idempotency) ────
     const { data: existing } = await supabase
@@ -63,26 +69,7 @@ export async function POST(req: Request) {
     }
 
     // ── Get authenticated user ────────────────────────────
-    let userId = user_id
-    if (!userId) {
-      // Try to get from session if called from frontend
-      const { data: { users } } = await supabase.auth.admin.listUsers()
-      // Fallback — userId must be passed from frontend
-    }
-
-    // ── Generate unique order number ──────────────────────
-    let orderNumber = generateOrderNumber()
-    let attempts = 0
-    while (attempts < 5) {
-      const { data: existing } = await supabase
-        .from('orders')
-        .select('id')
-        .eq('order_number', orderNumber)
-        .single()
-      if (!existing) break
-      orderNumber = generateOrderNumber()
-      attempts++
-    }
+    const userId = user_id ?? null
 
     const finalTotal = total ?? (subtotal - discount_amount)
 
@@ -90,7 +77,6 @@ export async function POST(req: Request) {
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .insert({
-        order_number: orderNumber,
         user_id: userId ?? null,
         status: 'processing',
         payment_status: 'paid',
@@ -110,9 +96,9 @@ export async function POST(req: Request) {
       .single()
 
     if (orderError || !order) {
-      console.error('Order creation error:', orderError)
+      console.error('Order creation error:', JSON.stringify(orderError, null, 2))
       return NextResponse.json(
-        { data: null, error: 'Failed to create order' },
+        { data: null, error: orderError?.message ?? 'Failed to create order', details: orderError },
         { status: 500 }
       )
     }
@@ -218,7 +204,7 @@ export async function POST(req: Request) {
         await sendOrderConfirmation({
           to: profile.email,
           customerName,
-          orderNumber,
+          orderNumber: order.order_number,
           orderDate: new Date().toLocaleDateString('en-IN', {
             day: 'numeric', month: 'long', year: 'numeric',
           }),

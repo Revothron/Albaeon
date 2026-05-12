@@ -1,3 +1,16 @@
+import type { Metadata } from 'next'
+
+export const revalidate = false;
+
+export const metadata: Metadata = {
+  title: 'Return & Refund Policy',
+  description: 'Albaeon return and refund policy — eligibility, process, and timelines for returns and exchanges.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/return-policy`,
+  },
+  robots: { index: true, follow: false },
+};
+
 export default function ReturnPolicyPage() {
     return (
         <div className="bg-primary min-h-screen animate-fadeInUp">

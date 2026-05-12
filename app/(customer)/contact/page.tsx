@@ -1,7 +1,23 @@
+export const revalidate = 3600;
+
 'use client'
 
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Cinzel } from 'next/font/google'
+
+export const metadata: Metadata = {
+  title: 'Contact',
+  description: 'Get in touch with Albaeon. We respond to all queries within 24-48 hours.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/contact`,
+  },
+  openGraph: {
+    title: 'Contact Albaeon',
+    description: 'Get in touch with Albaeon. We respond to all queries within 24-48 hours.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/contact`,
+  },
+};
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 

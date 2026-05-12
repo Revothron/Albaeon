@@ -45,6 +45,7 @@ export type Product = {
   highlights: ProductHighlight[]
   is_new_arrival: boolean
   is_best_seller: boolean
+  is_limited_drop: boolean
 }
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -66,6 +67,7 @@ type ProductRow = {
   highlights: { key: string; value: string }[] | null
   is_new_arrival: boolean
   is_best_seller: boolean
+  is_limited_drop: boolean
   categories: { slug: string; name: string } | null
   product_images: {
     url: string
@@ -159,6 +161,7 @@ function mapProduct(row: ProductRow): Product {
 
     is_new_arrival: row.is_new_arrival,
     is_best_seller: row.is_best_seller,
+    is_limited_drop: row.is_limited_drop,
   }
 }
 
@@ -177,6 +180,8 @@ const PRODUCT_SELECT = `
 // ── getProducts ───────────────────────────────────────────────────────────────
 export async function getProducts({
   categorySlug,
+  collectionRule,
+  collectionId,
   sort = 'newest',
   limit = 24,
   page = 1,
@@ -185,6 +190,8 @@ export async function getProducts({
   maxPrice,
 }: {
   categorySlug?: string
+  collectionRule?: string
+  collectionId?: string
   sort?: 'newest' | 'price_asc' | 'price_desc' | 'name_asc' | 'best_seller'
   limit?: number
   page?: number
@@ -200,6 +207,20 @@ export async function getProducts({
     .select(PRODUCT_SELECT, { count: 'exact' })
     .eq('status', 'active')
 
+  if (collectionId) {
+    const { data: cp } = await supabase
+      .from('collection_products')
+      .select('product_id')
+      .eq('collection_id', collectionId)
+
+    const productIds = (cp ?? []).map((r) => r.product_id)
+    if (productIds.length > 0) {
+      query = query.in('id', productIds)
+    } else {
+      return { products: [], total: 0 }
+    }
+  }
+
   if (categorySlug) {
     const { data: cat } = await supabase
       .from('categories')
@@ -207,6 +228,14 @@ export async function getProducts({
       .eq('slug', categorySlug)
       .single()
     if (cat) query = query.eq('category_id', cat.id)
+  }
+
+  if (collectionRule === 'new_arrivals') {
+    query = query.eq('is_new_arrival', true)
+  } else if (collectionRule === 'best_sellers') {
+    query = query.eq('is_best_seller', true)
+  } else if (collectionRule === 'limited_drops') {
+    query = query.eq('is_limited_drop', true)
   }
 
   if (minPrice !== undefined) query = query.gte('price_inr', minPrice)
@@ -254,7 +283,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
       id, name, slug,
       price_inr, price_usd,
       description, wash_care, size_chart, highlights,
-      is_new_arrival, is_best_seller,
+  is_new_arrival, is_best_seller, is_limited_drop,
       meta_title, meta_description,
       categories (name, slug),
       product_images (id, url, alt_text, is_primary, sort_order),
@@ -315,6 +344,33 @@ export async function getCategoryBySlug(slug: string) {
   const { data } = await supabase
     .from('categories')
     .select('id, name, slug, image_url')
+    .eq('slug', slug)
+    .eq('is_active', true)
+    .single()
+
+  return data ?? null
+}
+
+// ── getCollections ───────────────────────────────────────────────────────────
+export async function getCollections() {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('collections')
+    .select('id, name, slug, filter_rule')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true })
+
+  return data ?? []
+}
+
+// ── getCollectionBySlug ──────────────────────────────────────────────────────
+export async function getCollectionBySlug(slug: string) {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('collections')
+    .select('id, name, slug, filter_rule')
     .eq('slug', slug)
     .eq('is_active', true)
     .single()

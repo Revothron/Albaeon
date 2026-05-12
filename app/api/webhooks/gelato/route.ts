@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import crypto from 'crypto'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendOrderShipped } from '@/lib/emails'
 
@@ -22,7 +23,34 @@ function mapGelatoStatus(status: string): string | null {
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json()
+    // ── Gelato webhook signature verification ────────────────
+    const rawBody = await req.text()
+    const gelatoSignature = req.headers.get('x-gelato-signature')
+
+    if (gelatoSignature && process.env.GELATO_WEBHOOK_SECRET) {
+      const expectedSignature = crypto
+        .createHmac('sha256', process.env.GELATO_WEBHOOK_SECRET)
+        .update(rawBody)
+        .digest('hex')
+
+      const signaturesMatch = (() => {
+        try {
+          return crypto.timingSafeEqual(
+            Buffer.from(gelatoSignature),
+            Buffer.from(expectedSignature)
+          )
+        } catch {
+          return false
+        }
+      })()
+
+      if (!signaturesMatch) {
+        console.warn('[Gelato Webhook] Invalid signature')
+        return NextResponse.json({ error: 'Invalid signature.' }, { status: 400 })
+      }
+    }
+
+    const body = JSON.parse(rawBody)
     const supabase = createAdminClient()
 
     const { event, orderReferenceId, orderId, fulfillmentStatus } = body

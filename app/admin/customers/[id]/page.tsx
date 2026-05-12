@@ -6,8 +6,7 @@ import {
     getAdminCustomerByIdFromDB,
     type AdminCustomerOrderStatus,
 } from '@/lib/admin/customers'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { requireAdminPage } from '@/lib/auth/require-admin-page'
 import CustomerActions from '@/components/admin/CustomerActions'
 
 function getInitials(name: string) {
@@ -47,14 +46,14 @@ function StatRow({ label, value, valueClassName = 'text-text-primary', withBorde
     )
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function CustomerDetailPage({
     params,
 }: {
     params: Promise<{ id: string }>
 }) {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) redirect('/admin/login')
+    await requireAdminPage()
 
     const { id } = await params
 

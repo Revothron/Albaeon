@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ChevronDown, Pencil } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import {
   AdminPagination,
@@ -75,8 +75,20 @@ export default function AdminProductsClient({
   const [category, setCategory] = useState(searchParams.get('category') ?? 'All Categories')
   const [status, setStatus] = useState(searchParams.get('status') ?? 'All Status')
   const [sort, setSort] = useState(searchParams.get('sort') ?? 'Newest First')
+  const [allCategories, setAllCategories] = useState<string[]>(['All Categories', 'T-Shirts', 'Hoodies', 'Shirts', 'Pants', 'Jackets', 'Sets'])
 
   const totalPages = Math.ceil(total / 20)
+
+  useEffect(() => {
+    fetch('/api/admin/categories')
+      .then((res) => res.ok ? res.json() : [])
+      .then((cats) => {
+        if (Array.isArray(cats) && cats.length > 0) {
+          setAllCategories(['All Categories', ...cats.map((c: { name: string }) => c.name)])
+        }
+      })
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
@@ -137,7 +149,7 @@ export default function AdminProductsClient({
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
             />
           </div>
-          <FilterDropdown id="categories" value={category} options={['All Categories', 'T-Shirts', 'Hoodies', 'Shirts', 'Pants', 'Jackets', 'Sets']} openId={openDropdown} onToggle={(id) => setOpenDropdown((c) => c === id ? null : id)} onSelect={handleSelect} className="w-full sm:w-[160px]" />
+          <FilterDropdown id="categories" value={category} options={allCategories} openId={openDropdown} onToggle={(id) => setOpenDropdown((c) => c === id ? null : id)} onSelect={handleSelect} className="w-full sm:w-[160px]" />
           <FilterDropdown id="status" value={status} options={['All Status', 'Active', 'Draft']} openId={openDropdown} onToggle={(id) => setOpenDropdown((c) => c === id ? null : id)} onSelect={handleSelect} className="w-full sm:w-[140px]" />
           <FilterDropdown id="sort" value={sort} options={['Newest First', 'A-z', 'z-A', 'price low to high', 'price high to low']} openId={openDropdown} onToggle={(id) => setOpenDropdown((c) => c === id ? null : id)} onSelect={handleSelect} className="w-full sm:w-[160px]" />
         </form>

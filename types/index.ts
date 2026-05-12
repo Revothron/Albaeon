@@ -17,13 +17,13 @@ export type CouponType = 'percentage' | 'flat';
 
 export type TicketStatus = 'unread' | 'pending' | 'resolved';
 
-export type StockStatus = 'in_stock' | 'out_of_stock' | 'discontinued';
+export type StockStatus = 'in_stock' | 'out_of_stock' | 'pre_order' | 'discontinued';
 
 export type DesignType = 'original' | 'licensed';
 
 export type AddressType = 'shipping' | 'billing';
 
-export type PaymentGateway = 'razorpay' | 'stripe';
+export type PaymentGateway = 'razorpay' | 'stripe' | 'cod';
 
 // Profile
 export interface Profile {
@@ -54,6 +54,7 @@ export interface Address {
   phone: string | null;
   is_default: boolean;
   created_at: string;
+  updated_at: string;
 }
 
 // Category
@@ -82,6 +83,8 @@ export interface Product {
   is_new_arrival: boolean;
   is_best_seller: boolean;
   design_type: DesignType;
+  highlights: { key: string; value: string }[] | null;
+  gelato_template_id: string | null;
   meta_title: string | null;
   meta_description: string | null;
   wash_care: string | null;
@@ -105,6 +108,12 @@ export interface ProductVariant {
   sku: string;
   stock_status: StockStatus;
   sort_order: number;
+  gelato_product_uid: string | null;
+  gelato_print_file_front: string | null;
+  gelato_print_file_back: string | null;
+  gelato_template_variant_id: string | null;
+  banian_sku: string | null;
+  gelato_price_usd: number | null;
   created_at: string;
 }
 
@@ -185,6 +194,57 @@ export interface Coupon {
   used_count: number;
   is_active: boolean;
   expires_at: string | null;
+  created_at: string;
+}
+
+// Wishlist
+export interface Wishlist {
+  id: string;
+  user_id: string;
+  product_id: string;
+  created_at: string;
+}
+
+// Support Ticket
+export interface SupportTicket {
+  id: string;
+  user_id: string | null;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: TicketStatus;
+  priority: string;
+  linked_order_id: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Support Reply
+export interface SupportReply {
+  id: string;
+  ticket_id: string;
+  admin_id: string;
+  message: string;
+  sent_at: string;
+}
+
+// Collection Product (junction table)
+export interface CollectionProduct {
+  collection_id: string;
+  product_id: string;
+  created_at: string;
+}
+
+// Webhook Log
+export interface WebhookLog {
+  id: string;
+  source: string;
+  event_type: string;
+  payload: Record<string, unknown>;
+  processed: boolean;
+  status: string | null;
+  error: string | null;
   created_at: string;
 }
 

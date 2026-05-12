@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { getGelatoTemplateVariants } from '@/lib/gelato'
+import { requireAdmin } from '@/lib/auth/require-admin'
 
 export async function GET(req: Request) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const authError = await requireAdmin()
+  if (authError) return authError
 
   const { searchParams } = new URL(req.url)
   const templateId = searchParams.get('templateId')

@@ -1,9 +1,9 @@
-'use client'
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-export type CheckoutAddress = {
+export type ShippingAddress = {
   full_name: string
+  email: string
   phone: string
   line1: string
   line2: string
@@ -11,60 +11,51 @@ export type CheckoutAddress = {
   state: string
   postal_code: string
   country: string
-  tag: 'HOME' | 'WORK' | 'OTHER'
-  is_default: boolean
-}
-
-export type CheckoutCoupon = {
-  id: string
-  code: string
-  type: 'percentage' | 'flat'
-  value: number
-  discount_amount: number
 }
 
 type CheckoutState = {
-  selectedAddressId: string | null
-  shippingAddress: CheckoutAddress | null
-  coupon: CheckoutCoupon | null
-  razorpayOrderId: string | null
-  paymentId: string | null
-  orderId: string | null
+  address: ShippingAddress | null
+  couponCode: string
+  couponDiscount: number
+  couponId: string | null
   orderNumber: string | null
-  setSelectedAddress: (id: string, address: CheckoutAddress) => void
-  setCoupon: (coupon: CheckoutCoupon | null) => void
-  setRazorpayOrderId: (id: string) => void
-  setPaymentComplete: (paymentId: string, orderId: string, orderNumber: string) => void
-  reset: () => void
+  paymentId: string | null
+  setAddress: (address: ShippingAddress) => void
+  setSelectedAddress: (id: string, address: ShippingAddress) => void
+  setCoupon: (code: string, discount: number, id: string | null) => void
+  orderId: string | null
+  setOrderResult: (paymentId: string, orderId: string, orderNumber: string) => void
+  clearCoupon: () => void
+  clearCheckout: () => void
 }
 
 export const useCheckoutStore = create<CheckoutState>()(
   persist(
     (set) => ({
-      selectedAddressId: null,
-      shippingAddress: null,
-      coupon: null,
-      razorpayOrderId: null,
+      address: null,
+      couponCode: '',
+      couponDiscount: 0,
+      couponId: null,
+      orderNumber: null,
       paymentId: null,
       orderId: null,
-      orderNumber: null,
-      setSelectedAddress: (id, address) =>
-        set({ selectedAddressId: id, shippingAddress: address }),
-      setCoupon: (coupon) =>
-        set({ coupon }),
-      setRazorpayOrderId: (id) =>
-        set({ razorpayOrderId: id }),
-      setPaymentComplete: (paymentId, orderId, orderNumber) =>
+      setAddress: (address) => set({ address }),
+      setSelectedAddress: (id, address) => set({ address }),
+      setCoupon: (code, discount, id) =>
+        set({ couponCode: code, couponDiscount: discount, couponId: id }),
+      setOrderResult: (paymentId, orderId, orderNumber) =>
         set({ paymentId, orderId, orderNumber }),
-      reset: () =>
+      clearCoupon: () =>
+        set({ couponCode: '', couponDiscount: 0, couponId: null }),
+      clearCheckout: () =>
         set({
-          selectedAddressId: null,
-          shippingAddress: null,
-          coupon: null,
-          razorpayOrderId: null,
+          address: null,
+          couponCode: '',
+          couponDiscount: 0,
+          couponId: null,
+          orderNumber: null,
           paymentId: null,
           orderId: null,
-          orderNumber: null,
         }),
     }),
     { name: 'albaeon-checkout' }

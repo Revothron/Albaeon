@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { AdminAnalyticsPage } from '@/components/admin/AdminAnalytics'
 import { analyticsRanges } from '@/lib/admin/analytics'
@@ -22,7 +24,7 @@ export default function CategoryAnalyticsPage() {
           chartTitle: 'CATEGORY PERFORMANCE',
           chartLabels: d.chartLabels,
           series: [
-            { label: 'Units Sold', color: 'var(--gold)', active: true, values: d.qtyValues, format: 'number' },
+            { label: 'Units Sold', color: '#E6C979', active: true, values: d.qtyValues, format: 'number' },
           ],
           table: {
             title: 'CATEGORY BREAKDOWN',
@@ -41,5 +43,5 @@ export default function CategoryAnalyticsPage() {
   }, [range])
 
   if (!data) return <div className="animate-pulse h-[400px] border border-gold/10 bg-[#1E1A2E]" />
-  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} />
+  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} onRangeChange={setRange} />
 }

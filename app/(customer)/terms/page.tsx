@@ -1,3 +1,16 @@
+import type { Metadata } from 'next'
+
+export const revalidate = false;
+
+export const metadata: Metadata = {
+  title: 'Terms & Conditions',
+  description: 'Read the Albaeon terms and conditions governing use of our website and purchase of our products.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/terms`,
+  },
+  robots: { index: true, follow: false },
+};
+
 export default function TermsPage() {
     return (
         <div className="bg-primary min-h-screen animate-fadeInUp">

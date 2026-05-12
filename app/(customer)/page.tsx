@@ -1,8 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Cinzel } from "next/font/google";
+import type { Metadata } from "next";
 import WishlistButton from "@/components/customer/WishlistButton";
+import PriceDisplay from "@/components/customer/PriceDisplay";
 import { createClient } from "@/lib/supabase/server";
+
+export const revalidate = 300;
+
+export const metadata: Metadata = {
+  title: 'Home',
+  description: 'Discover Albaeon — premium mythology-inspired streetwear. Shop our latest drops, new arrivals, and bestsellers. Worldwide shipping.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/`,
+  },
+  openGraph: {
+    title: 'Albaeon — Mythology Meets Modern Streetwear',
+    description: 'Discover premium mythology-inspired streetwear. Shop new arrivals and bestsellers.',
+    url: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/`,
+    images: [{ url: '/og-default.jpg', width: 1200, height: 630, alt: 'Albaeon Homepage' }],
+  },
+};
 
 const cinzel = Cinzel({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
@@ -55,12 +73,7 @@ function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
         <p className="font-sans text-[12px] font-semibold text-gold sm:text-[15px] lg:text-[18px]">
-          ₹{product.price_inr.toLocaleString("en-IN")}
-          {product.price_usd && (
-            <span className="ml-2 text-text-muted text-[11px]">
-              (${product.price_usd})
-            </span>
-          )}
+          <PriceDisplay priceINR={product.price_inr} priceUSD={product.price_usd} />
         </p>
       </div>
     </Link>
@@ -114,8 +127,7 @@ export default async function HomePage() {
     .from("categories")
     .select("id, name, slug, image_url")
     .eq("is_active", true)
-    .order("sort_order", { ascending: true })
-    .limit(3);
+    .order("sort_order", { ascending: true });
 
   return (
     <main className="bg-primary">

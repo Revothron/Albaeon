@@ -17,7 +17,7 @@ export type AdminCoupon = {
 export async function getAdminCoupons({
   search = '',
   page = 1,
-  limit = 20,
+  limit = 25,
 }: {
   search?: string
   page?: number
@@ -26,9 +26,9 @@ export async function getAdminCoupons({
   const supabase = createAdminClient()
   const offset = (page - 1) * limit
 
-  let query = supabase
-    .from('coupons')
-    .select('*', { count: 'exact' })
+    let query = supabase
+      .from('coupons')
+      .select('id, code, type, value, min_order_amount, usage_limit, per_user_limit, used_count, is_active, expires_at, created_at', { count: 'exact' })
 
   if (search) {
     query = query.ilike('code', `%${search}%`)

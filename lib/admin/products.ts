@@ -340,7 +340,7 @@ export type AdminProductListItem = {
 
 export async function getAdminProducts({
   page = 1,
-  limit = 20,
+  limit = 24,
   search = '',
   category = '',
   status = '',
@@ -491,6 +491,9 @@ export async function saveAdminProduct({
     size: string
     sku: string
     stock_status: string
+    gelato_template_variant_id?: string | null
+    banian_sku?: string | null
+    gelato_price_usd?: number | null
   }[]
   images: {
     id?: string
@@ -553,6 +556,21 @@ export async function saveAdminProduct({
 
   // Upsert images
   if (images.length > 0) {
+    // Delete old Cloudinary images before replacing
+    const { data: oldImages } = await supabase
+      .from('product_images')
+      .select('cloudinary_id')
+      .eq('product_id', productId!)
+
+    if (oldImages && oldImages.length > 0) {
+      const { deleteImage } = await import('@/lib/cloudinary')
+      await Promise.allSettled(
+        oldImages
+          .filter((img) => img.cloudinary_id)
+          .map((img) => deleteImage(img.cloudinary_id))
+      )
+    }
+
     await supabase
       .from('product_images')
       .delete()

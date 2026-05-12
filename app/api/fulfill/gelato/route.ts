@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createGelatoOrder } from '@/lib/gelato'
+
+const FulfillGelatoSchema = z.object({
+  orderId: z.string().uuid(),
+})
 
 export async function POST(req: Request) {
   try {
@@ -9,8 +14,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { orderId } = await req.json()
-    if (!orderId) return NextResponse.json({ error: 'orderId required' }, { status: 400 })
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON.' }, { status: 400 })
+    }
+
+    const parsed = FulfillGelatoSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Validation failed.', issues: parsed.error.issues },
+        { status: 422 }
+      )
+    }
+
+    const { orderId } = parsed.data
 
     const supabase = createAdminClient()
 

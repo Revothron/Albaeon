@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { submitBanianOrder } from '@/lib/banian'
+
+const FulfillBanianSchema = z.object({
+  orderId: z.string().uuid(),
+})
 
 export async function POST(req: Request) {
   try {
@@ -9,7 +14,22 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { orderId } = await req.json()
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON.' }, { status: 400 })
+    }
+
+    const parsed = FulfillBanianSchema.safeParse(body)
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Validation failed.', issues: parsed.error.issues },
+        { status: 422 }
+      )
+    }
+
+    const { orderId } = parsed.data
     const supabase = createAdminClient()
 
     const { data: order } = await supabase

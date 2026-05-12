@@ -21,7 +21,7 @@ export type AdminCustomerListItem = {
 
 export async function getAdminCustomers({
   page = 1,
-  limit = 20,
+  limit = 25,
   search = '',
   country = '',
   since = '',
@@ -53,85 +53,96 @@ export async function getAdminCustomers({
     }
   }
 
-  let query = supabase
-    .from('profiles')
-    .select('id, email, first_name, last_name, display_name, created_at', {
-      count: 'exact',
-    })
-    .eq('role', 'customer')
+   let query = supabase
+     .from('profiles')
+     .select('id, email, first_name, last_name, display_name, role, is_active, created_at, orders(count)', {
+       count: 'exact',
+     })
+     .eq('role', 'customer')
 
-  if (search) {
-    query = query.or(
-      `email.ilike.%${search}%,first_name.ilike.%${search}%,last_name.ilike.%${search}%,display_name.ilike.%${search}%`
-    )
-  }
+   if (search) {
+     query = query.or(
+       `email.ilike.%${search}%,first_name.ilike.%${search}%,last_name.ilike.%${search}%,display_name.ilike.%${search}%`
+     )
+   }
 
-  if (sinceDate) {
-    query = query.gte('created_at', sinceDate)
-  }
+   if (sinceDate) {
+     query = query.gte('created_at', sinceDate)
+   }
 
-  const { data: profiles, count } = await query
-    .order('created_at', { ascending: false })
-    .range(offset, offset + limit - 1)
+   const { data: profiles, count } = await query
+     .order('created_at', { ascending: false })
+     .range(offset, offset + limit - 1)
 
-  if (!profiles) return { customers: [], total: 0 }
+   if (!profiles) return { customers: [], total: 0 }
 
-  // Fetch order stats per customer
-  const customers: AdminCustomerListItem[] = await Promise.all(
-    profiles.map(async (profile) => {
-      const { data: orders } = await supabase
-        .from('orders')
-        .select('total_amount, created_at, shipping_address_snapshot')
-        .eq('user_id', profile.id)
-        .eq('payment_status', 'paid')
-        .order('created_at', { ascending: false })
+   const profileIds = profiles.map((p) => p.id)
 
-      const orderCount = orders?.length ?? 0
-      const totalSpent = (orders ?? []).reduce(
-        (sum, o) => sum + (o.total_amount ?? 0), 0
-      )
-      const aov = orderCount > 0 ? totalSpent / orderCount : 0
-      const lastOrder = orders?.[0]
-        ? new Date(orders[0].created_at).toLocaleDateString('en-IN', {
-            day: 'numeric', month: 'short', year: 'numeric',
-          })
-        : '—'
+   // Single batch query for all customers' order financial data (no N+1)
+   const { data: allOrders } = await supabase
+     .from('orders')
+     .select('user_id, total_amount, created_at, shipping_address_snapshot')
+     .eq('payment_status', 'paid')
+     .in('user_id', profileIds)
+     .order('created_at', { ascending: false })
 
-      const snapshot = orders?.[0]?.shipping_address_snapshot as {
-        city?: string
-        state?: string
-        postal_code?: string
-        country?: string
-      } | null
+   // Group orders by user_id
+   interface OrderSummary { user_id: string; total_amount: number | null; created_at: string; shipping_address_snapshot: unknown }
+   const ordersByUser = new Map<string, OrderSummary[]>()
+   for (const o of (allOrders ?? []) as OrderSummary[]) {
+     const list = ordersByUser.get(o.user_id)
+     if (list) list.push(o)
+     else ordersByUser.set(o.user_id, [o])
+   }
 
-      const name =
-        [profile.first_name, profile.last_name].filter(Boolean).join(' ') ||
-        profile.display_name ||
-        '—'
+   const customers: AdminCustomerListItem[] = profiles.map((profile) => {
+     const orderCount = (profile.orders as { count: number }[])[0]?.count ?? 0
+     const orders = ordersByUser.get(profile.id) ?? []
 
-      const username = profile.email?.split('@')[0] ?? '—'
+     const totalSpent = orders.reduce(
+       (sum, o) => sum + (o.total_amount ?? 0), 0
+     )
+     const aov = orderCount > 0 ? totalSpent / orderCount : 0
+     const lastOrder = orders[0]
+       ? new Date(orders[0].created_at).toLocaleDateString('en-IN', {
+           day: 'numeric', month: 'short', year: 'numeric',
+         })
+       : '—'
 
-      return {
-        id: profile.id,
-        name,
-        username,
-        registered: new Date(profile.created_at).toLocaleDateString('en-IN', {
-          day: 'numeric', month: 'short', year: 'numeric',
-        }),
-        email: profile.email ?? '—',
-        orders: orderCount.toString(),
-        spent: totalSpent > 0 ? `₹${totalSpent.toLocaleString('en-IN')}` : '₹0',
-        lastOrder,
-        aov: aov > 0 ? `₹${Math.round(aov).toLocaleString('en-IN')}` : '—',
-        countryCode: snapshot?.country ?? '—',
-        city: snapshot?.city ?? '—',
-        region: snapshot?.state ?? '—',
-        postal: snapshot?.postal_code ?? '—',
-      }
-    })
-  )
+     const snapshot = orders[0]?.shipping_address_snapshot as {
+       city?: string
+       state?: string
+       postal_code?: string
+       country?: string
+     } | null
 
-  return { customers, total: count ?? 0 }
+     const name =
+       [profile.first_name, profile.last_name].filter(Boolean).join(' ') ||
+       profile.display_name ||
+       '—'
+
+     const username = profile.email?.split('@')[0] ?? '—'
+
+     return {
+       id: profile.id,
+       name,
+       username,
+       registered: new Date(profile.created_at).toLocaleDateString('en-IN', {
+         day: 'numeric', month: 'short', year: 'numeric',
+       }),
+       email: profile.email ?? '—',
+       orders: orderCount.toString(),
+       spent: totalSpent > 0 ? `₹${totalSpent.toLocaleString('en-IN')}` : '₹0',
+       lastOrder,
+       aov: aov > 0 ? `₹${Math.round(aov).toLocaleString('en-IN')}` : '—',
+       countryCode: snapshot?.country ?? '—',
+       city: snapshot?.city ?? '—',
+       region: snapshot?.state ?? '—',
+       postal: snapshot?.postal_code ?? '—',
+     }
+   })
+
+   return { customers, total: count ?? 0 }
 }
 
 export async function getAdminCustomerByIdFromDB(id: string) {
@@ -158,10 +169,10 @@ export async function getAdminCustomerByIdFromDB(id: string) {
     .eq('user_id', id)
     .order('created_at', { ascending: false })
 
-  const { data: addresses } = await supabase
-    .from('addresses')
-    .select('*')
-    .eq('user_id', id)
+    const { data: addresses } = await supabase
+      .from('addresses')
+      .select('id, user_id, type, full_name, line1, line2, city, state, postal_code, country, phone, is_default')
+      .eq('user_id', id)
 
   const orderCount = orders?.length ?? 0
   const totalSpent = (orders ?? []).reduce((sum, o) => sum + (o.total_amount ?? 0), 0)

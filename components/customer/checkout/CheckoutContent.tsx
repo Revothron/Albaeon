@@ -66,12 +66,13 @@ function DeliveryContent() {
       if (!user) return
       setUser({ id: user.id, email: user.email ?? '' })
 
-      const { data } = await supabase
-        .from('addresses')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('type', 'shipping')
-        .order('is_default', { ascending: false })
+    const { data } = await supabase
+      .from('addresses')
+      .select('id, user_id, type, full_name, line1, line2, city, state, postal_code, country, phone, is_default')
+      .eq('user_id', user.id)
+      .eq('type', 'shipping')
+      .order('is_default', { ascending: false })
+      .order('created_at', { ascending: false })
 
       if (data && data.length > 0) {
         setAddresses(data)
@@ -310,7 +311,9 @@ function PaymentContent() {
   const clearCart = useCartStore((s) => s.clearCart)
   const shippingAddress = useCheckoutStore((s) => s.shippingAddress)
   const coupon = useCheckoutStore((s) => s.coupon)
-  const setPaymentComplete = useCheckoutStore((s) => s.setPaymentComplete)
+  const setOrderResult = useCheckoutStore((s) => s.setOrderResult)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -361,14 +364,29 @@ function PaymentContent() {
           razorpay_payment_id: string
           razorpay_signature: string
         }) {
-          // Step 3 — Verify + create order in DB
-          const verifyRes = await fetch('/api/webhooks/razorpay', {
+          // Step 3 — Verify signature
+          const verifyRes = await fetch('/api/payments/verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               razorpay_order_id: response.razorpay_order_id,
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
+            }),
+          })
+          const verifyData = await verifyRes.json()
+          if (!verifyRes.ok || verifyData.error) {
+            setError('Payment verification failed. Please contact support.')
+            return
+          }
+
+          // Step 4 — Create order in database
+          const webhookRes = await fetch('/api/webhooks/razorpay', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
               items,
               shipping_address: shippingAddress,
               subtotal,
@@ -379,19 +397,16 @@ function PaymentContent() {
             }),
           })
 
-          const verifyData = await verifyRes.json()
+          const webhookData = await webhookRes.json()
 
-          if (verifyData.data?.order_number) {
-            setPaymentComplete(
-              response.razorpay_payment_id,
-              verifyData.data.order_id,
-              verifyData.data.order_number
-            )
-            clearCart()
-            router.push('/checkout/confirmation')
-          } else {
-            setError(verifyData.error ?? 'Payment verification failed. Contact support.')
+          if (webhookData.error || !webhookData.data?.order_number) {
+            setError('Payment received but order creation failed. Contact support with payment ID: ' + response.razorpay_payment_id)
+            return
           }
+
+          setOrderResult(response.razorpay_payment_id, webhookData.data.order_id, webhookData.data.order_number)
+          clearCart()
+          router.push(`/checkout/confirmation?order=${webhookData.data.order_number}`)
         },
         prefill: {
           name: shippingAddress?.full_name ?? '',
@@ -496,7 +511,7 @@ function PaymentContent() {
         <div className="space-y-3">
           <span className={`${cinzel.className} text-[10px] font-bold tracking-[0.4em] text-gold`}>REVIEW YOUR ORDER</span>
           <div className="h-px w-full bg-gold/10" />
-          {items.map((item) => (
+          {mounted ? items.map((item) => (
             <div key={item.variantId} className="flex items-center gap-4 border-b border-gold/10 py-3">
               <div className="relative h-14 w-14 border border-gold/10 bg-primary-deep overflow-hidden flex-shrink-0">
                 {item.image && (
@@ -512,10 +527,10 @@ function PaymentContent() {
                 </span>
               </div>
               <span className={`${cinzel.className} text-[15px] text-gold`}>
-                ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                {mounted ? `₹${(item.price * item.quantity).toLocaleString('en-IN')}` : '—'}
               </span>
             </div>
-          ))}
+          )) : null}
         </div>
 
         {/* Error */}
@@ -536,7 +551,11 @@ function PaymentContent() {
           disabled={loading || items.length === 0}
           className="flex h-[58px] items-center justify-center bg-gold text-[12px] font-semibold tracking-[0.3em] text-nav disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gold-hover transition-colors"
         >
-          {loading ? 'PREPARING PAYMENT...' : `Pay ₹${total.toLocaleString('en-IN')} Securely via Razorpay →`}
+          {loading
+            ? 'Opening Payment...'
+            : mounted
+            ? `Pay ₹${total.toLocaleString('en-IN')} Securely via Razorpay →`
+            : 'Loading...'}
         </button>
 
         <div className="flex flex-wrap justify-center gap-7 text-text-muted">

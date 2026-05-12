@@ -1,8 +1,9 @@
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { requireAdminPage } from '@/lib/auth/require-admin-page'
 import { getAdminProducts } from '@/lib/admin/products'
 import AdminProductsClient from '@/components/admin/AdminProductsClient'
+
+export const dynamic = 'force-dynamic';
 
 export default async function AdminProductsPage({
   searchParams,
@@ -15,9 +16,8 @@ export default async function AdminProductsPage({
     sort?: string
   }>
 }) {
+  await requireAdminPage()
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/admin/login')
 
   const sp = await searchParams
   const page = Number(sp.page ?? 1)

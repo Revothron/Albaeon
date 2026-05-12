@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowLeft } from 'lucide-react'
-import { notFound, redirect } from 'next/navigation'
+import { notFound } from 'next/navigation'
 import { adminCinzel, adminCormorant, adminRaleway } from '@/components/admin/adminFonts'
-import { createClient } from '@/lib/supabase/server'
+import { requireAdminPage } from '@/lib/auth/require-admin-page'
 import { getAdminOrderById } from '@/lib/admin/orders'
 import AdminOrderActions from '@/components/admin/AdminOrderActions'
+import GelatoFulfillmentStatus from '@/components/admin/GelatoFulfillmentStatus'
 
 type Tone = 'success' | 'info' | 'warning' | 'danger' | 'muted'
 
@@ -106,14 +107,14 @@ function formatCurrency(amount: number, currency = 'INR') {
   return `$${amount.toFixed(2)}`
 }
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminOrderDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/admin/login')
+  await requireAdminPage()
 
   const { id } = await params
   const order = await getAdminOrderById(id)
@@ -378,43 +379,49 @@ export default async function AdminOrderDetailPage({
           {/* ── Fulfillment ────────────────────────── */}
           <section className="border border-gold/10 bg-[#1E1A2E] p-6">
             <SectionHeading>FULFILLMENT DETAILS</SectionHeading>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="space-y-3">
-                <DetailLabel>PROVIDER</DetailLabel>
-                <DetailValue>{order.provider === 'banian' ? 'Banian City' : 'Gelato'}</DetailValue>
-                {tracking?.gelato_order_id && (
-                  <>
-                    <DetailLabel>GELATO ORDER ID</DetailLabel>
-                    <DetailValue>{tracking.gelato_order_id}</DetailValue>
-                  </>
-                )}
-                {tracking?.banian_form_response && (
-                  <>
-                    <DetailLabel>FORM STATUS</DetailLabel>
-                    <DetailValue>Submitted</DetailValue>
-                  </>
-                )}
-              </div>
-              <div className="space-y-3">
-                <DetailLabel>TRACKING NUMBER</DetailLabel>
-                <p className={`${adminCinzel.className} text-[14px] text-text-primary`}>
-                  {tracking?.tracking_number ?? '—'}
-                </p>
-                <DetailLabel>COURIER</DetailLabel>
-                <DetailValue>{tracking?.courier ?? '—'}</DetailValue>
-                {tracking?.courier_url && (
-                  <>
-                    <DetailLabel>TRACKING LINK</DetailLabel>
-                    
+            <div className="mt-4 space-y-5">
+
+              {/* Provider + basic info */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-3">
+                  <DetailLabel>PROVIDER</DetailLabel>
+                  <DetailValue>
+                    {order.provider === 'banian' ? 'Banian City (India)' : 'Gelato (International)'}
+                  </DetailValue>
+
+                  {/* Banian City — form submission status */}
+                  {order.provider === 'banian' && (
+                    <>
+                      <DetailLabel>FORM STATUS</DetailLabel>
+                      <DetailValue>
+                        {tracking?.banian_form_response ? 'Submitted to Banian City' : 'Not yet submitted'}
+                      </DetailValue>
+                    </>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <DetailLabel>TRACKING NUMBER</DetailLabel>
+                  <p className={`${adminCinzel.className} text-[14px] text-text-primary`}>
+                    {tracking?.tracking_number ?? '—'}
+                  </p>
+
+                  <DetailLabel>COURIER</DetailLabel>
+                  <DetailValue>{tracking?.courier ?? '—'}</DetailValue>
+
+                  {tracking?.courier_url && (
+                    <a
                       href={tracking.courier_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={`${adminRaleway.className} text-[13px] font-light text-gold hover:text-gold-hover transition-colors`}
-                    <a>
+                    >
+                      <DetailLabel>TRACKING LINK</DetailLabel>
                       Track shipment →
                     </a>
-                  </>
-                )}
+                  )}
+                </div>
+
                 {tracking?.estimated_delivery && (
                   <>
                     <DetailLabel>ESTIMATED DELIVERY</DetailLabel>
@@ -423,6 +430,25 @@ export default async function AdminOrderDetailPage({
                 )}
               </div>
             </div>
+
+            {/* Gelato live status — only shown for Gelato orders with a gelato_order_id */}
+            {order.provider === 'gelato' && tracking?.gelato_order_id && (
+              <div className="border-t border-gold/10 pt-5">
+                <p className={`${adminCinzel.className} mb-4 text-[9px] tracking-[0.28em] text-gold`}>
+                  LIVE GELATO STATUS
+                </p>
+                <GelatoFulfillmentStatus gelatoOrderId={tracking.gelato_order_id} />
+              </div>
+            )}
+
+            {/* Gelato order not yet created */}
+            {order.provider === 'gelato' && !tracking?.gelato_order_id && (
+              <div className="border-t border-gold/10 pt-4">
+                <p className={`${adminRaleway.className} text-[13px] font-light text-text-muted`}>
+                  Gelato order not yet created. Will be triggered automatically after payment confirmation.
+                </p>
+              </div>
+            )}
           </section>
         </div>
 
@@ -464,7 +490,7 @@ export default async function AdminOrderDetailPage({
             </div>
           </section>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }

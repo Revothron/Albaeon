@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Cinzel, Raleway } from 'next/font/google'
 import { Lock, RefreshCw, ShieldCheck, Truck } from 'lucide-react'
@@ -88,7 +88,7 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
           ORDER SUMMARY
         </span>
         <span className={`${cinzel.className} text-[9px] font-semibold tracking-[0.2em] text-text-muted`}>
-          {items.length} ITEM{items.length !== 1 ? 'S' : ''}
+          {mounted ? items.length : '—'} ITEM{mounted && items.length !== 1 ? 'S' : ''}
         </span>
       </div>
 
@@ -96,7 +96,7 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
 
       {/* ── Items ─────────────────────────── */}
       <div className="space-y-3">
-        {items.map((item) => (
+        {mounted ? items.map((item) => (
           <div key={item.variantId} className="flex items-start gap-3">
             <div className="relative flex h-16 w-16 flex-shrink-0 items-center justify-center border border-gold/10 bg-primary-deep overflow-hidden">
               {item.image ? (
@@ -124,7 +124,7 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
               </span>
             </div>
           </div>
-        ))}
+        )) : null}
       </div>
 
       <div className="h-px w-full bg-gold/10" />
@@ -170,10 +170,10 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
       {/* ── Totals ────────────────────────── */}
       <div className="flex items-center justify-between">
         <span className={`${raleway.className} text-[13px] text-text-muted`}>
-          Subtotal ({items.length} item{items.length !== 1 ? 's' : ''})
+          Subtotal ({mounted ? items.length : '—'} {mounted && items.length === 1 ? 'item' : 'items'})
         </span>
         <span className={`${raleway.className} text-[13px] text-text-primary`}>
-          ₹{subtotal.toLocaleString('en-IN')}
+          {mounted ? `₹${subtotal.toLocaleString('en-IN')}` : '—'}
         </span>
       </div>
       <div className="flex items-center justify-between">
@@ -194,7 +194,7 @@ export default function OrderSummaryCard({ variant }: { variant: OrderSummaryVar
       <div className="flex items-center justify-between">
         <span className={`${cinzel.className} text-[12px] font-bold tracking-[0.2em] text-gold`}>TOTAL</span>
         <span className={`${cinzel.className} text-[26px] text-gold`}>
-          ₹{total.toLocaleString('en-IN')}
+          {mounted ? `₹${total.toLocaleString('en-IN')}` : '—'}
         </span>
       </div>
       <div className="flex justify-end">

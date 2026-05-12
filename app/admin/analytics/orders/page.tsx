@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { AdminAnalyticsPage } from '@/components/admin/AdminAnalytics'
 import { analyticsRanges } from '@/lib/admin/analytics'
@@ -22,8 +24,8 @@ export default function OrdersAnalyticsPage() {
           chartTitle: 'ORDERS & AOV',
           chartLabels: d.chartLabels,
           series: [
-            { label: 'Orders', color: 'var(--gold)', active: true, values: d.orderValues, format: 'number' },
-            { label: 'AOV', color: 'var(--status-info)', active: true, values: d.aovValues, format: 'currency' },
+            { label: 'Orders', color: '#E6C979', active: true, values: d.orderValues, format: 'number' },
+            { label: 'AOV', color: '#4A90C4', active: true, values: d.aovValues, format: 'currency' },
           ],
           table: {
             title: 'RECENT ORDERS',
@@ -43,5 +45,5 @@ export default function OrdersAnalyticsPage() {
   }, [range])
 
   if (!data) return <div className="animate-pulse h-[400px] border border-gold/10 bg-[#1E1A2E]" />
-  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} />
+  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} onRangeChange={setRange} />
 }

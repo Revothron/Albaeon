@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import { getCustomerOrders, formatOrderAmount } from '@/lib/customer/orders'
 import OrdersPageClient from '@/components/customer/account/OrdersPageClient'
 
+export const dynamic = 'force-dynamic';
+
 export default async function OrdersPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

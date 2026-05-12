@@ -3,6 +3,8 @@ import { createClient } from '@/lib/supabase/server'
 import AccountShell from '@/components/customer/account/AccountShell'
 import AddressesClient from '@/components/customer/account/AddressesClient'
 
+export const dynamic = 'force-dynamic';
+
 export default async function AddressesPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -21,11 +23,12 @@ export default async function AddressesPage() {
 
   const email = profile?.email ?? user.email ?? ''
 
-  const { data: addresses } = await supabase
-    .from('addresses')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('is_default', { ascending: false })
+    const { data: addresses } = await supabase
+      .from('addresses')
+      .select('id, user_id, type, full_name, line1, line2, city, state, postal_code, country, phone, is_default')
+      .eq('user_id', user.id)
+      .order('is_default', { ascending: false })
+      .order('created_at', { ascending: false })
 
   return (
     <div className="animate-fadeInUp">

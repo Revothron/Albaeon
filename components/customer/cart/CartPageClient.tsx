@@ -33,17 +33,9 @@ export default function CartPageClient() {
   const cartProductIds = items.map((i) => i.productId)
 
   const [cartRecs, setCartRecs] = useState<CartRec[]>([])
-  const [mounted, setMounted] = useState(false)
-
-  // ── Wait for store to hydrate ─────────────────────────
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // ── Load recommendations ──────────────────────────────
   useEffect(() => {
-    if (!mounted) return
-
     async function loadCartRecs() {
       const recs: CartRec[] = []
       const usedIds = new Set<string>([...cartProductIds])
@@ -162,7 +154,7 @@ export default function CartPageClient() {
     }
 
     loadCartRecs()
-  }, [mounted, viewedProducts.length, searchHistory.length, cartProductIds.join(',')])
+  }, [viewedProducts.length, searchHistory.length, cartProductIds.join(',')])
 
   // ── Empty cart ────────────────────────────────────────
   if (items.length === 0) {

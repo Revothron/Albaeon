@@ -1,12 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { requireAdminPage } from '@/lib/auth/require-admin-page'
 import { getAdminCategories } from '@/lib/admin/products'
 import AdminProductEditorClient from '@/components/admin/AdminProductEditorClient'
 
+export const dynamic = 'force-dynamic';
+
 export default async function AddProductPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/admin/login')
+  await requireAdminPage()
 
   const categories = await getAdminCategories()
 

@@ -13,7 +13,7 @@ export type AdminOrder = {
 
 export async function getAdminOrders({
   page = 1,
-  limit = 20,
+  limit = 25,
   search = '',
   paymentStatus = '',
   fulfillmentStatus = '',

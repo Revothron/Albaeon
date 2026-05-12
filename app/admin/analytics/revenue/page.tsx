@@ -1,5 +1,7 @@
 'use client'
 
+export const dynamic = 'force-dynamic'
+
 import { useState, useEffect } from 'react'
 import { AdminAnalyticsPage } from '@/components/admin/AdminAnalytics'
 import { analyticsRanges } from '@/lib/admin/analytics'
@@ -22,9 +24,9 @@ export default function RevenueAnalyticsPage() {
           chartTitle: 'GROSS vs NET REVENUE',
           chartLabels: d.chartLabels,
           series: [
-            { label: 'Gross', color: 'var(--gold)', active: true, values: d.grossValues, format: 'currency' },
-            { label: 'Net', color: 'var(--status-success)', active: true, values: d.netValues, format: 'currency' },
-            { label: 'Discount', color: 'var(--status-error)', active: false, values: d.discountValues, format: 'currency' },
+            { label: 'Gross', color: '#E6C979', active: true, values: d.grossValues, format: 'currency' },
+            { label: 'Net', color: '#4CAF7D', active: true, values: d.netValues, format: 'currency' },
+            { label: 'Discount', color: '#C0392B', active: false, values: d.discountValues, format: 'currency' },
           ],
           table: {
             title: 'REVENUE BREAKDOWN',
@@ -46,12 +48,5 @@ export default function RevenueAnalyticsPage() {
 
   if (!data) return <div className="animate-pulse h-[400px] border border-gold/10 bg-[#1E1A2E]" />
 
-  return (
-    <div onClick={(e) => {
-      const btn = (e.target as HTMLElement).closest('[data-range]')
-      if (btn) setRange(btn.getAttribute('data-range') ?? range)
-    }}>
-      <AdminAnalyticsPage screen={{ ...data, activeRange: range }} />
-    </div>
-  )
+  return <AdminAnalyticsPage screen={{ ...data, activeRange: range }} onRangeChange={setRange} />
 }

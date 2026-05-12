@@ -7,6 +7,7 @@ import { Minus, Plus } from "lucide-react";
 import { useState, useEffect } from "react";
 import type { Product } from "@/lib/customer/products";
 import WishlistButton from "@/components/customer/WishlistButton";
+import PriceDisplay from "@/components/customer/PriceDisplay";
 import { useCartStore } from "@/store/cartStore";
 import { useUiStore } from "@/store/uiStore";
 import { useTrackingStore } from "@/store/trackingStore";
@@ -196,7 +197,7 @@ export default function ProductView({ product }: { product: Product }) {
             </div>
 
             <p className="font-sans text-[24px] font-bold text-text-primary lg:text-[30px]">
-              {product.price}
+              <PriceDisplay priceINR={product.priceINR} priceUSD={product.priceUSD} />
             </p>
 
             <div className="space-y-3">

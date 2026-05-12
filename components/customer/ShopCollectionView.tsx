@@ -5,19 +5,22 @@ import { Cinzel } from 'next/font/google'
 import type { Product } from '@/lib/customer/products'
 import WishlistButton from '@/components/customer/WishlistButton'
 import ShopFilters from '@/components/customer/ShopFilters'
+import PriceDisplay from '@/components/customer/PriceDisplay'
 
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
 function ProductCard({
   id,
   name,
-  price,
+  priceINR,
+  priceUSD,
   slug,
   image,
 }: {
   id: string
   name: string
-  price: string
+  priceINR: number
+  priceUSD: number | null
   slug: string
   image: string
 }) {
@@ -43,7 +46,7 @@ function ProductCard({
           {name}
         </h2>
         <p className="font-sans text-[12px] font-semibold text-gold sm:text-[15px] lg:text-[18px]">
-          {price}
+          <PriceDisplay priceINR={priceINR} priceUSD={priceUSD} />
         </p>
       </div>
     </Link>
@@ -100,7 +103,8 @@ export default function ShopCollectionView({
                 key={product.slug}
                 id={product.id}
                 name={product.name}
-                price={product.price}
+                priceINR={product.priceINR}
+                priceUSD={product.priceUSD}
                 slug={product.slug}
                 image={product.image}
               />

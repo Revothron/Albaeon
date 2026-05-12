@@ -1,0 +1,1276 @@
+{
+  "version": "2.11",
+  "children": [
+    {
+      "type": "frame",
+      "id": "QaWdt",
+      "x": 50,
+      "y": 50,
+      "name": "Invoice",
+      "width": 595,
+      "fill": "$surface-primary",
+      "layout": "vertical",
+      "padding": [
+        48,
+        48,
+        40,
+        48
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "b9Khq",
+          "name": "Header",
+          "width": "fill_container",
+          "gap": 16,
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "QKacy",
+              "name": "Logo",
+              "width": 64,
+              "height": 64,
+              "fill": {
+                "type": "image",
+                "enabled": true,
+                "url": "images/generated-1778408113351.png",
+                "mode": "fill"
+              },
+              "cornerRadius": 4
+            },
+            {
+              "type": "frame",
+              "id": "rCzSu",
+              "name": "Brand Group",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OeKNX",
+                  "name": "Brand Name",
+                  "fill": "$navy-dark",
+                  "content": "ALBAEON",
+                  "fontFamily": "Playfair Display",
+                  "fontSize": 28,
+                  "fontWeight": "700",
+                  "letterSpacing": 6
+                },
+                {
+                  "type": "text",
+                  "id": "C0qcIp",
+                  "name": "Tagline",
+                  "fill": "$foreground-muted",
+                  "content": "Premium Apparel",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal",
+                  "letterSpacing": 3
+                },
+                {
+                  "type": "text",
+                  "id": "sc7A2",
+                  "name": "Tagline",
+                  "fill": "$foreground-muted",
+                  "content": "Est. 2020",
+                  "fontFamily": "Inter",
+                  "fontSize": 9,
+                  "fontWeight": "normal",
+                  "letterSpacing": 2
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "t3XIBU",
+              "name": "Spacer",
+              "width": "fill_container",
+              "height": 1
+            },
+            {
+              "type": "text",
+              "id": "id69t",
+              "name": "Invoice Title",
+              "fill": "$accent-gold",
+              "content": "INVOICE",
+              "fontFamily": "Playfair Display",
+              "fontSize": 32,
+              "fontWeight": "700",
+              "letterSpacing": 4
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HwayM",
+          "name": "Gold Accent",
+          "width": "fill_container",
+          "height": 2,
+          "fill": "$accent-gold"
+        },
+        {
+          "type": "frame",
+          "id": "iOr16",
+          "name": "Invoice Metadata",
+          "width": "fill_container",
+          "gap": 48,
+          "padding": [
+            24,
+            0
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "b1Mgn5",
+              "name": "Meta Left",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "s19c4q",
+                  "name": "Label",
+                  "fill": "$foreground-muted",
+                  "content": "Invoice Number",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "WWqb6",
+                  "name": "Value",
+                  "fill": "$navy-dark",
+                  "content": "INV-2026-0042",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zweiW",
+              "name": "Meta Center",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sAUE6",
+                  "name": "Label",
+                  "fill": "$foreground-muted",
+                  "content": "Date",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "normal",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "FG4PW",
+                  "name": "Value",
+                  "fill": "$navy-dark",
+                  "content": "May 10, 2026",
+                  "fontFamily": "Inter",
+                  "fontSize": 14,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "XjgaA",
+          "name": "Separator",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "$border-light"
+        },
+        {
+          "type": "frame",
+          "id": "BmpnD",
+          "name": "From To Section",
+          "width": "fill_container",
+          "gap": 48,
+          "padding": [
+            24,
+            0
+          ],
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "frame",
+              "id": "xNtuU",
+              "name": "From Column",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "UZO4G",
+                  "name": "Section Label",
+                  "fill": "$accent-gold",
+                  "content": "FROM",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "700",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "frame",
+                  "id": "ReqSp",
+                  "name": "From Details",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "riOL1",
+                      "name": "Company",
+                      "fill": "$navy-dark",
+                      "content": "ALBAEON APPAREL CO.",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZHinH",
+                      "name": "Address 1",
+                      "fill": "$foreground-secondary",
+                      "content": "247 Fashion District Ave, Suite 400",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MFQMR",
+                      "name": "Address 2",
+                      "fill": "$foreground-secondary",
+                      "content": "New York, NY 10018, United States",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BbRxL",
+                      "name": "Email",
+                      "fill": "$foreground-secondary",
+                      "content": "accounts@albaeon.com",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "yG5Ap",
+                      "name": "Phone",
+                      "fill": "$foreground-secondary",
+                      "content": "+1 (212) 555-0192",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "c98oX",
+              "name": "To Column",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "A87id",
+                  "name": "Section Label",
+                  "fill": "$accent-gold",
+                  "content": "BILL TO",
+                  "fontFamily": "Inter",
+                  "fontSize": 10,
+                  "fontWeight": "700",
+                  "letterSpacing": 2
+                },
+                {
+                  "type": "frame",
+                  "id": "g5iyno",
+                  "name": "To Details",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DjfKK",
+                      "name": "Client",
+                      "fill": "$navy-dark",
+                      "content": "LUXE BOUTIQUE INC.",
+                      "fontFamily": "Inter",
+                      "fontSize": 13,
+                      "fontWeight": "600",
+                      "letterSpacing": 0.5
+                    },
+                    {
+                      "type": "text",
+                      "id": "bLEf6",
+                      "name": "Address 1",
+                      "fill": "$foreground-secondary",
+                      "content": "856 Madison Avenue",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "acOoc",
+                      "name": "Address 2",
+                      "fill": "$foreground-secondary",
+                      "content": "New York, NY 10021, United States",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "xF5yU",
+                      "name": "Attn",
+                      "fill": "$foreground-secondary",
+                      "content": "Attn: Jessica Martinez",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mu9Eb",
+          "name": "Separator",
+          "width": "fill_container",
+          "height": 1,
+          "fill": "$border-light"
+        },
+        {
+          "type": "frame",
+          "id": "t9Yob",
+          "name": "Table Title",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            20,
+            0,
+            8,
+            0
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "oHwfe",
+              "name": "Table Title Text",
+              "fill": "$navy-dark",
+              "content": "ORDER DETAILS",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "700",
+              "letterSpacing": 2
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vus0s",
+          "name": "Table Header",
+          "width": "fill_container",
+          "fill": "$navy-dark",
+          "padding": [
+            10,
+            12
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "jb3wV",
+              "name": "Header #",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": 30,
+              "content": "#",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "vLDwn",
+              "name": "Header Item",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "ITEM DESCRIPTION",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Jat5o",
+              "name": "Header Size",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": 60,
+              "content": "SIZE",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "gNTR8",
+              "name": "Header Color",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": 70,
+              "content": "COLOR",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "H8iVZ",
+              "name": "Header Qty",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": 50,
+              "content": "QTY",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Z7vTn",
+              "name": "Header Price",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "UNIT PRICE",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "K8JHPn",
+              "name": "Header Amount",
+              "fill": "#FFFFFF",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "AMOUNT",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 11,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "HMh4G",
+          "name": "Row 1",
+          "width": "fill_container",
+          "fill": "$surface-card",
+          "padding": [
+            10,
+            12
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "GWG8n",
+              "name": "#",
+              "fill": "$foreground-muted",
+              "textGrowth": "fixed-width",
+              "width": 30,
+              "content": "01",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "S5sVc",
+              "name": "Item Cell",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "S1qAiH",
+                  "name": "Item Name",
+                  "fill": "$navy-dark",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Signature Cotton Tee",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "VUb0O",
+              "name": "Size",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 60,
+              "content": "L",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "x9fAbv",
+              "name": "Color",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 70,
+              "content": "Black",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "IGB2e",
+              "name": "Qty",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 50,
+              "content": "50",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "y9gOo",
+              "name": "Price",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "$24.99",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "gKbjQ",
+              "name": "Amount",
+              "fill": "$navy-dark",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "$1,249.50",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vge6F",
+          "name": "Row 2",
+          "width": "fill_container",
+          "fill": "$surface-primary",
+          "padding": [
+            10,
+            12
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Yles1",
+              "name": "#",
+              "fill": "$foreground-muted",
+              "textGrowth": "fixed-width",
+              "width": 30,
+              "content": "02",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "SuASu",
+              "name": "Item Cell",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Qvext",
+                  "name": "Item Name",
+                  "fill": "$navy-dark",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tailored Wool Blazer",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "lYguV",
+              "name": "Size",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 60,
+              "content": "M",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "ZgyUM",
+              "name": "Color",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 70,
+              "content": "Navy",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "GViL1",
+              "name": "Qty",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 50,
+              "content": "25",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "jd7dR",
+              "name": "Price",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "$89.99",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "ieMxp",
+              "name": "Amount",
+              "fill": "$navy-dark",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "$2,249.75",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "I4meoK",
+          "name": "Row 3",
+          "width": "fill_container",
+          "fill": "$surface-card",
+          "padding": [
+            10,
+            12
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "lW6Mk",
+              "name": "#",
+              "fill": "$foreground-muted",
+              "textGrowth": "fixed-width",
+              "width": 30,
+              "content": "03",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "UtvVB",
+              "name": "Item Cell",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Z6H3P",
+                  "name": "Item Name",
+                  "fill": "$navy-dark",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Silk Modal Scarf",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "M6yov",
+              "name": "Size",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 60,
+              "content": "OS",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "X37sd",
+              "name": "Color",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 70,
+              "content": "Gold",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "BjD10",
+              "name": "Qty",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 50,
+              "content": "30",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "IKMff",
+              "name": "Price",
+              "fill": "$foreground-secondary",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "$39.99",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "acYNe",
+              "name": "Amount",
+              "fill": "$navy-dark",
+              "textGrowth": "fixed-width",
+              "width": 90,
+              "content": "$1,199.70",
+              "textAlign": "right",
+              "fontFamily": "Inter",
+              "fontSize": 12,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "h4yddH",
+          "name": "Divider",
+          "width": "fill_container",
+          "height": 2,
+          "fill": "$accent-gold"
+        },
+        {
+          "type": "frame",
+          "id": "df7ec",
+          "name": "Totals",
+          "width": "fill_container",
+          "padding": [
+            16,
+            0
+          ],
+          "justifyContent": "end",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "JlKAI",
+              "name": "Amounts",
+              "width": 163,
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "pgjyB",
+                  "name": "Subtotal Row",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uFw28",
+                      "name": "Label",
+                      "fill": "$foreground-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Subtotal",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "QQrDe",
+                      "name": "Value",
+                      "fill": "$foreground-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": 110,
+                      "content": "$5,898.75",
+                      "textAlign": "right",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z4FbA",
+                  "name": "Discount Row",
+                  "width": "fill_container",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Blt5T",
+                      "name": "Label",
+                      "fill": "$foreground-secondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Discount (5%)",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "n73142",
+                      "name": "Value",
+                      "fill": "#B91C1C",
+                      "textGrowth": "fixed-width",
+                      "width": 110,
+                      "content": "-$294.94",
+                      "textAlign": "right",
+                      "fontFamily": "Inter",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "S2AxS",
+                  "name": "Sep",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "$border-light"
+                },
+                {
+                  "type": "frame",
+                  "id": "PTqzJ",
+                  "name": "Total Row",
+                  "width": "fill_container",
+                  "padding": [
+                    4,
+                    0,
+                    0,
+                    0
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "AsgiQ",
+                      "name": "Label",
+                      "fill": "$navy-dark",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "TOTAL",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ol4tT",
+                      "name": "Value",
+                      "fill": "$navy-dark",
+                      "textGrowth": "fixed-width",
+                      "width": 110,
+                      "content": "$5,648.81",
+                      "textAlign": "right",
+                      "fontFamily": "Inter",
+                      "fontSize": 16,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "b4NIDX",
+          "name": "Bottom Spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "qwtpG",
+          "name": "Bottom Border",
+          "width": "fill_container",
+          "height": 2,
+          "fill": "$accent-gold"
+        },
+        {
+          "type": "frame",
+          "id": "chx5L",
+          "name": "Payment Bar",
+          "width": "fill_container",
+          "gap": 40,
+          "padding": [
+            16,
+            0,
+            0,
+            0
+          ],
+          "justifyContent": "space_between",
+          "children": [
+            {
+              "type": "frame",
+              "id": "FEOP6",
+              "name": "Bank Details",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bN7KN",
+                  "name": "Title",
+                  "fill": "$navy-dark",
+                  "content": "PAYMENT DETAILS",
+                  "fontFamily": "Inter",
+                  "fontSize": 9,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "rPt7J",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Bank: Chase Business Banking",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "VKE7P",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Account: XXXX-XXXX-4821",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Bswff",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Routing: 021000021",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "g63xZ2",
+              "name": "Contact",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "LP2T4",
+                  "name": "Title",
+                  "fill": "$navy-dark",
+                  "content": "CONTACT",
+                  "fontFamily": "Inter",
+                  "fontSize": 9,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "QOm8z",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "hello@albaeon.com",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "vVby4",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "+1 (212) 555-0192",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "viqlh",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "albaeon.com",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "eQWiU",
+              "name": "Shipping",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 3,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "K8Pn3",
+                  "name": "Title",
+                  "fill": "$navy-dark",
+                  "content": "SHIPPING",
+                  "fontFamily": "Inter",
+                  "fontSize": 9,
+                  "fontWeight": "700",
+                  "letterSpacing": 1.5
+                },
+                {
+                  "type": "text",
+                  "id": "PLzGZ",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "FOB: Shipping Point",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "TELSF",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Carrier: FedEx Priority",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Vvd24",
+                  "name": "Detail",
+                  "fill": "$foreground-secondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Est. Delivery: 5-7 Business Days",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "o31zpD",
+          "name": "Footer Note",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            16,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "gGFq0",
+              "name": "Thank You",
+              "fill": "$navy-dark",
+              "content": "Thank you for your business.",
+              "textAlign": "center",
+              "fontFamily": "Playfair Display",
+              "fontSize": 13,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Z2Q29A",
+              "name": "Brand Tag",
+              "fill": "$foreground-muted",
+              "content": "ALBAEON — Premium Apparel since 2020",
+              "textAlign": "center",
+              "fontFamily": "Inter",
+              "fontSize": 10,
+              "fontWeight": "normal",
+              "letterSpacing": 1
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "accent-gold": {
+      "type": "color",
+      "value": "#C9A84C"
+    },
+    "border-light": {
+      "type": "color",
+      "value": "#E5E2DA"
+    },
+    "border-subtle": {
+      "type": "color",
+      "value": "#F0EEE9"
+    },
+    "foreground-muted": {
+      "type": "color",
+      "value": "#888888"
+    },
+    "foreground-primary": {
+      "type": "color",
+      "value": "#1B2A4A"
+    },
+    "foreground-secondary": {
+      "type": "color",
+      "value": "#4A4A4A"
+    },
+    "gold-accent": {
+      "type": "color",
+      "value": "#C9A84C"
+    },
+    "navy-dark": {
+      "type": "color",
+      "value": "#1B2A4A"
+    },
+    "surface-card": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "surface-primary": {
+      "type": "color",
+      "value": "#F7F6F3"
+    }
+  }
+}

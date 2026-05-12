@@ -1,3 +1,16 @@
+import type { Metadata } from 'next'
+
+export const revalidate = false;
+
+export const metadata: Metadata = {
+  title: 'Shipping Policy',
+  description: 'Albaeon shipping policy — delivery timelines, carriers, and international shipping information.',
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://albaeon.com'}/shipping-policy`,
+  },
+  robots: { index: true, follow: false },
+};
+
 export default function ShippingPolicyPage() {
     return (
         <div className="bg-primary min-h-screen animate-fadeInUp">

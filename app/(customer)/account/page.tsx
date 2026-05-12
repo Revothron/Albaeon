@@ -5,6 +5,8 @@ import { getCustomerOrders, formatOrderAmount } from '@/lib/customer/orders'
 import { redirect } from 'next/navigation'
 import SignOutButton from '@/components/customer/account/SignOutButton'
 
+export const dynamic = 'force-dynamic';
+
 const cinzel = Cinzel({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
 function DesktopStatCard({ label, value }: { label: string; value: string }) {

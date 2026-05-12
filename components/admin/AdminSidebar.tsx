@@ -10,10 +10,12 @@ import {
     ClipboardList,
     Headset,
     LayoutDashboard,
+    LayoutList,
     LogOut,
     PanelRightClose,
     PanelRightOpen,
     Package,
+    Tags,
     Users,
 } from "lucide-react";
 import { adminRaleway } from "@/components/admin/adminFonts";
@@ -30,6 +32,8 @@ const menuItems = [
     { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
     { name: "Orders", href: "/admin/orders", icon: ClipboardList },
     { name: "Products", href: "/admin/products", icon: Package },
+    { name: "Categories", href: "/admin/categories", icon: Tags },
+    { name: "Collections", href: "/admin/collections", icon: LayoutList },
     { name: "Customers", href: "/admin/customers", icon: Users },
     {
         name: "Analytics",

@@ -1,7 +1,8 @@
 import { getAdminOrders } from '@/lib/admin/orders'
 import AdminOrdersClient from '@/components/admin/AdminOrdersClient'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { requireAdminPage } from '@/lib/auth/require-admin-page'
+
+export const dynamic = 'force-dynamic';
 
 export default async function AdminOrdersPage({
   searchParams,
@@ -14,9 +15,7 @@ export default async function AdminOrdersPage({
     provider?: string
   }>
 }) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/admin/login')
+  await requireAdminPage()
 
   const sp = await searchParams
   const page = Number(sp.page ?? 1)
